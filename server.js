@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 const express = require('express');
 const app = express();
 const bcrypt = require('bcrypt');
@@ -49,7 +51,9 @@ app.post('/users/login', async (req, res) => {
     }
     try {
         if(await bcrypt.compare(req.body.password, user.password)) {
-            res.send('Success')
+            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
+            res.json({ accessToken: accessToken });
+            
         } else {
             res.send('Not Allowed')
         }
@@ -57,8 +61,8 @@ app.post('/users/login', async (req, res) => {
         res.status(500).send()
     }
     const username = req.body.username 
-
-    jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+    res.json({ accessToken: accessToken })
 })
 
 app.listen(3000)
