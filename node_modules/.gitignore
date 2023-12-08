@@ -1,0 +1,22 @@
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# IDE/Editor Files
+.vscode/
+.idea/
+
+# Environment Variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Dependency directory
+bower_components/
+
+# Build files
+build/
+dist/
