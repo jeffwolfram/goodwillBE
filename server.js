@@ -1,78 +1,87 @@
-require('dotenv').config()
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
+
 
 const express = require('express');
 const app = express();
+const passport = require('passport')
+
+const flash = require('express-flash')
+const session = require('express-session')
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken')
+
+const { init } = require('express/lib/application');
+
+const initializePassport = require('./passport-config')
+initializePassport(
+    passport, 
+    email =>  users.find(user => user.email === email),
+    id => users.find(user => user.id === id)
+    )
+const users = []
+app.set('view-engine', 'ejs');
+app.use(express.urlencoded({ extended: false }));
+app.use(flash());
+app.use(session({
+    secret: process.env.ACCESS_TOKEN_SECRET,
+    resave: false,
+    saveUninitialized: false
+
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 
 
 
 app.use(express.json());
 
-const users = []
 
-const posts = [
-    {
-        username: 'Kyle',
-        title: 'Post 1'
-    },
-    {
-        username: 'Jeff',
-        title: 'Post 2'
-    }
 
-]
 
-app.get('/posts', authenticateToken, (req, res) => {
-    res.json(posts.filter(post => post.username === req.user.name))
-});
-
-app.get('/users' , (req, res) => {
-    res.json(users)
+app.get('/', (req, res) => {
+    res.render('index.ejs', {name: req.user.name})
 })
 
-app.post('/users', async (req, res) => {
+app.get('/login', (req, res) => {
+    res.render('login.ejs', {name: 'Jeff'})
+})
+
+
+
+
+app.get('/register',(req, res) => {
+    res.render('register.ejs', {name: 'Jeff'})
+})
+
+app.post('/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        console.log(hashedPassword)
-        const user = { name: req.body.name, password: hashedPassword }
-        users.push(user)
-        res.status(201).send()
+        users.push({
+            id: Date.now().toString(),
+            name: req.body.name,
+            email: req.body.email,
+            password: hashedPassword
+        })
+        res.redirect('/login')
     } catch {
-        res.status(500).send()
+        res.redirect('/register')
     }
-    
+    console.log(users)
 })
 
-app.post('/users/login', async (req, res) => {
-    const user = users.find(user => user.name = req.body.name)
-    if (user == null) {
-        return res.status(400).send('Can not find user')
-    }
-    try {
-        if(await bcrypt.compare(req.body.password, user.password)) {
-            const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-            res.json({ accessToken: accessToken });
-            
-        } else {
-            res.send('Not Allowed')
-        }
-    } catch {
-        res.status(500).send()
-    }
-  
-})
 
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization']
-    const token = authHeader && authHeader.split(' ')[1]
-    if (token == null) return res.sendStatus(401)
 
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.sendStatus(403)
-        req.user = user
-        next()
-    })
-}
+
+app.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login',
+    failureFlash: true
+}))
+
+
+
+
 
 app.listen(3000)
