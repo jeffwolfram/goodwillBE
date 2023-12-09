@@ -6,7 +6,7 @@ POST http://localhost:3000/users
 Content-Type:application/json
 
 {
-    "name": "Kyle",
+    "name": "Jeff",
     "password": "password"
 }
 
@@ -19,6 +19,12 @@ Content-Type:application/json
     "password": "password"
 }
 
-###
+### for kyle
 
 GET http://localhost:3000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSmVmZiIsInBhc3N3b3JkIjoiJDJiJDEwJGp5Mi84Zy9CQ09zLktCU09iSWNoZWVnei90R0tKdGs5eVBQaVZGb2VHV3B2amNjRmxWYVdTIiwiaWF0IjoxNzAyMDkwMzE2fQ.bdnrO1XNwb-Ao_Ve9CQlZUnulhOWq2tXTJsDkV1dsoo
+
+
+### for jeff
+GET http://localhost:3000/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiS3lsZSIsInBhc3N3b3JkIjoiJDJiJDEwJGp5Mi84Zy9CQ09zLktCU09iSWNoZWVnei90R0tKdGs5eVBQaVZGb2VHV3B2amNjRmxWYVdTIiwiaWF0IjoxNzAyMDkwNDEzfQ.4-_FueXxMwTOntkzJasqC6TQ8dpTU4msfhiyX3Bd8IQ
