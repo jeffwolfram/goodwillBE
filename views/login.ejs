@@ -23,13 +23,14 @@
         
         <button type="submit">Login</button>
         <a href="/register" class="button-style">Register</a>  
+        <div><% if (messages.error) { %>
+            <%= messages.error %>
+            <% } %></div>
         
         
     </form>
     <br>
     
 </body>
-<% if (messages.error) { %>
-    <%= messages.error %>
-    <% } %>
+
 </html>

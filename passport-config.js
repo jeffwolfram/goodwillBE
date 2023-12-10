@@ -11,10 +11,7 @@ function initialize(passport) {
             if (!user) {
                 return done(null, false, { message: 'No user found with that email' });
             }
-
             const match = await bcrypt.compare(password, user.hashed_password);
-            console.log("hashed: " + user.hashed_password)
-            console.log("Plain Text: " + password)
             if (match) {
                 return done(null, user);
             } else {

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Users List</title>
+</head>
+<body>
+    <h1>Users</h1>
+    <form action="/delete-users" method="POST">
+        <ul>
+            <% users.forEach(user => { %>
+                <li>
+                    <input type="checkbox" name="userId[]" value="<%= user.id %>">
+                    <%= user.name %> - <%= user.email %>
+                </li>
+            <% }) %>
+        </ul>
+        <button type="submit">Delete Selected</button>
+    </form>
+</body>
+</html>

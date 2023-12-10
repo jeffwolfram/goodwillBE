@@ -17,7 +17,7 @@ const app = express();
 
 app.set('view-engine', 'ejs');
 app.use(express.static('public'));
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(flash());
 app.use(session({
     secret: process.env.ACCESS_TOKEN_SECRET,
@@ -26,6 +26,11 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+async function getAllUsers() {
+    const result = await pool.query('SELECT * FROM users');
+    return result.rows
+}
 
 app.get('/', checkAuthenticated, (req, res) => {
     res.render('index.ejs', { name: req.user.name });
@@ -42,8 +47,6 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
 app.post('/register', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
-        console.log("hashed: " + hashedPassword)
-        console.log("plaintext password in post " + req.body.password)
         await pool.query(
             'INSERT INTO users (name, email, hashed_password) VALUES ($1, $2, $3)', 
             [req.body.name, req.body.email, hashedPassword]
@@ -60,6 +63,34 @@ app.post('/login', passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true
 }));
+
+app.get('/users', async (req, res) => {
+    try {
+        const users = await getAllUsers();
+        res.render('users.ejs', { users: users });
+    } catch (error) {
+        console.error(error);
+        res.send('An error has occurred.')
+    }
+})
+
+app.post('/delete-users', async (req, res) => {
+    try {
+        const userIds = req.body.userId; // This will be an array of user IDs
+        console.log(userIds)
+        // Ensure userIds is an array
+        const idsToDelete = Array.isArray(userIds) ? userIds : [userIds];
+
+        // Construct query to delete users
+        const query = 'DELETE FROM users WHERE id = ANY($1)';
+        await pool.query(query, [idsToDelete]);
+
+        res.redirect('/users');
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred');
+    }
+});
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');
@@ -78,3 +109,4 @@ function checkNotAuthenticated(req, res, next) {
     }
     next();
 }
+
