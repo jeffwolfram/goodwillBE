@@ -1,29 +1,41 @@
-const LocalStrategy = require('passport-local').Strategy
-const bcrypt = require('bcrypt')
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
+const pool = require('./db'); // Your PostgreSQL connection
 
-function initialize(passport, getUserByEmail, getUserById) {
+function initialize(passport) {
     const authenticateUser = async (email, password, done) => {
-        const user = getUserByEmail(email)
-        if (user == null) {
-            return done(null, false, {message: 'No user with that email'})
-        }
         try {
-            console.log(password)
-            console.log(user.password)
-            if (await bcrypt.compare(password, user.password)) {
-                return done(null, user)
-            } else {
-                return done(null, false, { message: 'Password incorrect' })
+            const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+            const user = result.rows[0];
+
+            if (!user) {
+                return done(null, false, { message: 'No user found with that email' });
             }
-        } catch (e) {
-            return done(e)
+
+            const match = await bcrypt.compare(password, user.hashed_password);
+            console.log("hashed: " + user.hashed_password)
+            console.log("Plain Text: " + password)
+            if (match) {
+                return done(null, user);
+            } else {
+                return done(null, false, { message: 'Incorrect password' });
+            }
+        } catch (error) {
+            return done(error);
         }
-    }
-    passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser))
-    passport.serializeUser((user, done) => done(null, user.id))
-    passport.deserializeUser((id, done) => {  
-        return done(null, getUserById(id))
-    })
+    };
+
+    passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser));
+
+    passport.serializeUser((user, done) => done(null, user.id));
+    passport.deserializeUser(async (id, done) => {
+        try {
+            const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+            done(null, result.rows[0]);
+        } catch (error) {
+            done(error, null);
+        }
+    });
 }
 
-module.exports = initialize
+module.exports = initialize;
