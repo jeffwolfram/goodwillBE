@@ -7,17 +7,22 @@
 <body class="userlist">
     <h1>Users</h1>
     <form action="/delete-users" method="POST">
-        <ul>
-            <% users.forEach(user => { %>
-                <li>
-                    <input type="checkbox" name="userId[]" value="<%= user.id %>">
-                    <%= user.name %> - <%= user.email %>
-                    <a href="/edit-user/<%= user.id %>" class="edit-button">Edit</a>
+        
+            <% if (users.length > 0) { %>
+                <ul>
+                    <% users.forEach(user => { %>
+                        <li>
+                            <input type="checkbox" name="userId[]" value="<%= user.id %>">
+                            <%= user.name %> - <%= user.email %>
+                            <a href="/edit-user/<%= user.id %>" class="edit-button">Edit</a>
 
-                </li>
-            <% }) %>
-        </ul>
-        <button type="submit">Delete Selected</button>
+                        </li>
+                    <% }) %>
+                </ul>
+            <button type="submit">Delete Selected</button>
+            <% } else { %>
+            <p>No users found</p>
+            <% } %>
         <a href="/newuser">Create User</a>
     </form>
 </body>
