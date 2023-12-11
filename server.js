@@ -49,8 +49,8 @@ app.post('/newuser', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await pool.query(
-            'INSERT INTO users (name, email, hashed_password) VALUES ($1, $2, $3)', 
-            [req.body.name, req.body.email, hashedPassword]
+            'INSERT INTO users (name, email, role, hashed_password) VALUES ($1, $2, $3, $4)', 
+            [req.body.name, req.body.email, req.body.role,  hashedPassword]
         );
         res.redirect('/newuser');
     } catch (e) {
@@ -113,12 +113,12 @@ app.get('/edit-user/:id', async (req, res) => {
 app.post('/edit-user/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const { name, email } = req.body;
+        const { name, role, email } = req.body;
         
 
         await pool.query(
-            'UPDATE users SET name = $1, email = $2 WHERE id = $3',
-            [name, email, id]
+            'UPDATE users SET name = $1, role = $2, email = $3 WHERE id = $4',
+            [name, role, email, id]
         );
 
         res.redirect('/users');

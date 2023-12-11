@@ -18,6 +18,14 @@
             <input type="text" name="name" value="<%= user.name %>" required> 
         </div>
         <div>
+            <label for="role">Role:</label>
+            <select id="role" name="role">
+                <option value="admin" <% if(user.role === 'admin') { %>selected<% } %>>Admin</option>
+                <option value="lead" <% if(user.role === 'lead') { %>selected<% } %>>Lead</option>
+                <option value="employee" <% if(user.role === 'employee') { %>selected<% } %>>Employee</option>
+            </select>
+        </div>
+        <div>
              <input type="email" name="email" value="<%= user.email %>" required>
         </div>
        
