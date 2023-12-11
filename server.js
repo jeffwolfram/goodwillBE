@@ -10,6 +10,7 @@ const flash = require('express-flash');
 const session = require('express-session');
 const initializePassport = require('./passport-config');
 const pool = require('./db'); // Your PostgreSQL connection
+const e = require('express');
 
 initializePassport(passport);
 
@@ -40,21 +41,21 @@ app.get('/login', checkNotAuthenticated, (req, res) => {
     res.render('login.ejs');
 });
 
-app.get('/register', checkNotAuthenticated, (req, res) => {
-    res.render('register.ejs');
+app.get('/newuser', checkNotAuthenticated, (req, res) => {
+    res.render('newuser.ejs');
 });
 
-app.post('/register', async (req, res) => {
+app.post('/newuser', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await pool.query(
             'INSERT INTO users (name, email, hashed_password) VALUES ($1, $2, $3)', 
             [req.body.name, req.body.email, hashedPassword]
         );
-        res.redirect('/login');
-    } catch (error) {
-        console.error(error);
-        res.redirect('/register');
+        res.redirect('/newuser');
+    } catch (e) {
+        console.error(e);
+        res.redirect('/newuser');
     }
 });
 
@@ -68,8 +69,8 @@ app.get('/users', async (req, res) => {
     try {
         const users = await getAllUsers();
         res.render('users.ejs', { users: users });
-    } catch (error) {
-        console.error(error);
+    } catch (e) {
+        console.error(e);
         res.send('An error has occurred.')
     }
 })
@@ -86,11 +87,47 @@ app.post('/delete-users', async (req, res) => {
         await pool.query(query, [idsToDelete]);
 
         res.redirect('/users');
-    } catch (error) {
-        console.error(error);
+    } catch (e) {
+        console.error(e);
         res.send('An error occurred');
     }
 });
+
+// Edit users
+app.get('/edit-user/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+        if (result.rows.length > 0) {
+            res.render('edit-user.ejs', {user: result.rows[0]});
+        } else {
+            res.send('User not found');
+        }
+
+    } catch (e) {
+        console.error(e);
+        res.send('An error has occurred.');
+    }
+});
+// Edit users 
+app.post('/edit-user/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { name, email } = req.body;
+        
+
+        await pool.query(
+            'UPDATE users SET name = $1, email = $2 WHERE id = $3',
+            [name, email, id]
+        );
+
+        res.redirect('/users');
+    } catch (e) {
+        console.error(e);
+        res.send('An error occurred');
+    }
+});
+
 
 app.listen(3000, () => {
     console.log('Server started on port 3000');

@@ -12,10 +12,13 @@
                 <li>
                     <input type="checkbox" name="userId[]" value="<%= user.id %>">
                     <%= user.name %> - <%= user.email %>
+                    <a href="/edit-user/<%= user.id %>" class="edit-button">Edit</a>
+
                 </li>
             <% }) %>
         </ul>
         <button type="submit">Delete Selected</button>
+        <a href="/newuser">Create User</a>
     </form>
 </body>
 </html>

@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <head>
-        <title>Registration Form</title>
+        <title>Add Users</title>
         <link rel="stylesheet" href="/styles.css">
     </head>
     
 </head>
 <body>
-    <form action="/login" method="POST">
-      
+    <form action="/newuser" method="POST">
+        <div>
+            <label for="name">Name: </label>
+            <input type="name" id="name" name="name" required>
+        </div>
         <div>
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required>
@@ -19,18 +21,12 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required>
         </div>
-  
-        
-        <button type="submit">Login</button>
-         
-        <div><% if (messages.error) { %>
-            <%= messages.error %>
-            <% } %></div>
+          <button type="submit">ADD</button>
+        <a href="/users">All Users</a>  
         
         
     </form>
-    <br>
-    
-</body>
 
+
+</body>
 </html>
