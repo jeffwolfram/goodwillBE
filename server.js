@@ -2,7 +2,7 @@
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
-
+const path = require('path');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -11,13 +11,14 @@ const session = require('express-session');
 const initializePassport = require('./passport-config');
 const pool = require('./db'); // Your PostgreSQL connection
 const e = require('express');
-
+const {isAdmin, isLead, isManager} = require('./roleMiddleware')
 initializePassport(passport);
 
 const app = express();
 
 app.set('view-engine', 'ejs');
 app.use(express.static('public'));
+app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }));
 app.use(flash());
 app.use(session({
@@ -34,17 +35,24 @@ async function getAllUsers() {
 }
 
 app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index.ejs', { name: req.user.name });
+    console.log(process.env.ACCESS_TOKEN_SECRET)
+    res.render('index.ejs', { 
+        name: req.user.name,
+        pageTitle: 'Welcome'
+    });
 });
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
+    pageTitle: 'login'
     res.render('login.ejs');
 });
 
-app.get('/newuser', checkNotAuthenticated, (req, res) => {
+app.get('/newuser', checkAuthenticated, (req, res) => {
+    console.log(req.user)
     res.render('newuser.ejs');
 });
 
+// add users
 app.post('/newuser', async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
@@ -52,6 +60,7 @@ app.post('/newuser', async (req, res) => {
             'INSERT INTO users (name, email, role, hashed_password) VALUES ($1, $2, $3, $4)', 
             [req.body.name, req.body.email, req.body.role,  hashedPassword]
         );
+        
         res.redirect('/newuser');
     } catch (e) {
         console.error(e);
@@ -65,10 +74,14 @@ app.post('/login', passport.authenticate('local', {
     failureFlash: true
 }));
 
-app.get('/users', async (req, res) => {
+app.get('/users',checkAuthenticated, async (req, res) => {
     try {
         const users = await getAllUsers();
-        res.render('users.ejs', { users: users });
+        console.log(req.user)
+        res.render('users.ejs', { 
+            users: users,
+            pageTitle: 'Users'
+         });
     } catch (e) {
         console.error(e);
         res.send('An error has occurred.')
@@ -129,10 +142,6 @@ app.post('/edit-user/:id', async (req, res) => {
 });
 
 
-app.listen(3000, () => {
-    console.log('Server started on port 3000');
-});
-
 function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -146,4 +155,11 @@ function checkNotAuthenticated(req, res, next) {
     }
     next();
 }
+
+
+
+
+app.listen(3000, () => {
+    console.log('Server started on port 3000');
+});
 

@@ -21,12 +21,14 @@
             <label for="role">Role:</label>
             <select id="role" name="role">
                 <option value="admin" <% if(user.role === 'admin') { %>selected<% } %>>Admin</option>
+                <option value="admin" <% if(user.role === 'manager') { %>selected<% } %>>Manager</option>
                 <option value="lead" <% if(user.role === 'lead') { %>selected<% } %>>Lead</option>
                 <option value="employee" <% if(user.role === 'employee') { %>selected<% } %>>Employee</option>
             </select>
         </div>
         <div>
              <input type="email" name="email" value="<%= user.email %>" required>
+             <h3><%= messages  %></h3>
         </div>
        
         

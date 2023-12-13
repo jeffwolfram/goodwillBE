@@ -1,29 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Users List</title>
-    <link rel="stylesheet" href="/styles2.css">
-</head>
-<body class="userlist">
-    <h1>Users</h1>
-    <form action="/delete-users" method="POST">
-        
-            <% if (users.length > 0) { %>
-                <ul>
-                    <% users.forEach(user => { %>
-                        <li>
-                            <input type="checkbox" name="userId[]" value="<%= user.id %>">
-                            <%= user.name %> - <%= user.role  %> - <%= user.email %>
-                            <a href="/edit-user/<%= user.id %>" class="edit-button">Edit</a>
+<%- include('layout') %>
+    <body class="userlist">
+        <%- include('header') %>
+        <h1>Users</h1>
+        <form class="u-delete-form" action="/delete-users" method="POST">
+            
+                <% if (users.length > 0) { %>
+                    <ul>
+                        <% users.forEach(user => { %>
+                            <li>
+                                <input type="checkbox" name="userId[]" value="<%= user.id %>">
+                                <%= user.name %> - <%= user.role  %> - <%= user.email %>
+                                <a href="/edit-user/<%= user.id %>" class="edit-button">Edit</a>
 
-                        </li>
-                    <% }) %>
-                </ul>
-            <button type="submit">Delete Selected</button>
-            <% } else { %>
-            <p>No users found</p>
-            <% } %>
-        <a href="/newuser">Create User</a>
-    </form>
-</body>
-</html>
+                            </li>
+                        <% }) %>
+                    </ul>
+                <button type="submit">Delete Selected</button>
+                <% } else { %>
+                <p>No users found</p>
+                <% } %>
+            <a href="/newuser">Create User</a>
+        </form>
+    </body>
+    </html>

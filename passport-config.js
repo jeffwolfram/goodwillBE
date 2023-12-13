@@ -7,6 +7,7 @@ function initialize(passport) {
         try {
             const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
             const user = result.rows[0];
+            
 
             if (!user) {
                 return done(null, false, { message: 'No user found with that email' });
