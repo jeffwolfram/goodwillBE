@@ -46,6 +46,11 @@ app.get('/login', checkNotAuthenticated, (req, res) => {
     pageTitle: 'login'
     res.render('login.ejs');
 });
+app.get('/testing', (req, res) => {
+    res.render('testing.ejs', {
+        pageTitle: 'testing'
+    });
+})
 
 app.get('/newuser', checkAuthenticated, (req, res) => {
     console.log(req.user)
