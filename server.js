@@ -1,4 +1,4 @@
-// Environment variables setup
+
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
@@ -9,7 +9,7 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const initializePassport = require('./passport-config');
-const pool = require('./db'); // Your PostgreSQL connection
+const pool = require('./db'); 
 const e = require('express');
 const {isAdmin, isLead, isManager} = require('./roleMiddleware')
 initializePassport(passport);
