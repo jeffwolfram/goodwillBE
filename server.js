@@ -68,37 +68,52 @@ const items = [
 ];
 
 app.get('/testing', (req, res) => {
-    const currentDate = new Date().toISOString().split('T')[0]; 
-    const id = 11; 
-  
-   
+    const currentDate = new Date().toISOString().split('T')[0];
+    const userId = 11;
+
+    // Query to get itemized data
     pool.query(
         'SELECT item_name, SUM(good_count) AS total_good, SUM(bad_count) AS total_bad FROM items WHERE user_id = $1 AND record_date = $2 GROUP BY item_name',
-      [id, currentDate],
-      (error, results) => {
-        if (error) {
-          console.error('Error fetching data from the database:', error);
-          res.status(500).send('Internal Server Error');
-        } else {
-          
-          const itemsMap = new Map();
-          results.rows.forEach(row => {
-            itemsMap.set(row.item_name, { total_good: row.total_good, total_bad:row.total_bad });
+        [userId, currentDate],
+        (error, itemResults) => {
+            if (error) {
+                console.error('Error fetching item data:', error);
+                return res.status(500).send('Internal Server Error');
+            }
 
-          });
+            // Query to get total bad count
+            pool.query(
+                'SELECT SUM(bad_count) AS total_bad, SUM(good_count) AS total_good FROM items WHERE user_id = $1 AND record_date = $2',
+                [userId, currentDate],
+                (error, totalsResults) => {
+                    if (error) {
+                        console.error('Error fetching total counts:', error);
+                        return res.status(500).send('Internal Server Error');
+                    }
 
-          res.render('testing.ejs', { 
-            items: items,
-            itemsMap: itemsMap,
-            pageTitle: "testing",
-            Date: currentDate,
-            
-            
-        });
+                    const itemsMap = new Map();
+                    itemResults.rows.forEach(row => {
+                        itemsMap.set(row.item_name, { total_good: row.total_good, total_bad: row.total_bad });
+                    });
+
+                    const totalBad = totalsResults.rows[0].total_bad;
+                    const totalGood = totalsResults.rows[0].total_good;
+
+                    res.render('testing.ejs', {
+                        items: items,
+                        itemsMap: itemsMap,
+                        totalBad: totalBad,
+                        totalGood: totalGood,
+                        pageTitle: "testing",
+                        Date: currentDate,
+                    });
+                }
+            );
         }
-      }
     );
-  });
+});
+
+
   
 // Handle incrementing "goodcount"
 
