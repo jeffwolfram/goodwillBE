@@ -34,8 +34,12 @@ async function getAllUsers() {
     return result.rows
 }
 
+async function getTotals() {
+    const result = await pool.query('SELECT * FROM ')
+}
+
+
 app.get('/', checkAuthenticated, (req, res) => {
-    console.log(process.env.ACCESS_TOKEN_SECRET)
     res.render('index.ejs', { 
         name: req.user.name,
         pageTitle: 'Welcome'
@@ -46,15 +50,120 @@ app.get('/login', checkNotAuthenticated, (req, res) => {
     pageTitle: 'login'
     res.render('login.ejs');
 });
+
+
+const items = [
+    {id: 1, name: "Receivers"},
+    {id: 2, name: "TV"},
+    {id: 3, name: "Monitor"},
+    {id: 4, name: "Game Console"},
+    {id: 5, name: "Game Controllers"},
+    {id: 6, name: "Video Game"},
+    {id: 7, name: "Router"},
+    {id: 8, name: "Speakers"},
+    {id: 9, name: "A/V Players"},
+    {id: 10, name: "IOT"},
+    {id: 11, name: "MISC"},
+   
+];
+
 app.get('/testing', (req, res) => {
-    res.render('testing.ejs', {
-        pageTitle: 'testing'
-    });
-})
+    const currentDate = new Date().toISOString().split('T')[0]; 
+    const id = 11; 
+  
+   
+    pool.query(
+        'SELECT item_name, SUM(good_count) AS total_good, SUM(bad_count) AS total_bad FROM items WHERE user_id = $1 AND record_date = $2 GROUP BY item_name',
+      [id, currentDate],
+      (error, results) => {
+        if (error) {
+          console.error('Error fetching data from the database:', error);
+          res.status(500).send('Internal Server Error');
+        } else {
+          
+          const itemsMap = new Map();
+          results.rows.forEach(row => {
+            itemsMap.set(row.item_name, { total_good: row.total_good, total_bad:row.total_bad });
+
+          });
+
+          res.render('testing.ejs', { 
+            items: items,
+            itemsMap: itemsMap,
+            pageTitle: "testing",
+            Date: currentDate,
+            
+            
+        });
+        }
+      }
+    );
+  });
+  
+// Handle incrementing "goodcount"
+
+app.post('/incrementGood/:id', async (req, res) => {
+    const userId = 11;
+    const itemId = parseInt(req.params.id);
+    const item = items.find(i => i.id === itemId);
+
+    if (item) {
+        const currentDate = new Date().toISOString().split('T')[0]; 
+        const itemName = item.name;
+        const goodCount = 1;
+
+        try {
+            
+            const query = 'INSERT INTO items (record_date, item_name, user_id, item_id, good_count) VALUES ($1, $2, $3, $4, $5)';
+            await pool.query(query, [currentDate, itemName, userId, itemId, 1]);
+
+            console.log(`Incremented good count for item ${itemName}`);
+        } catch (error) {
+            console.error('Error updating the database:', error);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+    }
+
+    res.redirect('/testing');
+});
+
+
+// Handle "Bad" button click
+app.post('/incrementBad/:id', async (req, res) => {
+    const userId = 11;
+    const itemId = parseInt(req.params.id);
+    const item = items.find(i => i.id === itemId);
+
+    if (item) {
+        const currentDate = new Date().toISOString().split('T')[0]; 
+        const itemName = item.name;
+        const goodCount = 1;
+
+        try {
+            
+            const query = 'INSERT INTO items (record_date, item_name, user_id, item_id, bad_count) VALUES ($1, $2, $3, $4, $5)';
+            await pool.query(query, [currentDate, itemName, userId, itemId, 1]);
+
+            console.log(`Incremented good count for item ${itemName}`);
+        } catch (error) {
+            console.error('Error updating the database:', error);
+            res.status(500).send('Internal Server Error');
+            return;
+        }
+    }
+
+    res.redirect('/testing');
+});
+  
+
+
 
 app.get('/newuser', checkAuthenticated, (req, res) => {
     console.log(req.user)
-    res.render('newuser.ejs');
+    res.render('newuser.ejs', {
+        pageTitle: 'Add User'
+    });
 });
 
 // add users
@@ -82,7 +191,6 @@ app.post('/login', passport.authenticate('local', {
 app.get('/users',checkAuthenticated, async (req, res) => {
     try {
         const users = await getAllUsers();
-        console.log(req.user)
         res.render('users.ejs', { 
             users: users,
             pageTitle: 'Users'
@@ -95,12 +203,11 @@ app.get('/users',checkAuthenticated, async (req, res) => {
 
 app.post('/delete-users', async (req, res) => {
     try {
-        const userIds = req.body.userId; // This will be an array of user IDs
-        console.log(userIds)
-        // Ensure userIds is an array
+        const userIds = req.body.userId; 
+        
         const idsToDelete = Array.isArray(userIds) ? userIds : [userIds];
 
-        // Construct query to delete users
+        
         const query = 'DELETE FROM users WHERE id = ANY($1)';
         await pool.query(query, [idsToDelete]);
 

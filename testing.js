@@ -1,0 +1,1 @@
+const devices = ["Receivers", "TV", "Monitor", "Game Console", "Game Controller", "Video Game", "Router", "Speaker", "A/V Player", "IOT"]

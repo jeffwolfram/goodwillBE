@@ -1,11 +1,54 @@
 <%- include('layout') %>
+
 <body>
     <%- include('header') %>
 
-    <div class="content">
-        
-        <h1>Testing</h1>
-      
-    </div>
+    <h1 id="heading">Goodwill Testing</h1>
+    <span>
+        <!-- <h3>Employee: </h3> -->
+    </span>
+    
+<!-- <h3>Employee: </h3> -->
+<h2>Date: <%= Date %></h2>
+<body>
+  
+  <table>
+      <thead>
+          <tr>
+              
+              <th>Name</th>
+              <th>status</th>
+              
+          </tr>
+      </thead>
+      <tbody>
+        <% "Items Map as Object:", Object.fromEntries(itemsMap) %>
+          <% items.forEach(function(item) { %>
+              <tr>
+                <% console.log("Looking up", item.name, ":", itemsMap.get(item.name)) %>
+                
+                  <td><%= item.name %></td>
+                  
+                  
+                  <td>
+                    <form class="testingform" action="/incrementGood/<%= item.id %>" method="POST">
+                      <button type="submit">Good</button>
+                      <span class="item-count"><%= itemsMap.get(item.name)?.total_good || 0 %></span>
+                  </form>
+                  <form class="testingform" action="/incrementBad/<%= item.id %>" method="POST">
+                      <button type="submit">Bad</button>
+                      <span class="item-count"><%= itemsMap.get(item.name)?.total_bad || 0 %></span>
+                  </form>
+                      
+                  </td>
+                  <td>
+                      
+                  </td>
+              </tr>
+          <% }); %>
+      </tbody>
+  </table>
 </body>
 </html>
+
+

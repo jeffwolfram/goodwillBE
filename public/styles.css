@@ -101,3 +101,58 @@ nav ul li a {
 nav ul li a:hover {
     color: #ff9900; 
 }
+
+.items-list {
+    list-style: none;
+    padding: 0;
+}
+
+.item-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px; /* Adjust the padding as needed */
+    border: 1px solid #ccc; /* Optional: Add a border for each item */
+    margin-bottom: 10px; /* Adjust the margin between items as needed */
+    width:350px;
+}
+
+.item-name {
+    flex-grow: 1;
+    margin-right: 10px; /* Adjust the spacing between the name and button */
+}
+
+.button-container {
+    display: inline-block;
+    gap: 10px; /* Adjust the spacing between buttons as needed */
+    margin:auto;
+    align-items: center;
+}
+
+button {
+    padding: 5px 10px; /* Adjust button padding as needed */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    width:60px;
+    margin-bottom:5px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.testingform {
+    margin: 1px auto;
+    padding: 1px;
+    width: 105px;
+    border-radius: 2px;
+}
+.item-count {
+    margin-left: 10px;
+}
+table td{
+    border-radius: 2px;
+    border-color: black;
+}
