@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 const path = require('path');
+const port = process.env.PORT || 5000;
 const moment = require('moment-timezone')
 const express = require('express');
 const bcrypt = require('bcrypt');
@@ -355,7 +356,7 @@ function checkNotAuthenticated(req, res, next) {
 
 
 
-app.listen(3000, () => {
-    console.log('Server started on port 3000');
+app.listen(port, () => {
+    console.log('Server started on port ' + port);
 });
 
