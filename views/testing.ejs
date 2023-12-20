@@ -3,16 +3,20 @@
 <body>
     <%- include('header') %>
 
-    <h1 id="heading">Goodwill Testing</h1>
+    <h1 class="heading">Goodwill Testing</h1>
     <span>
         <!-- <h3>Employee: </h3> -->
     </span>
     
 <!-- <h3>Employee: </h3> -->
-<h2>Date: <%= Date %></h2>
+<h2 class="tcont">Date: <%= Date %></h2>
 <body>
-  
-  <table>
+  <div class="tables-container">
+    <% let half = Math.ceil(items.length / 2); %>
+    <% let firstHalf = items.slice(0, half); %>
+    <% let secondHalf = items.slice(half); %>
+    <div class="table-column">
+        <table>
       <thead>
           <tr>
               
@@ -23,7 +27,7 @@
       </thead>
       <tbody>
         
-          <% items.forEach(function(item) { %>
+          <% firstHalf.forEach(function(item) { %>
               <tr>
                
                 
@@ -48,8 +52,52 @@
           <% }); %>
       </tbody>
   </table>
-  <h3>Total bad: <%= totalBad %></h3>
-  <h3>Total good: <%= totalGood %></h3>
+    </div>
+    <div class="table-column">
+        <table>
+            <thead>
+                <tr>
+                    
+                    <th>Name</th>
+                    <th>status</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+              
+                <% secondHalf.forEach(function(item) { %>
+                    <tr>
+                     
+                      
+                        <td><%= item.name %></td>
+                        
+                        
+                        <td>
+                          <form class="testingform" action="/incrementGood/<%= item.id %>" method="POST">
+                            <button type="submit">Good</button>
+                            <span class="item-count"><%= itemsMap.get(item.name)?.total_good || 0 %></span>
+                        </form>
+                        <form class="testingform" action="/incrementBad/<%= item.id %>" method="POST">
+                            <button type="submit">Bad</button>
+                            <span class="item-count"><%= itemsMap.get(item.name)?.total_bad || 0 %></span>
+                        </form>
+                            
+                        </td>
+                        <td>
+                            
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    
+  </div>
+  <span>
+    <h3 class="heading">Total bad: <%= totalBad %> Total Good: <%= totalGood %> </h3>
+  
+  </span>
+  
 </body>
 </html>
 

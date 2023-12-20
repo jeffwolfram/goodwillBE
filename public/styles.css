@@ -159,3 +159,17 @@ table td{
 .reports {
     text-align:center;
 }
+.tcont {
+    margin-left:10px;
+}
+.heading {
+    text-align: center;
+}
+.tables-container {
+    display: flex;
+    justify-content: space-around;
+    margin-left:10px;
+}
+.table-column {
+    flex: 1;
+}
