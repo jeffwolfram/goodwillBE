@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 const path = require('path');
+const moment = require('moment-timezone')
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -46,7 +47,7 @@ app.get('/', checkAuthenticated, (req, res) => {
     });
 });
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
+app.get('/login',  (req, res) => {
     pageTitle: 'login'
     res.render('login.ejs');
 });
@@ -67,9 +68,59 @@ const items = [
    
 ];
 
-app.get('/testing', (req, res) => {
-    const currentDate = new Date().toISOString().split('T')[0];
-    const userId = 11;
+const months = [
+   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+]
+
+app.get('/reports', checkAuthenticated,(req, res) => {
+    res.render('reports.ejs', {
+        pageTitle: 'Reports',
+        items: items,
+        months: months
+
+    });
+});
+
+app.post('/get-report', checkAuthenticated, (req, res) => {
+    const { startYear, startMonth, startDay, endYear, endMonth, endDay } = req.body
+    //start and end dates in pacific time
+
+    const startDate = moment.tz(`${startYear}-${startMonth}-${startDay}`, "America/Los_Angeles");
+    const endDate = moment.tz(`${endYear}-${endMonth}-${endDay}`, "America/Los_Angeles").endOf('day');
+
+    //format dates
+    const formattedStartDate = startDate.format('YYYY-MM-DD');
+    const formattedEndDate = endDate.format('YYYY-MM-DD');
+    console.log("formattedStartDate: " + formattedStartDate)
+    console.log("formattedEndDate: " + formattedEndDate)
+    const query = `
+    SELECT record_date, user_id, user_name, SUM(good_count) AS total_good, SUM(bad_count) AS total_bad 
+    FROM items 
+    WHERE record_date BETWEEN $1 AND $2 
+    GROUP BY record_date, user_id , user_name
+    ORDER BY record_date, user_id, user_name;
+`;
+
+    pool.query(query, [formattedStartDate, formattedEndDate], (error, results) => {
+        if (error) {
+            console.error('Error fetching data: ', error);
+            return res.status(500).send('Internal Server Error');
+        }
+        res.render('reportresults.ejs', {
+            data: results.rows,
+            startDate: formattedStartDate,
+            endDate: formattedEndDate,
+            pageTitle: "Goodwill Reports"
+        })
+    })
+})
+
+app.get('/testing', checkAuthenticated, (req, res) => {
+    
+    const pacificTime = moment().tz("America/Los_Angeles").format();
+    const currentDate = pacificTime.toString().split('T')[0];
+    const userId = req.user.id;
+    const userName = "Jeff Wolfram"
 
     // Query to get itemized data
     pool.query(
@@ -117,22 +168,25 @@ app.get('/testing', (req, res) => {
   
 // Handle incrementing "goodcount"
 
-app.post('/incrementGood/:id', async (req, res) => {
-    const userId = 11;
+app.post('/incrementGood/:id', checkAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+    const userName = req.user.name;
     const itemId = parseInt(req.params.id);
     const item = items.find(i => i.id === itemId);
 
     if (item) {
-        const currentDate = new Date().toISOString().split('T')[0]; 
+        const now = new Date();
+        const pacificTime = new Date(now.getTime() - (now.getTimezoneOffset() * 60000) - (7 * 3600000)); // Adjust -7 hours for PT
+        const currentDate = pacificTime.toISOString().split('T')[0];
         const itemName = item.name;
         const goodCount = 1;
 
         try {
             
-            const query = 'INSERT INTO items (record_date, item_name, user_id, item_id, good_count) VALUES ($1, $2, $3, $4, $5)';
-            await pool.query(query, [currentDate, itemName, userId, itemId, 1]);
+            const query = 'INSERT INTO items (record_date, item_name, user_id, user_name, item_id, good_count) VALUES ($1, $2, $3, $4, $5, $6)';
+            await pool.query(query, [currentDate, itemName, userId, userName,  itemId, 1]);
 
-            console.log(`Incremented good count for item ${itemName}`);
+            
         } catch (error) {
             console.error('Error updating the database:', error);
             res.status(500).send('Internal Server Error');
@@ -143,24 +197,27 @@ app.post('/incrementGood/:id', async (req, res) => {
     res.redirect('/testing');
 });
 
+//bad count button
 
-// Handle "Bad" button click
-app.post('/incrementBad/:id', async (req, res) => {
-    const userId = 11;
+app.post('/incrementBad/:id', checkAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+    const userName = req.user.name;
     const itemId = parseInt(req.params.id);
     const item = items.find(i => i.id === itemId);
 
     if (item) {
-        const currentDate = new Date().toISOString().split('T')[0]; 
+        const now = new Date();
+        const pacificTime = new Date(now.getTime() - (now.getTimezoneOffset() * 60000) - (7 * 3600000)); 
+        const currentDate = pacificTime.toISOString().split('T')[0];
         const itemName = item.name;
         const goodCount = 1;
 
         try {
             
-            const query = 'INSERT INTO items (record_date, item_name, user_id, item_id, bad_count) VALUES ($1, $2, $3, $4, $5)';
-            await pool.query(query, [currentDate, itemName, userId, itemId, 1]);
+            const query = 'INSERT INTO items (record_date, item_name, user_id, user_name,  item_id, bad_count) VALUES ($1, $2, $3, $4, $5, $6)';
+            await pool.query(query, [currentDate, itemName, userId, userName, itemId, 1]);
 
-            console.log(`Incremented good count for item ${itemName}`);
+            
         } catch (error) {
             console.error('Error updating the database:', error);
             res.status(500).send('Internal Server Error');
@@ -182,7 +239,7 @@ app.get('/newuser', checkAuthenticated, (req, res) => {
 });
 
 // add users
-app.post('/newuser', async (req, res) => {
+app.post('/newuser', checkAuthenticated, async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await pool.query(
@@ -202,6 +259,17 @@ app.post('/login', passport.authenticate('local', {
     failureRedirect: '/login',
     failureFlash: true
 }));
+
+app.get('/logout', (req, res) => {
+    req.logout(function(err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect('/login')
+    });
+    
+    
+}) 
 
 app.get('/users',checkAuthenticated, async (req, res) => {
     try {

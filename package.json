@@ -17,6 +17,7 @@
     "express-flash": "^0.0.2",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.5.43",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pg": "^8.11.3"

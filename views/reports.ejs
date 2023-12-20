@@ -1,0 +1,53 @@
+<%- include('layout') %>
+
+<body>
+    <%- include('header') %>
+    <h1 class="reports">Reports</h1>
+    <h2 class="reports">Select Date Range</h2>
+    <form action="/get-report" method="POST">
+   
+    
+        <label for="startDate">Start Date:</label>
+        <select id="startYear" name="startYear">
+          <% for (let year = 2023; year <= 2033; year++) { %>
+            <option value="<%= year %>"><%= year %></option>
+          <% } %>
+        </select>
+        <select id="startMonth" name="startMonth">
+            <% months.forEach(function(month) { %>
+                <option value="<%= month %>"><%= month %></option>
+           <% }) %>
+          
+        
+        </select>
+        <select id="startDay" name="startDay">
+          <% for (let day = 1; day <= 31; day++) { %>
+            <option value="<%= day %>"><%= day %></option>
+          <% } %>
+        </select>
+    
+        <label for="endDate">End Date:</label>
+        <select id="endYear" name="endYear">
+          <% for (let year = 2023; year <= 2033; year++) { %>
+            <option value="<%= year %>"><%= year %></option>
+          <% } %>
+        </select>
+        <select id="endMonth" name="endMonth">
+            <% months.forEach(function(month) { %>
+                <option value="<%= month %>"><%= month %></option>
+           <% }) %>
+          
+        
+        </select>
+        <select id="endDay" name="endDay">
+          <% for (let day = 1; day <= 31; day++) { %>
+            <option value="<%= day %>"><%= day %></option>
+          <% } %>
+        </select>
+    
+        <button  type="submit" >Submit</button>
+      </form>
+
+      
+      
+</body>
