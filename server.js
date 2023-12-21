@@ -117,12 +117,12 @@ app.post('/get-report', checkAuthenticated, (req, res) => {
     })
 })
 
-app.get('/testing',  (req, res) => {
+app.get('/testing', checkAuthenticated,  (req, res) => {
     
     const pacificTime = moment().tz("America/Los_Angeles").format();
     const currentDate = pacificTime.toString().split('T')[0];
     const userId = req.user.id;
-    const userName = "Jeff Wolfram"
+    const userName = req.user.name;
 
     // Query to get itemized data
     pool.query(
@@ -233,15 +233,14 @@ app.post('/incrementBad/:id', checkAuthenticated, async (req, res) => {
 
 
 
-app.get('/newuser', checkAuthenticated, (req, res) => {
-    console.log(req.user)
+app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {
         pageTitle: 'Add User'
     });
 });
 
 // add users
-app.post('/newuser', checkAuthenticated, async (req, res) => {
+app.post('/newuser', isAdmin, checkAuthenticated, async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await pool.query(

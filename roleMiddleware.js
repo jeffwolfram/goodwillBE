@@ -18,9 +18,16 @@ function isLead (req, res, next) {
     }
     res.status(403).send('You do not have access to this page.')
 }
+function isUser (req, res, next) {
+    if (req.isAuthenticated() && req.user.role === "user") {
+        next()
+    } 
+    res.status(403).send('You do not have access to this page. ')
+}
 
 module.exports = {
     isAdmin, 
     isLead, 
-    isManager
+    isManager, 
+    isUser
 }
