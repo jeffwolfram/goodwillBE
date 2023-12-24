@@ -1,6 +1,6 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
-const pool = require('./prod-db'); // Your PostgreSQL connection
+const pool = require('./db'); // Your PostgreSQL connection
 
 function initialize(passport) {
     const authenticateUser = async (email, password, done) => {

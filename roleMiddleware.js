@@ -25,9 +25,25 @@ function isUser (req, res, next) {
     res.status(403).send('You do not have access to this page. ')
 }
 
+function checkAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/login');
+}
+
+function checkNotAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return res.redirect('/');
+    }
+    next();
+}
+
 module.exports = {
     isAdmin, 
     isLead, 
     isManager, 
-    isUser
+    isUser,
+    checkAuthenticated,
+    checkNotAuthenticated
 }
