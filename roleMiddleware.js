@@ -38,6 +38,22 @@ function checkNotAuthenticated(req, res, next) {
     }
     next();
 }
+const items = [
+    {id: 1, name: "Receivers"},
+    {id: 2, name: "TV"},
+    {id: 3, name: "Monitor"},
+    {id: 4, name: "Game Console"},
+    {id: 5, name: "Game Controllers"},
+    {id: 6, name: "Video Game"},
+    {id: 7, name: "Router"},
+    {id: 8, name: "Speakers"},
+    {id: 9, name: "A/V Players"},
+    {id: 10, name: "IOT"},
+    {id: 11, name: "Keyboards"},
+    {id: 12, name: "MISC"}
+   
+];
+
 
 module.exports = {
     isAdmin, 
@@ -45,5 +61,6 @@ module.exports = {
     isManager, 
     isUser,
     checkAuthenticated,
-    checkNotAuthenticated
+    checkNotAuthenticated,
+    items
 }

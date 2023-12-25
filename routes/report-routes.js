@@ -65,12 +65,10 @@ router.get('/todays-results', checkAuthenticated, async (req, res) => {
 
 router.post('/get-report', checkAuthenticated, (req, res) => {
     const { startYear, startMonth, startDay, endYear, endMonth, endDay } = req.body
-    //start and end dates in pacific time
 
     const startDate = moment.tz(`${startYear}-${startMonth}-${startDay}`, "America/Los_Angeles");
     const endDate = moment.tz(`${endYear}-${endMonth}-${endDay}`, "America/Los_Angeles").endOf('day');
 
-    //format dates
     const formattedStartDate = startDate.format('YYYY-MM-DD');
     const formattedEndDate = endDate.format('YYYY-MM-DD');
     const query = `
