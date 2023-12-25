@@ -17,6 +17,7 @@ const e = require('express');
 const {isAdmin, isLead, isManager} = require('./roleMiddleware')
 initializePassport(passport);
 const testingRoutes = require('./routes/testingroutes')
+const reportRoutes = require('./routes/report-routes')
 const app = express();
 const { checkAuthenticated } = require('./roleMiddleware.js')
 const { checkNotAuthenticated} = require('./roleMiddleware.js')
@@ -72,54 +73,7 @@ app.get('/login',  (req, res) => {
 });
 
 
-
-
-const months = [
-   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-]
-
-app.get('/reports', checkAuthenticated,(req, res) => {
-    res.render('reports.ejs', {
-        pageTitle: 'Reports',
-        items: items,
-        months: months
-
-    });
-});
-
-app.post('/get-report', checkAuthenticated, (req, res) => {
-    const { startYear, startMonth, startDay, endYear, endMonth, endDay } = req.body
-    //start and end dates in pacific time
-
-    const startDate = moment.tz(`${startYear}-${startMonth}-${startDay}`, "America/Los_Angeles");
-    const endDate = moment.tz(`${endYear}-${endMonth}-${endDay}`, "America/Los_Angeles").endOf('day');
-
-    //format dates
-    const formattedStartDate = startDate.format('YYYY-MM-DD');
-    const formattedEndDate = endDate.format('YYYY-MM-DD');
-    console.log("formattedStartDate: " + formattedStartDate)
-    console.log("formattedEndDate: " + formattedEndDate)
-    const query = `
-    SELECT record_date, user_id, user_name, SUM(good_count) AS total_good, SUM(bad_count) AS total_bad 
-    FROM items 
-    WHERE record_date BETWEEN $1 AND $2 
-    GROUP BY record_date, user_id , user_name
-    ORDER BY record_date, user_id, user_name;
-`;
-
-    pool.query(query, [formattedStartDate, formattedEndDate], (error, results) => {
-        if (error) {
-            console.error('Error fetching data: ', error);
-            return res.status(500).send('Internal Server Error');
-        }
-        res.render('reportresults.ejs', {
-            data: results.rows,
-            startDate: formattedStartDate,
-            endDate: formattedEndDate,
-            pageTitle: "Goodwill Reports"
-        })
-    })
-})
+app.use(reportRoutes)
 app.use(testingRoutes)
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {

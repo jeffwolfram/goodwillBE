@@ -20,6 +20,7 @@ const items = [
 const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
 
+
 router.get('/testing', checkAuthenticated,  (req, res) => {
     
     const pacificTime = moment().tz("America/Los_Angeles").format();
@@ -69,6 +70,7 @@ router.get('/testing', checkAuthenticated,  (req, res) => {
     );
 });
 
+
 router.post('/incrementGood/:id', checkAuthenticated, async (req, res) => {
     const userId = req.user.id;
     const userName = req.user.name;
@@ -81,11 +83,13 @@ router.post('/incrementGood/:id', checkAuthenticated, async (req, res) => {
         const currentDate = pacificTime.toISOString().split('T')[0];
         const itemName = item.name;
         const goodCount = 1;
+        
 
         try {
             
             const query = 'INSERT INTO items (record_date, item_name, user_id, user_name, item_id, good_count) VALUES ($1, $2, $3, $4, $5, $6)';
             await pool.query(query, [currentDate, itemName, userId, userName,  itemId, 1]);
+            console.log("added one")
 
             
         } catch (error) {

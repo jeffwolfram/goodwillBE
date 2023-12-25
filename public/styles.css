@@ -173,3 +173,15 @@ table td{
 .table-column {
     flex: 1;
 }
+table {
+    margin-left:10px;
+}
+.center {
+    text-align: center;
+}
+.headername {
+    margin-left:5px;
+}
+td {
+    text-align: center;
+}

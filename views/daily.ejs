@@ -1,0 +1,39 @@
+<%- include('layout') %>
+<head>
+    <!-- Add your CSS styles here -->
+</head>
+<body>
+    <%- include('header') %>
+    <div class="container">
+        <h1 class="center">Today's Totals by User</h1>
+       <% console.log(usersData) %>
+        <% Object.keys(usersData).forEach(function(userName) { %>
+            <h2 class="headername"><%= userName %></h2>
+            <table border="1">
+                <tr>
+                    <th>Item</th>
+                    <th>Total Good</th>
+                    <th>Total Bad</th>
+                </tr>
+                <% 
+                let totalGood = 0;
+                let totalBad = 0;
+                usersData[userName].forEach(function(row) {
+                    totalGood += parseInt(row.total_good);
+                    totalBad += parseInt(row.total_bad);
+                %>
+                    <tr>
+                        <td><%= row.item_name %></td>
+                        <td><%= row.total_good %></td>
+                        <td><%= row.total_bad %></td>
+                    </tr>
+                <% }); %>
+                <tr>
+                    <td><strong>Total</strong></td>
+                    <td><strong><%= totalGood %></strong></td>
+                    <td><strong><%= totalBad %></strong></td>
+                </tr>
+            </table>
+        <% }); %>
+    </div>
+</body>
