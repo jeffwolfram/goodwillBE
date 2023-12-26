@@ -19,8 +19,8 @@
                 let totalGood = 0;
                 let totalBad = 0;
                 usersData[userName].forEach(function(row) {
-                    totalGood += parseInt(row.total_good);
-                    totalBad += parseInt(row.total_bad);
+                    totalGood += parseInt(row.total_good) || 0;
+                    totalBad += parseInt(row.total_bad) || 0;
                 %>
                     <tr>
                         <td><%= row.item_name %></td>
