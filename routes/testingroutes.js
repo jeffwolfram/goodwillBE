@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment-timezone')
-const pool = require('../db'); 
+const pool = require('../prod-db'); 
 const items = [
     {id: 1, name: "Receivers"},
     {id: 2, name: "TV"},
@@ -89,7 +89,7 @@ router.post('/incrementGood/:id', checkAuthenticated, async (req, res) => {
             
             const query = 'INSERT INTO items (record_date, item_name, user_id, user_name, item_id, good_count) VALUES ($1, $2, $3, $4, $5, $6)';
             await pool.query(query, [currentDate, itemName, userId, userName,  itemId, 1]);
-            console.log("added one")
+            console.log("added good")
 
             
         } catch (error) {
@@ -121,6 +121,7 @@ router.post('/incrementBad/:id', checkAuthenticated, async (req, res) => {
             
             const query = 'INSERT INTO items (record_date, item_name, user_id, user_name,  item_id, bad_count) VALUES ($1, $2, $3, $4, $5, $6)';
             await pool.query(query, [currentDate, itemName, userId, userName, itemId, 1]);
+            console.log('added bad')
 
             
         } catch (error) {
