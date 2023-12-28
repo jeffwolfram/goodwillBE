@@ -1,11 +1,17 @@
 <%- include('layout') %>
 <body>
     <%- include('header') %>
-
+    <% if (messages.success) { %>
+        <div class="alert alert-success">
+            <%= messages.success %>
+        </div>
+    <% } %>
     <div class="content">
         <h1>Hi <%= name %></h1>
+        <a href="/cps">Change Password</a>
+
         <form action="/logout" method="get">
-            <button type="submit">Log Out</button>
+            <button class="logoutButton" type="submit">Log Out</button>
         </form>
     </div>
 </body>

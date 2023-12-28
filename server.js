@@ -12,7 +12,7 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const initializePassport = require('./passport-config');
-const pool = require("./prod-db"); 
+const pool = require("./db"); 
 const e = require('express');
 const {isAdmin, isLead, isManager} = require('./roleMiddleware')
 initializePassport(passport);
@@ -165,12 +165,14 @@ app.get('/edit-user/:id', async (req, res) => {
 app.post('/edit-user/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const { name, role, email } = req.body;
+        const { name, role, email, password } = req.body;
         
+        const saltRounds = 10
+        const hashedPassword = await bcrypt.hash(password, saltRounds)
 
         await pool.query(
-            'UPDATE users SET name = $1, role = $2, email = $3 WHERE id = $4',
-            [name, role, email, id]
+            'UPDATE users SET name = $1, role = $2, email = $3, hashed_password = $4 WHERE id = $5',
+            [name, role, email, hashedPassword, id]
         );
 
         res.redirect('/users');
@@ -180,6 +182,47 @@ app.post('/edit-user/:id', async (req, res) => {
     }
 });
 
+app.get('/cps', (req, res) => {
+    
+ if (!req.isAuthenticated()) {
+    return res.redirect('/login');
+ }
+ res.render('cps.ejs',  {
+    pageTitle: "Change Password"
+ })
+})
+
+app.post('/cps', async (req, res) => {
+    try {
+        const userId = req.user.id; // Adjust based on your session management
+        const { oldPassword, newPassword, confirmPassword } = req.body;
+
+        if (newPassword !== confirmPassword) {
+            req.flash('error', 'New passwords do not match.');
+            return res.redirect('/cps')
+        }
+
+        const user = await pool.query('SELECT hashed_password FROM users WHERE id = $1', [userId]);
+        console.log(user.rows[0])
+        const match = await bcrypt.compare(oldPassword, user.rows[0].hashed_password);
+
+        if (!match) {
+            req.flash('error', 'Old Password was incorrect');
+            res.redirect('/cps');
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        await pool.query('UPDATE users SET hashed_password = $1 WHERE id = $2', [hashedPassword, userId]);
+        req.flash('success', 'Password successfully changed.');
+        res.redirect('/');
+    } catch (e) {
+        console.error(e);
+        req.flash('error', 'There was a problem changing the password. Make sure you entered them correctly');
+        res.redirect('/cps');
+    }
+});
 
 
 

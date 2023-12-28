@@ -1,0 +1,27 @@
+<%- include('layout') %>
+<body>
+    <%- include('header') %>
+    <% if (messages.error) { %>
+        <div class="alert alert-success">
+            <%= messages.error %>
+        </div>
+    <% } %>
+    <form action="/cps" method="POST">
+        <div>
+            <h1>Change Password</h1>
+        </div>
+        <div>
+            <label for="oldPassword">Old Password:</label>
+            <input type="password" name="oldPassword" required>
+        </div>
+        <div>
+            <label for="newPassword">New Password:</label>
+            <input type="password" name="newPassword" required>
+        </div>
+        <div>
+            <label for="confirmPassword">Confirm New Password:</label>
+            <input type="password" name="confirmPassword" required>
+        </div>
+        <button type="submit">Change Password</button>
+    </form> 
+</body>

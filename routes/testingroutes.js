@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment-timezone')
-const pool = require('../prod-db'); 
+const pool = require('../db'); 
 const items = [
     {id: 1, name: "Receivers"},
     {id: 2, name: "TV"},
@@ -63,6 +63,7 @@ router.get('/testing', checkAuthenticated,  (req, res) => {
                         totalGood: totalGood,
                         pageTitle: "testing",
                         Date: currentDate,
+                        name: userName,
                     });
                 }
             );
