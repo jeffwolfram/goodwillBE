@@ -27,13 +27,14 @@ const items = [
     {id: 3, name: "Monitor"},
     {id: 4, name: "Game Console"},
     {id: 5, name: "Game Controllers"},
-    {id: 6, name: "Video Game"},
-    {id: 7, name: "Router"},
-    {id: 8, name: "Speakers"},
-    {id: 9, name: "A/V Players"},
-    {id: 10, name: "IOT"},
-    {id: 11, name: "MISC"},
-    {id: 12, name: "Keyboards"}
+    {id: 6, name: "Gaming Peripherals"},
+    {id: 7, name: "Video Game"},
+    {id: 8, name: "Router"},
+    {id: 9, name: "Speakers"},
+    {id: 10, name: "A/V Players"},
+    {id: 11, name: "IOT"},
+    {id: 12, name: "MISC"},
+    {id: 13, name: "Keyboards"}
    
 ];
 
@@ -47,8 +48,23 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }));
+
+
+
 app.use(passport.initialize());
 app.use(passport.session());
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.isAuthenticated(); 
+    next();
+});
+
+// I added this to verify roles on ejs pages
+app.use((req, res, next) => {
+    if (req.isAuthenticated()) {
+        res.locals.user = req.user.role;
+    } 
+    next()
+})
 
 async function getAllUsers() {
     const result = await pool.query('SELECT * FROM users');
@@ -115,7 +131,7 @@ app.get('/logout', (req, res) => {
     
 }) 
 
-app.get('/users',checkAuthenticated, async (req, res) => {
+app.get('/users',checkAuthenticated, isAdmin, async (req, res) => {
     try {
         const users = await getAllUsers();
         res.render('users.ejs', { 

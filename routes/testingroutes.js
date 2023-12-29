@@ -8,13 +8,14 @@ const items = [
     {id: 3, name: "Monitor"},
     {id: 4, name: "Game Console"},
     {id: 5, name: "Game Controllers"},
-    {id: 6, name: "Video Game"},
-    {id: 7, name: "Router"},
-    {id: 8, name: "Speakers"},
-    {id: 9, name: "A/V Players"},
-    {id: 10, name: "IOT"},
-    {id: 11, name: "MISC"},
-    {id: 12, name: "Keyboards"}
+    {id: 6, name: "Gaming Peripherals"},
+    {id: 7, name: "Video Game"},
+    {id: 8, name: "Router"},
+    {id: 9, name: "Speakers"},
+    {id: 10, name: "A/V Players"},
+    {id: 11, name: "IOT"},
+    {id: 12, name: "MISC"},
+    {id: 13, name: "Keyboards"}
    
 ];
 const { checkAuthenticated } = require('../roleMiddleware.js')
