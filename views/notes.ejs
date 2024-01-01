@@ -1,0 +1,31 @@
+<%- include('layout') %>
+<body>
+    <%- include('header') %>
+    <h1>Notes</h1>
+
+    <% ['pricing', 'testing', 'processing', 'motd', 'misc'].forEach(column => { %>
+        <% if(noteResults2.some(note => note[column] && note[column].trim() !== '')) { %>
+            <h2><%= column.charAt(0).toUpperCase() + column.slice(1) %></h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Date</th>
+                        <th>Message %></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% noteResults2.forEach(note => { %>
+                        <% if(note[column] && note[column].trim() !== '') { %>
+                            <tr>
+                                <td><%= note.username %></td> <!-- Assuming 'username' represents the employee -->
+                                <td><%= note.created_date.toISOString().split('T')[0] %></td>
+                                <td><%= note[column] %></td>
+                            </tr>
+                        <% } %>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } %>
+    <% }) %>
+</body>

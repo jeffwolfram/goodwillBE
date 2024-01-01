@@ -18,6 +18,8 @@ const {isAdmin, isLead, isManager} = require('./roleMiddleware')
 initializePassport(passport);
 const testingRoutes = require('./routes/testingroutes')
 const reportRoutes = require('./routes/report-routes')
+const noteRoutes = require('./routes/note-routes.js')
+const processingRoutes = require('./routes/processing-routes.js')
 const app = express();
 const { checkAuthenticated } = require('./roleMiddleware.js')
 const { checkNotAuthenticated} = require('./roleMiddleware.js')
@@ -34,7 +36,8 @@ const items = [
     {id: 10, name: "A/V Players"},
     {id: 11, name: "IOT"},
     {id: 12, name: "MISC"},
-    {id: 13, name: "Keyboards"}
+    {id: 13, name: "Keyboards"},
+    {id: 14, name: "Printers"}
    
 ];
 
@@ -62,6 +65,8 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
     if (req.isAuthenticated()) {
         res.locals.user = req.user.role;
+        res.locals.user_name = req.user.name;
+        res.locals.user_email = req.user.email
     } 
     next()
 })
@@ -91,6 +96,8 @@ app.get('/login',  (req, res) => {
 
 app.use(reportRoutes)
 app.use(testingRoutes)
+app.use(noteRoutes)
+app.use(processingRoutes)
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {
@@ -130,6 +137,12 @@ app.get('/logout', (req, res) => {
     
     
 }) 
+
+app.get('/profile', async (req, res) => {
+    res.render('profile.ejs', {
+        pageTitle: 'profile'
+    })
+})
 
 app.get('/users',checkAuthenticated, isAdmin, async (req, res) => {
     try {
@@ -219,7 +232,6 @@ app.post('/cps', async (req, res) => {
         }
 
         const user = await pool.query('SELECT hashed_password FROM users WHERE id = $1', [userId]);
-        console.log(user.rows[0])
         const match = await bcrypt.compare(oldPassword, user.rows[0].hashed_password);
 
         if (!match) {

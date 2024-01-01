@@ -15,7 +15,8 @@ const items = [
     {id: 10, name: "A/V Players"},
     {id: 11, name: "IOT"},
     {id: 12, name: "MISC"},
-    {id: 13, name: "Keyboards"}
+    {id: 13, name: "Keyboards"},
+    {id: 14, name: "Printers"}
    
 ];
 const { checkAuthenticated } = require('../roleMiddleware.js')
@@ -91,7 +92,6 @@ router.post('/incrementGood/:id', checkAuthenticated, async (req, res) => {
             
             const query = 'INSERT INTO items (record_date, item_name, user_id, user_name, item_id, good_count) VALUES ($1, $2, $3, $4, $5, $6)';
             await pool.query(query, [currentDate, itemName, userId, userName,  itemId, 1]);
-            console.log("added good")
 
             
         } catch (error) {
@@ -123,7 +123,6 @@ router.post('/incrementBad/:id', checkAuthenticated, async (req, res) => {
             
             const query = 'INSERT INTO items (record_date, item_name, user_id, user_name,  item_id, bad_count) VALUES ($1, $2, $3, $4, $5, $6)';
             await pool.query(query, [currentDate, itemName, userId, userName, itemId, 1]);
-            console.log('added bad')
 
             
         } catch (error) {

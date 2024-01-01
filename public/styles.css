@@ -101,17 +101,24 @@ nav ul li a:hover {
 }
 
 button {
-    padding: 5px 10px; 
-    background-color: #007bff;
+    display: inline-block;
+    margin: 5px;
+    padding: 5px 8px;
+    width:55px;
+    font-size: 13px;
     color: #fff;
-    border: none;
-    cursor: pointer;
-    width:60px;
-    margin-bottom:5px;
+    background: linear-gradient(45deg, #6e48aa, #9d50bb);
+    border: 1px solid transparent;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-decoration: none;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
 button:hover {
-    background-color: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #9d50bb, #6e48aa);
 }
 
 .testingform {
@@ -164,4 +171,91 @@ td {
 
 .logoutButton {
     width:80px;
+}
+
+.profile-container {
+    margin:10px 10px;
+}
+
+.custom-button-container {
+    text-align: center;
+}
+
+.custom-button {
+    display: inline-block;
+    margin: 10px;
+    padding: 15px 30px;
+    font-size: 20px;
+    color: #fff;
+    background: linear-gradient(45deg, #6e48aa, #9d50bb);
+    border: 1px solid transparent;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    text-decoration: none;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.custom-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    background: linear-gradient(45deg, #9d50bb, #6e48aa);
+}
+
+.custom-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.checklist {
+    /* max-width: 300px; */
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.checklist h2 {
+    text-align: center;
+}
+
+.checklist-item {
+    margin-bottom: 10px;
+}
+
+.checklist-item input[type="checkbox"] {
+    margin-right: 10px;
+}
+.p-form {
+    /* width:263px */
+}
+.checklist-item {
+    margin-bottom: 10px;
+}
+
+.checklist-item input[type="checkbox"],
+.checklist-item label {
+    vertical-align: middle;
+    display: inline-block;
+}
+
+textarea {
+    width: 100%; 
+    height: 200px; 
+    padding: 10px; 
+    font-size: 16px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    box-sizing: border-box; 
+}
+.num-input {
+    width:20px;
+}
+.divider {
+    height: 1px;
+    background-color: #000;
+    margin: 10px 0; /* Spacing above and below the line */
 }
