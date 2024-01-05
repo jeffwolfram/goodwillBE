@@ -3,36 +3,32 @@
     <%- include('header') %>
     <h1 class="center"><%= pageTitle %></h1>
     <div class="checklist">
-        <form class="p-form" action="">
+        <form class="p-form" action="/processing" method="POST">
             <div class="checklist-item">
-                <input type="checkbox" id="bluetubs" name="bluetubs">
-                <label for="bluetubs">Blue Tubs</label>
+                <input type="checkbox" id="blue_tubs" name="blue_tubs">
+                <label for="blue_tubs">Has the blue tub by processing been emptied? </label>
             </div>
             
             <div class="checklist-item">
-                <input type="checkbox" id="bluetubs" name="bluetubs">
-                <label for="bluetubs">Trash Dumped</label>
+                <input type="checkbox" id="trash_can" name="trash_can">
+                <label for="trash_can">Have all the trash cans been dumped?</label>
             </div>
 
             <div class="checklist-item">
-                <input type="checkbox" id="bluetubs" name="bluetubs">
-                <label for="bluetubs">Ecom</label>
+                <input type="checkbox" id="full_melon" name="full_melon">
+                <label for="full_melon">Have all full melons been replaced with empty ones?</label>
             </div>
             
             <div class="checklist-item">
-                <input type="checkbox" id="bluetubs" name="bluetubs">
-                <label for="bluetubs">Full Melons replaced with empty ones</label>
+                <input type="checkbox" id="cut_cables" name="cut_cables">
+                <label for="cut_cables">Has the cut cables can been checked and replaced if full?</label>
             </div>
 
             <div class="checklist-item">
-                <input type="checkbox" id="bluetubs" name="bluetubs">
-                <label for="bluetubs">Blue Tubs</label>
+                <input type="checkbox" id="cleaned" name="cleaned">
+                <label for="cleaned">Has your work area been cleaned, swept, and tool been put away?</label>
             </div>
 
-            <div class="checklist-item">
-                <input type="checkbox" id="bluetubs" name="bluetubs">
-                <label for="bluetubs">Blue Tubs</label>
-            </div>
             <div class="divider"></div>
             <div class="checklist-item">
                 <input type="text" name="note" class="num-input" id="note"> 
@@ -46,8 +42,14 @@
                 
             </div>
 
+            <div class="checklist-item">
+                <input type="text" name="note" class="num-input" id="note">
+                <label for="note">Gray Totes cleared</label>
+                
+            </div>
+
             <div class="notes">
-                <label for="note">Notes for the day</label>
+                <label for="note">Notes</label>
                 <textarea type="textarea" name="note" id="note"></textarea> 
             </div>
             <button type="submit">submit</button>

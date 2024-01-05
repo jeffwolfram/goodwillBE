@@ -234,6 +234,8 @@ button:active {
 }
 .checklist-item {
     margin-bottom: 10px;
+    display:flex;
+    align-items: center;
 }
 
 .checklist-item input[type="checkbox"],

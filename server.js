@@ -20,6 +20,7 @@ const testingRoutes = require('./routes/testingroutes')
 const reportRoutes = require('./routes/report-routes')
 const noteRoutes = require('./routes/note-routes.js')
 const processingRoutes = require('./routes/processing-routes.js')
+const dashboardRoutes = require('./routes/dashboard-routes.js')
 const app = express();
 const { checkAuthenticated } = require('./roleMiddleware.js')
 const { checkNotAuthenticated} = require('./roleMiddleware.js')
@@ -98,6 +99,7 @@ app.use(reportRoutes)
 app.use(testingRoutes)
 app.use(noteRoutes)
 app.use(processingRoutes)
+app.use(dashboardRoutes)
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {
