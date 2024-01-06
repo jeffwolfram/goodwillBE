@@ -229,9 +229,7 @@ button:active {
 .checklist-item input[type="checkbox"] {
     margin-right: 10px;
 }
-.p-form {
-    /* width:263px */
-}
+
 .checklist-item {
     margin-bottom: 10px;
     display:flex;

@@ -5,9 +5,17 @@ const pool = require('../db');
 const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
 
+router.use((req, res, next) => {
+    if (req.isAuthenticated()) {
+        res.locals.user_name = req.user.name;
+    }
+    next()
+})
+
 router.get('/dman', checkAuthenticated, (req, res) => {
     res.render('dman.ejs', {
-        pageTitle: 'DMAN'
+        pageTitle: 'DMAN',
+        name: req.user.name
     })
 })
 
