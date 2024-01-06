@@ -27,11 +27,7 @@ router.get('/notes', (req, res) => {
     );
 });
 
-router.get('/dman', (req, res) => {
-    res.render('dman.ejs', {
-        pageTitle: "Dman"
-    })
-}) 
+
 
 
 

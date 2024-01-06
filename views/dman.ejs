@@ -1,4 +1,32 @@
 <%- include('layout') %>
 <body>
     <%- include('header') %>
-<h1>DMAN</h1>
+<h1 class="center"><%= pageTitle %></h1>
+<div class="checklist">
+    <form class="p-form" action="/dman" method="POST">
+        <div class="checklist-item">
+            <input type="checkbox" id="cleaned" name="cleaned">
+            <label for="cleaned">Cleaned up work stations and put away all the tools used for dman.</label>
+        </div>
+
+        <div class="checklist-item">
+            <input type="text" id="completed" class="num-input" name="completed">
+            <label for="completed">Computers completed</label>
+        </div>
+
+        <div class="checklist-item">
+            <input type="text" id="full_pallets_created" class="num-input" name="full_pallets_created">
+            <label for="full_pallets_created">Full Pallets Created</label>
+        </div>
+
+        <div class="notes">
+            <label for="notes">Notes</label>
+            <textarea name="notes" id="notes"></textarea>
+        </div>
+        <button type="submit">Submit</button>
+        <button type="">Cancel</button>
+
+    </form>
+</div>
+
+</body>

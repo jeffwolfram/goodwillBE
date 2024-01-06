@@ -16,11 +16,18 @@ const pool = require("./db");
 const e = require('express');
 const {isAdmin, isLead, isManager} = require('./roleMiddleware')
 initializePassport(passport);
+
+
+//routes 
 const testingRoutes = require('./routes/testingroutes')
 const reportRoutes = require('./routes/report-routes')
 const noteRoutes = require('./routes/note-routes.js')
 const processingRoutes = require('./routes/processing-routes.js')
 const dashboardRoutes = require('./routes/dashboard-routes.js')
+const dmanRoutes = require('./routes/dman-routes.js')
+
+
+
 const app = express();
 const { checkAuthenticated } = require('./roleMiddleware.js')
 const { checkNotAuthenticated} = require('./roleMiddleware.js')
@@ -95,11 +102,12 @@ app.get('/login',  (req, res) => {
 });
 
 
-app.use(reportRoutes)
-app.use(testingRoutes)
-app.use(noteRoutes)
-app.use(processingRoutes)
-app.use(dashboardRoutes)
+app.use(reportRoutes);
+app.use(testingRoutes);
+app.use(noteRoutes);
+app.use(processingRoutes);
+app.use(dashboardRoutes);
+app.use(dmanRoutes);
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {

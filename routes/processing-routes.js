@@ -13,9 +13,22 @@ router.get('/processing',checkAuthenticated, (req, res) => {
 
 router.post('/processing', checkAuthenticated, async(req, res) => {
     try {
-        const {blue_tubs, trash_can, full_melon, cut_cables, cleaned, melons_cleared, blue_cleared, gray_cleared, username, notes } = req.body;
+        // Convert checkbox values to boolean
+        const blue_tubs = req.body.blue_tubs === 'on' ? true : false;
+        const trash_can = req.body.trash_can === 'on' ? true : false;
+        const full_melon = req.body.full_melon === 'on' ? true : false;
+        const cut_cables = req.body.cut_cables === 'on' ? true : false;
+        const cleaned = req.body.cleaned === 'on' ? true : false;
+
+        // Assign default value of 0 if the input is blank
+        const melons_cleared = req.body.melons_cleared ? parseInt(req.body.melons_cleared) : 0;
+        const blue_cleared = req.body.blue_cleared ? parseInt(req.body.blue_cleared) : 0;
+        const gray_cleared = req.body.gray_cleared ? parseInt(req.body.gray_cleared) : 0;
+
+        const notes = req.body.notes;
         const created_date = moment().tz("America/Los_Angeles").format("YYYY-MM-DD");
         const userName = req.user.name;
+
         const newEntry = await pool.query(
             'INSERT INTO processing (blue_tubs, trash_can, full_melon, cut_cables, cleaned, melons_cleared, blue_cleared, gray_cleared, username, created_date, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *',
             [blue_tubs, trash_can, full_melon, cut_cables, cleaned, melons_cleared, blue_cleared, gray_cleared, userName, created_date, notes]
@@ -26,6 +39,7 @@ router.post('/processing', checkAuthenticated, async(req, res) => {
         res.redirect('/processing')
     }
 });
+
 
 
 module.exports = router;
