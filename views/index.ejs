@@ -19,5 +19,27 @@
         <!-- <a href="#" class="custom-button">Pricing</a> -->
         <a href="/dman" class="custom-button">D-Man</a>
     </div>
+
+    <!-- MOTD  -->
+    <div class="buffer-left">
+        <h1>MOTD: </h1>
+       
+    </div>
+    <div class="buffer-left">
+        <h1>Items needed on the floor: </h1>
+        <% if (items.length > 0)  {%>
+            <ul>
+                <% items.forEach(item => { %>
+                    <li>
+                        <%= item.item  %>
+                    </li>
+                    <% })  %>
+                </ul>
+                <% } else { %>
+                        <p>No items found</p>
+                       
+            
+             <% } %>
+    </div>
 </body>
 </html>

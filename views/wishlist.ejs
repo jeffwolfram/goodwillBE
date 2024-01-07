@@ -1,0 +1,42 @@
+<%- include('layout') %>
+
+<body>
+    <%- include('header') %>
+
+    <form action="/wishlist" method="POST" id="myForm">
+        <h3>Items needed on the floor</h3>
+        <% if (items.length > 0)  {%>
+            <ul>
+                <% items.forEach(item => { %>
+                    <li>
+                        <%= item.item  %>
+                    </li>
+                    <% })  %>
+                </ul>
+                <% } else { %>
+                        <p>No items found</p>
+                       
+            
+             <% } %>
+        <div>
+            <label for="item">Add Item: </label>
+            <input type="text" id="item" name="item" required>
+        </div>
+     
+        <button type="submit">ADD</button>
+    </form>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('item').focus();
+        };
+
+        document.getElementById('item').addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                document.getElementById('myForm').submit(); 
+            }
+        });
+    </script>
+</body>
+

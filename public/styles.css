@@ -51,7 +51,11 @@ header {
 }
 
 .logo img {
-    max-width: 100px; 
+    width: 200px; 
+    margin-bottom: 0px;
+}
+.logo {
+    margin-bottom:0px;
 }
 
 nav ul {
@@ -258,4 +262,20 @@ textarea {
     height: 1px;
     background-color: #000;
     margin: 10px 0; /* Spacing above and below the line */
+}
+#frontpage {
+    width:100%;
+    background-color: white;
+    
+}
+#frontpage img {
+    width:500px;
+    display:block;
+     margin:auto;
+}
+
+
+
+.buffer-left {
+    margin-left: 5px;
 }

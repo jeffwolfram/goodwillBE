@@ -25,6 +25,7 @@ const noteRoutes = require('./routes/note-routes.js')
 const processingRoutes = require('./routes/processing-routes.js')
 const dashboardRoutes = require('./routes/dashboard-routes.js')
 const dmanRoutes = require('./routes/dman-routes.js')
+const wishlistRoutes = require('./routes/wishlist-routes.js')
 
 
 
@@ -88,12 +89,28 @@ async function getTotals() {
     const result = await pool.query('SELECT * FROM ')
 }
 
+async function getAllItems() {
+    const result = await pool.query('SELECT item FROM wishlist');
+    return result.rows
+}
 
-app.get('/', checkAuthenticated, (req, res) => {
-    res.render('index.ejs', { 
+async function getLastMotd() {
+    const result = await pool.query('SELECT motd FROM wishlist ORDER BY DESC LIMIT 1');
+    return result.rows
+}
+
+app.get('/', checkAuthenticated, async(req, res) => {
+    try {
+        const items = await getAllItems();
+        res.render('index.ejs', { 
         name: req.user.name,
-        pageTitle: 'Welcome'
+        pageTitle: 'Welcome',
+        items: items
     });
+    } catch (error) {
+        console.error(error);
+    }
+   
 });
 
 app.get('/login',  (req, res) => {
@@ -108,6 +125,7 @@ app.use(noteRoutes);
 app.use(processingRoutes);
 app.use(dashboardRoutes);
 app.use(dmanRoutes);
+app.use(wishlistRoutes)
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {
