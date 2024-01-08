@@ -59,11 +59,14 @@ router.post('/wishlist', checkAuthenticated, async(req, res) => {
 })
 
 router.get('/motd', checkAuthenticated, async(req, res) => {
+    
     try {
         const motd = getLastMotd();
         res.render('motd.ejs', {
             motd: motd, 
-            pageTitle: "Goodwill"
+            pageTitle: "Goodwill",
+            userName: req.user.name
+            
         });
         
     } catch (error) {

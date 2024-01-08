@@ -7,6 +7,7 @@ const { checkNotAuthenticated} = require('../roleMiddleware.js')
 
 router.post('/motd', checkAuthenticated, async(req, res) => {
     try {
+        
         const motd = req.body.motd.replace(/[&<>"]/g, function(tag) {
             const charsToReplace = {
                 '&': '&amp;',
@@ -16,9 +17,10 @@ router.post('/motd', checkAuthenticated, async(req, res) => {
             };
             return charsToReplace[tag] || tag;
         });
+        const userName = req.user.name;
         const newEntry = await pool.query(
-            'INSERT INTO motd (motd) VALUES ($1) RETURNING *',
-            [motd]
+            'INSERT INTO motd (motd, username) VALUES ($1, $2) RETURNING *',
+            [motd, userName]
         );
         res.redirect('/')
 

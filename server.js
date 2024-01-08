@@ -96,14 +96,14 @@ async function getAllItems() {
 }
 
 async function getLastMotd() {
-    const result = await pool.query('SELECT motd FROM motd ORDER BY id DESC LIMIT 1');
+    const result = await pool.query('SELECT motd, username FROM motd ORDER BY id DESC LIMIT 1');
     return result.rows
 }
 
 app.get('/', checkAuthenticated, async(req, res) => {
+    
     try {
         const motd = await getLastMotd();
-        console.log("this " + motd)
         const items = await getAllItems();
         res.render('index.ejs', { 
         name: req.user.name,
