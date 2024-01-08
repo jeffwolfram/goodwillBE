@@ -26,6 +26,7 @@ const processingRoutes = require('./routes/processing-routes.js')
 const dashboardRoutes = require('./routes/dashboard-routes.js')
 const dmanRoutes = require('./routes/dman-routes.js')
 const wishlistRoutes = require('./routes/wishlist-routes.js')
+const motdRoutes = require('./routes/motd-routes.js')
 
 
 
@@ -95,17 +96,20 @@ async function getAllItems() {
 }
 
 async function getLastMotd() {
-    const result = await pool.query('SELECT motd FROM wishlist ORDER BY DESC LIMIT 1');
+    const result = await pool.query('SELECT motd FROM motd ORDER BY id DESC LIMIT 1');
     return result.rows
 }
 
 app.get('/', checkAuthenticated, async(req, res) => {
     try {
+        const motd = await getLastMotd();
+        console.log("this " + motd)
         const items = await getAllItems();
         res.render('index.ejs', { 
         name: req.user.name,
         pageTitle: 'Welcome',
-        items: items
+        items: items,
+        motd: motd
     });
     } catch (error) {
         console.error(error);
@@ -125,7 +129,8 @@ app.use(noteRoutes);
 app.use(processingRoutes);
 app.use(dashboardRoutes);
 app.use(dmanRoutes);
-app.use(wishlistRoutes)
+app.use(wishlistRoutes);
+app.use(motdRoutes);
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {

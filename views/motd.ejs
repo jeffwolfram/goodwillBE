@@ -1,0 +1,18 @@
+<%- include('layout') %>
+
+<body>
+    <%- include('header') %>
+
+    <form action="/motd" method="POST" id="myForm">
+       
+        <div>
+            <label for="item">New Message Of The Day: </label>
+            <textarea type="textarea" rows="3" columns="10" id="motd" name="motd"  required></textarea>
+        </div>
+     
+        <button type="submit">ADD</button>
+    </form>
+
+   
+</body>
+

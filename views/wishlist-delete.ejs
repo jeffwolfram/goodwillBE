@@ -1,0 +1,30 @@
+<%- include('layout') %>
+
+<body>
+    <%- include('header') %>
+
+    <form action="/wishlist-delete" method="POST" id="myForm">
+        <h3>Items needed on the floor</h3>
+        <% if (items.length > 0)  {%>
+            <ul style="list-style-type: none;">
+                <% items.forEach(item => { %>
+                    <li>
+                        <input type="checkbox" name="itemIds" value="<%= item.id %>" /> 
+                        <%= item.item  %> 
+                    </li>
+                <% }) %>
+            </ul>
+        <% } else { %>
+            <p>No items found</p>
+        <% } %>
+
+        <button type="submit">Delete</button>
+        <a href="/wishlist">done</a>
+    </form>
+
+    <script>
+        window.onload = function() {
+            document.getElementById('item').focus();
+        };
+    </script>
+</body>

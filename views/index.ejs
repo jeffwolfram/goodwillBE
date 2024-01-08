@@ -8,8 +8,8 @@
         </div>
     <% } %>
     <div class="content">
-        <h1>Hi <%= name %></h1>
-        <h2>You are Changing lives</h2>
+        <h1><%= name %></h1>
+        <h2>Changing lives</h2>
 
       
     </div>
@@ -21,12 +21,22 @@
     </div>
 
     <!-- MOTD  -->
+    <div class="buffer-left max-size ">
+        <a href="/motd"><h1>MOTD: </h1></a>
+   
+           <% if (motd) { %>
+            <% if (Array.isArray(motd) && motd.length > 0) { %>
+                <%= motd[0].motd %>
+            <% } else if (motd.motd) { %>
+                <%= motd.motd %>
+            <% } %>
+        <% } %>
+    </div> 
+     
+    
+    
     <div class="buffer-left">
-        <h1>MOTD: </h1>
-       
-    </div>
-    <div class="buffer-left">
-        <h1>Items needed on the floor: </h1>
+        <a href="/wishlist"><h1>Items needed on the floor: </h1></a>
         <% if (items.length > 0)  {%>
             <ul>
                 <% items.forEach(item => { %>

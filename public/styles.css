@@ -277,5 +277,14 @@ textarea {
 
 
 .buffer-left {
-    margin-left: 5px;
+    margin-left: 10px;
+}
+.max-size {
+    max-width: 380px;
+}
+.inlineblock {
+    display:inline-block;
+}
+.less-bottom {
+    margin-bottom: -10px ;
 }
