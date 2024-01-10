@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment-timezone')
-const pool = require('../db'); 
+const pool = require('../database.js'); 
 const items = [
     {id: 1, name: "Receivers"},
     {id: 2, name: "TV"},
@@ -30,7 +30,6 @@ router.get('/testing', checkAuthenticated,  (req, res) => {
     const userId = req.user.id;
     const userName = req.user.name;
  
-    // Query to get itemized data
     pool.query(
         'SELECT item_name, SUM(good_count) AS total_good, SUM(bad_count) AS total_bad FROM items WHERE user_id = $1 AND record_date = $2 GROUP BY item_name',
         [userId, currentDate],
@@ -40,7 +39,6 @@ router.get('/testing', checkAuthenticated,  (req, res) => {
                 return res.status(500).send('Internal Server Error');
             }
 
-            // Query to get total bad count
             pool.query(
                 'SELECT SUM(bad_count) AS total_bad, SUM(good_count) AS total_good FROM items WHERE user_id = $1 AND record_date = $2',
                 [userId, currentDate],

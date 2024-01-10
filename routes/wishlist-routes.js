@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment-timezone')
-const pool = require('../db'); 
+const pool = require('../database.js'); 
 const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
 
@@ -45,7 +45,6 @@ router.post('/wishlist', checkAuthenticated, async(req, res) => {
             };
             return charsToReplace[tag] || tag;
         });
-        console.log(item)
         const newEntry = await pool.query(
             'INSERT INTO wishlist (item) VALUES ($1) RETURNING *',
             [item]
@@ -87,7 +86,6 @@ router.get('/wishlist-delete', checkAuthenticated, async(req, res) => {
    
 });
 router.post('/wishlist-delete', checkAuthenticated, async (req, res) => {
-    console.log("itemids " + req.body.itemIds)
     try {
         
         const itemIds = req.body.itemIds;
@@ -95,10 +93,8 @@ router.post('/wishlist-delete', checkAuthenticated, async (req, res) => {
             return res.status(400).send('No items specified for deletion');
         }
 
-        // Convert to array if not already
         const idsToDelete = Array.isArray(itemIds) ? itemIds : [itemIds];
 
-        // Assuming deleteItemsByIds is a function that takes an array of IDs and deletes them from the database
         await deleteItemsByIds(idsToDelete);
 
         res.redirect('/wishlist');

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment-timezone')
-const pool = require('../db'); 
+const pool = require('../database.js'); 
 const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
 
@@ -35,7 +35,6 @@ router.post('/dman', checkAuthenticated, async(req, res) => {
             };
             return charsToReplace[tag] || tag;
         });
-        console.log(cleaned, completed, full_pallets_created, created_date, userName, notes)
 
         const newEntry = await pool.query(
             'INSERT INTO dman (cleaned, completed, full_pallets_created, notes, username, created_date) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',

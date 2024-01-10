@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const moment = require('moment-timezone')
-const pool = require('../db'); 
+const pool = require('../database.js'); 
 const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
 
 router.get('/notes', (req, res) => {
-    // Calculate the date 7 days ago
     const startDate = moment().tz("America/Los_Angeles").subtract(7, 'days').format('YYYY-MM-DD');
 
     pool.query(
@@ -18,7 +17,6 @@ router.get('/notes', (req, res) => {
                 return res.status(500).send('Internal Server Error');
             }
             const noteResults2 = noteResults.rows;
-            console.log(noteResults2); // Log the results
             res.render('notes.ejs', {
                 pageTitle: 'Notes',
                 noteResults2: noteResults2
