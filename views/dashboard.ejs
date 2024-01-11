@@ -2,4 +2,42 @@
 <body>
     <%- include('header') %>
     <h1 class="center"><%= pageTitle %></h1>
+    <div class="main-box">
+        <div class="box">
+            <h3>Processing</h3>
+            <% if (processing) { %>
+            <h4>DATE: <%= new Date(processing.created_date).toDateString() %></h4>
+            <h4>Name: <%= processing.username %></h4>
+            <p><strong>Melons cleared:</strong> <%= processing.melons_cleared%></p>
+            <p><strong>Gray tubs cleared:</strong> <%= processing.gray_cleared %></p>
+            <p><strong>Blue tubs cleared:</strong> <%= processing.blue_cleared%></p>
+            <h4 class="center">Fifteen minute drill</h4>
+            <hr>
+            <p><strong>Full melons replaced:</strong> <%= processing.full_melon %></p>
+            <p><strong>Full blue tubs replaced:</strong> <%= processing.blue_tubs %></p>
+            <p><strong>Trash can emptied:</strong> <%= processing.trash_can %></p>
+            <p><strong>Full cut cables emptied:</strong> <%= processing.cut_cables%></p>
+            <p><strong>Cleaned work area:</strong> <%= processing.cleaned%></p>
+            <% } %>
+        </div>
+
+        <div class="box">
+            <h3>DMAN</h3>
+            <% if (dman) { %> 
+            <h4>Date: <%= new Date(dman.created_date).toDateString() %></h4>
+            <h4>Name: <%= dman.username %></h4>
+            <p><strong>Computers completed: </strong><%= dman.completed %></p>
+            <p><strong>Full pallets created:</strong> <%= dman.full_pallets_created %></p>
+            <p><strong>Area cleaned:</strong> <%= dman.cleaned %></p>
+            <p><strong>Notes:</strong> <%= dman.notes %></p>
+
+            
+            
+            <% } %>
+        </div>
+
+        <div class="box">
+            <h3>Testing</h3>
+        </div>
+    </div>
 </body>

@@ -261,7 +261,7 @@ textarea {
 .divider {
     height: 1px;
     background-color: #000;
-    margin: 10px 0; /* Spacing above and below the line */
+    margin: 10px 0; 
 }
 #frontpage {
     width:100%;
@@ -302,4 +302,29 @@ textarea {
     margin:0;
     vertical-align:top;
     box-sizing: border-box;
+}
+
+
+
+/* dashboard page  */
+.box {
+    border:1px solid black;
+    padding:20px;
+    margin:10px;
+    text-align: left;
+    width:400px;
+}
+.main-box {
+    display:flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+@media (max-width: 600px) {
+    .main-box {
+        flex-direction: column;
+    }
+}
+.box h3 {
+    text-align: center;
 }
