@@ -44,6 +44,7 @@ router.get('/todays-results', checkAuthenticated, async (req, res) => {
 
     try {
         const results = await pool.query(query, [today]);
+        console.log(results);
         const usersData = {};
 
         results.rows.forEach(row => {

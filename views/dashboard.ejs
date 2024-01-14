@@ -36,8 +36,37 @@
             <% } %>
         </div>
 
+        
         <div class="box">
             <h3>Testing</h3>
+            <% Object.keys(testing).forEach(function(userName) { %>
+                <h2 class="headername"><%= userName %></h2>
+                <table border="1">
+                    <tr>
+                        <th>Item</th>
+                        <th>Total Good</th>
+                        <th>Total Bad</th>
+                    </tr>
+                    <% 
+                    let totalGood = 0;
+                    let totalBad = 0;
+                    testing[userName].forEach(function(row) {
+                        totalGood += parseInt(row.total_good) || 0;
+                        totalBad += parseInt(row.total_bad) || 0;
+                    %>
+                        <tr>
+                            <td><%= row.item_name %></td>
+                            <td><%= row.total_good %></td>
+                            <td><%= row.total_bad %></td>
+                        </tr>
+                    <% }); %>
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td><strong><%= totalGood %></strong></td>
+                        <td><strong><%= totalBad %></strong></td>
+                    </tr>
+                </table>
+            <% }); %>
         </div>
     </div>
 </body>
