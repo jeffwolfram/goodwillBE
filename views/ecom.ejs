@@ -1,0 +1,34 @@
+<%- include('layout') %>
+<head>
+    <!-- Add your CSS styles here -->
+</head>
+<body>
+    <%- include('header') %>
+    <form action="/newecom" method="POST">
+        <div>
+            <label for="department">Department</label>
+            <select name="department" id="department">
+                <option value="computers">Computers</option>
+                <option value="hardlines">Hardlines</option>
+                <option value="softlines">Softlines</option>
+                <option value="jewelry">jewelry</option>
+                <option value="electrical">Electrical</option>
+            </select>
+            
+        </div>
+        <div>
+            <label for="firsttag">First tag</label>
+            <input type="text" id="firsttag" name="firsttag">
+        </div>
+        <div>
+            <label for="secondtag">Second Tag tag</label>
+            <input type="text" id="secondtag" name="secondtag">
+        </div>
+        <div>
+            <label for="itemcount">Item Count</label>
+            <input type="number" id="itemcount" name="itemcount">
+        </div>
+    
+    </form>
+
+</body>

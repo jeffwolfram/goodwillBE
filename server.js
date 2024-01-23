@@ -5,7 +5,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const path = require('path');
 const port = process.env.PORT || 5000;
-const moment = require('moment-timezone')
+const moment = require('moment-timezone');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -14,25 +14,25 @@ const session = require('express-session');
 const initializePassport = require('./passport-config');
 const pool = require("./db.js"); 
 const e = require('express');
-const {isAdmin, isLead, isManager} = require('./roleMiddleware')
+const {isAdmin, isLead, isManager} = require('./roleMiddleware');
 initializePassport(passport);
 
 
 //routes 
-const testingRoutes = require('./routes/testingroutes')
-const reportRoutes = require('./routes/report-routes')
-const noteRoutes = require('./routes/note-routes.js')
-const processingRoutes = require('./routes/processing-routes.js')
-const dashboardRoutes = require('./routes/dashboard-routes.js')
-const dmanRoutes = require('./routes/dman-routes.js')
-const wishlistRoutes = require('./routes/wishlist-routes.js')
-const motdRoutes = require('./routes/motd-routes.js')
-
+const testingRoutes = require('./routes/testingroutes');
+const reportRoutes = require('./routes/report-routes');
+const noteRoutes = require('./routes/note-routes.js');
+const processingRoutes = require('./routes/processing-routes.js');
+const dashboardRoutes = require('./routes/dashboard-routes.js');
+const dmanRoutes = require('./routes/dman-routes.js');
+const wishlistRoutes = require('./routes/wishlist-routes.js');
+const motdRoutes = require('./routes/motd-routes.js');
+const ecomRoutes = require('./routes/ecom-routes.js');
 
 
 const app = express();
-const { checkAuthenticated } = require('./roleMiddleware.js')
-const { checkNotAuthenticated} = require('./roleMiddleware.js')
+const { checkAuthenticated } = require('./roleMiddleware.js');
+const { checkNotAuthenticated} = require('./roleMiddleware.js');
 const items = [
     {id: 1, name: "Receivers"},
     {id: 2, name: "TV"},
@@ -131,6 +131,7 @@ app.use(dashboardRoutes);
 app.use(dmanRoutes);
 app.use(wishlistRoutes);
 app.use(motdRoutes);
+app.use(ecomRoutes);
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {
