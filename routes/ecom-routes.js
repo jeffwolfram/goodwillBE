@@ -5,12 +5,23 @@ const pool = require('../db.js');
 const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
 
+async function getAllEcom() {
+    const result = await pool.query('SELECT * FROM ecom WHERE DATE(created_date) = (SELECT MAX(DATE(created_date)) FROM ecom) ORDER BY department')
+    return result.rows;
+}
 
-
-router.get("/ecom", (req, res) => {
-    res.render('ecom.ejs', {
-        pageTitle: 'Goodwill Ecom'
-    })
+router.get("/ecom", async(req, res) => {
+    try {
+        const ecom = await getAllEcom();
+        console.log(ecom)
+        res.render('ecom.ejs', {
+        pageTitle: 'Goodwill Ecom',
+        data: ecom,
+        total_items: 0
+    }) 
+    } catch (error) {
+        console.error(error)
+    }
 })
 
 

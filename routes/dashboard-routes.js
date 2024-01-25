@@ -15,6 +15,12 @@ async function getDmanReport() {
     const result = await pool.query('SELECT * FROM dman ORDER BY id DESC LIMIT 1');
     return result.rows[0];
 }
+
+async function getAllEcom() {
+    const result = await pool.query('SELECT * FROM ecom WHERE DATE(created_date) = (SELECT MAX(DATE(created_date)) FROM ecom) ORDER BY department')
+    return result.rows;
+}
+
 async function getTestingReport() {
     const result = await pool.query(`
         SELECT 
@@ -43,6 +49,7 @@ router.get('/dashboard', checkAuthenticated, isAdmin, async(req, res) => {
      const processing = await getProcessingReport();
      const dman = await getDmanReport();
      const data = await getTestingReport();
+     const ecom = await getAllEcom();
      const testing = {};
      data.forEach(item => {
         if (!testing[item.user_name]) {
@@ -55,7 +62,9 @@ router.get('/dashboard', checkAuthenticated, isAdmin, async(req, res) => {
         pageTitle: "Daily Recap",
         processing: processing,
         dman: dman,
-        testing: testing
+        testing: testing,
+        ecom: ecom,
+        items_total: 0
         
     })
    } catch (error) {

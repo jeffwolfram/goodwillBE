@@ -31,4 +31,22 @@
         <button type="submit">Submit</button>
     </form>
 <hr>
+<div class="main-box">
+    <% data.forEach(function(row) { %>
+    <% total_items += row.item_count %>
+
+<div class="box">
+    <p>Department: <%= row.department %> </p>
+    <p>Employee: <%= row.user_name %> </p>
+    <p>Tag1: <%= row.first_tag %> </p>
+    <p>Tag2: <%= row.second_tag %> </p>
+    <p>Item Count: <%= row.item_count %> </p>
+    
+    
+</div>
+<% }) %>
+</div>
+
+<h2>Total Items sent: <%= total_items %></h2>
+
 </body>

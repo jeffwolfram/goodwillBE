@@ -2,6 +2,15 @@
 <body>
     <%- include('header') %>
     <h1 class="center"><%= pageTitle %></h1>
+    <% if (ecom) { %>
+        <% let items_total = 0; %>
+        <% ecom.forEach(function(row) { %>
+            <% items_total += row.item_count; %>
+        <% }); %>
+        <h3 class="center">
+            ECOM: <%= items_total %>
+        </h3>
+    <% } %>
     <div class="main-box">
         <div class="box">
             <h3>Processing</h3>
