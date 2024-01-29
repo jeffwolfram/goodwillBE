@@ -47,7 +47,9 @@ const items = [
     {id: 11, name: "IOT"},
     {id: 12, name: "MISC"},
     {id: 13, name: "Keyboards"},
-    {id: 14, name: "Printers"}
+    {id: 14, name: "Printers"},
+    {id: 15, name: "Turntable"},
+    {id: 16, name: "Pro Audio"}
    
 ];
 
