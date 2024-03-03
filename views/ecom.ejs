@@ -36,6 +36,7 @@
     <% total_items += row.item_count %>
 
 <div class="box">
+    <p>Date: <%= row.created_date.toDateString() %></p>
     <p>Department: <%= row.department %> </p>
     <p>Employee: <%= row.user_name %> </p>
     <p>Tag1: <%= row.first_tag %> </p>
