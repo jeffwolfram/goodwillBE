@@ -28,6 +28,7 @@ const dmanRoutes = require('./routes/dman-routes.js');
 const wishlistRoutes = require('./routes/wishlist-routes.js');
 const motdRoutes = require('./routes/motd-routes.js');
 const ecomRoutes = require('./routes/ecom-routes.js');
+const mellonshipRoutes = require('./routes/mellonship-routes.js');
 
 
 const app = express();
@@ -134,6 +135,7 @@ app.use(dmanRoutes);
 app.use(wishlistRoutes);
 app.use(motdRoutes);
 app.use(ecomRoutes);
+app.use(mellonshipRoutes);
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {
