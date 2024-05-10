@@ -328,3 +328,55 @@ textarea {
 .box h3 {
     text-align: center;
 }
+
+
+
+
+/* styles.css */
+
+.usertotals header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+.usertotals nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    
+}
+
+/* usertotals */
+
+.usertotals  table {
+    width: 100%;
+    max-width: 700px;
+    border: solid black 1px;
+    margin-right:10px;
+    margin-bottom: 20px;
+    
+}
+
+/* Style table headers */
+.usertotals th {
+    border: solid black 1px;
+
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+}
+
+/* Style table cells */
+.usertotals td {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+/* Style alternate table rows */
+.usertotals tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
+/* Add more specific styles targeting elements within the .usertotals class */

@@ -1,0 +1,42 @@
+<%- include('layout') %>
+
+<body class="usertotals">
+    <%- include('header') %>
+    
+    <% // Group results by date %>
+    <% let groupedResults = {}; %>
+    <% results.forEach(result => { %>
+        <% let dateKey = result.created_at.toDateString(); %>
+        <% if (!groupedResults[dateKey]) { %>
+            <% groupedResults[dateKey] = []; %>
+        <% } %>
+        <% groupedResults[dateKey].push(result); %>
+    <% }); %>
+
+    <% // Render a table for each date group %>
+    <% Object.keys(groupedResults).forEach(date => { %>
+        <h2><%= date %></h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Amount</th>
+                    <th>Number</th>
+                    <th>Item Average</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% groupedResults[date].forEach(result => { %>
+                    <tr>
+                        <td><%= result.name %></td>
+                        <td><%= result.amount %></td>
+                        <td><%= result.number %></td>
+                        <td><%= result.itemaverage %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    <% }); %>
+
+</body>
+</html>

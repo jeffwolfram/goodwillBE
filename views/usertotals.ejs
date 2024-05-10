@@ -1,0 +1,37 @@
+<%- include('layout') %>
+
+<body class="usertotals">
+    <%- include('header') %>
+
+    <main>
+        <div class="container">
+            <h1><%= pageTitle %></h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% details.forEach(detail => { %>
+                        <tr>
+                            <td><%= detail.date %></td>
+                            <td><%= detail.amount %></td>
+                            <td><%= detail.number %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% if (totals) { %>
+                <p>Total amount for the last 30 days: <%= totals.total_amount %></p>
+                <p>Total number for the last 30 days: <%= totals.total_number %></p>
+            <% } %>
+        </div>
+    </main>
+
+    <footer>
+        <!-- Footer content goes here -->
+    </footer>
+</body>

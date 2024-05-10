@@ -1,0 +1,26 @@
+<%- include('layout') %>
+
+<body>
+    <%- include('header') %>
+        <h1>New Numbers Form</h1>
+        <form action="/newnumbers" method="POST">
+            <label for="user">Select User:</label>
+            <select name="user" id="user">
+                <% users.forEach(user => { %>
+                    <option value="<%= user.id %>"><%= user.name %></option>
+                <% }); %>
+            </select>
+            <label for="amount">Enter amount:</label>
+            <input type="amount" name="amount" id="amount" required>
+
+            <label for="number">Enter Total Number of Items</label>
+            <input type="number" name="number" id="number" required>
+
+            <!-- Date input field -->
+            <label for="date">Select Date:</label>
+            <input type="date" name="date" id="date" value="<%= currentDate %>" required>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </body>
+</html>
