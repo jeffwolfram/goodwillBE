@@ -378,5 +378,18 @@ textarea {
     background-color: #f2f2f2;
 }
 
+.edit-btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 2px;
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    border-radius: 5px;
+    text-decoration: none;
+}
 
+.edit-btn:hover {
+    background-color: #0056b3;
+}
 /* Add more specific styles targeting elements within the .usertotals class */

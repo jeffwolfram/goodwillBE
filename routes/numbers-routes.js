@@ -132,4 +132,23 @@ router.post('/newnumbers', checkAuthenticated, async (req, res) => {
     }
 });
 
+router.post('/editnumbers/:id', checkAuthenticated, async (req, res) => {
+    const { id } = req.params;
+    const { amount, number, date } = req.body;
+
+    // Calculate itemaverage
+    const itemaverage = parseFloat(amount) / parseInt(number);
+
+    try {
+        const client = await pool.connect();
+        const query = 'UPDATE numbers SET amount = $1, number = $2, itemaverage = $3, created_at = $4 WHERE id = $5';
+        await client.query(query, [amount, number, itemaverage, date, id]);
+        client.release();
+
+        res.redirect('/userresults'); // Redirect to a results page, or wherever appropriate
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
 module.exports = router;
