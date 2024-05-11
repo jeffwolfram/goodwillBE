@@ -43,14 +43,14 @@ async function getUserDetailsAndTotalsLast30Days(userId) {
 }
 
 
-async function getUserResultsLast7Days() {
+async function getUserResultsLast30Days() {
     try {
         const client = await pool.connect();
         const result = await client.query(`
             SELECT users.name, numbers.amount, numbers.number, numbers.itemaverage, numbers.created_at
             FROM numbers
             JOIN users ON numbers.user_id = users.id
-            WHERE numbers.created_at >= current_date - interval '7 days'
+            WHERE numbers.created_at >= current_date - interval '30 days'
             ORDER BY numbers.created_at DESC
         `);
         client.release(); // Release the client back to the pool
@@ -84,9 +84,9 @@ router.get('/newnumbers', checkAuthenticated, async (req, res) => {
 router.get('/userresults',checkAuthenticated, async (req, res) => {
     try {
         const users = await getAllUsers();
-        const results = await getUserResultsLast7Days();
+        const results = await getUserResultsLast30Days();
         res.render('userresults.ejs', {
-            pageTitle: 'User Results (Last 7 Days)',
+            pageTitle: 'User Results (Last 30 Days)',
             users: users,
             results: results
         });
@@ -96,7 +96,7 @@ router.get('/userresults',checkAuthenticated, async (req, res) => {
     }
 });
 
-// GET route to render the page displaying user totals for the last 30 days
+
 router.get('/usertotals', checkAuthenticated, async (req, res) => {
     try {
         const userId = req.user.id;
@@ -126,6 +126,27 @@ router.post('/newnumbers', checkAuthenticated, async (req, res) => {
         client.release(); // Release the client back to the pool
 
         res.redirect('/newnumbers');
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+router.get('/editnumbers/:id', checkAuthenticated, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const client = await pool.connect();
+        const result = await client.query('SELECT * FROM numbers WHERE id = $1', [id]);
+        client.release();
+
+        if (result.rows.length > 0) {
+            res.render('edit-numbers.ejs', {
+                pageTitle: 'Edit Numbers',
+                entry: result.rows[0]
+            });
+        } else {
+            res.status(404).send('Number not found');
+        }
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
