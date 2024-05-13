@@ -2,25 +2,31 @@
 
 <body>
     <%- include('header') %>
-        <h1>New Numbers Form</h1>
-        <form action="/newnumbers" method="POST">
-            <label for="user">Select User:</label>
-            <select name="user" id="user">
+
+    <h1>New Numbers Form</h1>
+    <form class="newnum" action="/newnumbers" method="POST">
+        <label for="commonDate">Select Date for All Entries:</label>
+        <input type="date" name="commonDate" id="commonDate" value="<%= currentDate %>" required>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Amount</th>
+                    <th>Number of Items</th>
+                </tr>
+            </thead>
+            <tbody>
                 <% users.forEach(user => { %>
-                    <option value="<%= user.id %>"><%= user.name %></option>
+                    <tr>
+                        <td><%= user.name %></td>
+                        <td><input type="text" name="amount_<%= user.id %>" placeholder="Enter amount"></td>
+                        <td><input type="number" name="number_<%= user.id %>" placeholder="Total number"></td>
+                    </tr>
                 <% }); %>
-            </select>
-            <label for="amount">Enter amount:</label>
-            <input type="amount" name="amount" id="amount" required>
-
-            <label for="number">Enter Total Number of Items</label>
-            <input type="number" name="number" id="number" required>
-
-            <!-- Date input field -->
-            <label for="date">Select Date:</label>
-            <input type="date" name="date" id="date" value="<%= currentDate %>" required>
-            
-            <button type="submit">Submit</button>
-        </form>
-    </body>
+            </tbody>
+        </table>
+        <button type="submit">Submit All</button>
+    </form>
+</body>
 </html>

@@ -392,4 +392,11 @@ textarea {
 .edit-btn:hover {
     background-color: #0056b3;
 }
-/* Add more specific styles targeting elements within the .usertotals class */
+.newnum {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 20px auto; 
+    width: 400px; 
+}

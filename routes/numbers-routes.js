@@ -47,7 +47,7 @@ async function getUserResultsLast30Days() {
     try {
         const client = await pool.connect();
         const result = await client.query(`
-            SELECT users.name, numbers.amount, numbers.number, numbers.itemaverage, numbers.created_at
+            SELECT users.name, numbers.amount, numbers.id, numbers.number, numbers.itemaverage, numbers.created_at
             FROM numbers
             JOIN users ON numbers.user_id = users.id
             WHERE numbers.created_at >= current_date - interval '30 days'
@@ -114,23 +114,32 @@ router.get('/usertotals', checkAuthenticated, async (req, res) => {
 
 router.post('/newnumbers', checkAuthenticated, async (req, res) => {
     try {
-        const { user, amount, number, date } = req.body;
-
-        // Calculate itemaverage
-        const itemaverage = parseFloat(amount) / parseInt(number);
-
-        // Insert data into the numbers table
         const client = await pool.connect();
-        const query = 'INSERT INTO numbers (user_id, amount, number, itemaverage, created_at) VALUES ($1, $2, $3, $4, $5)';
-        await client.query(query, [user, amount, number, itemaverage, date]);
-        client.release(); // Release the client back to the pool
+        const commonDate = req.body.commonDate; // Get the common date for all entries
 
+        // Loop through each user
+        for (const user of await getAllUsers()) {
+            const amount = req.body[`amount_${user.id}`];
+            const number = req.body[`number_${user.id}`];
+
+            // Check if the amount and number were provided
+            if (amount && number) {
+                const itemaverage = parseFloat(amount) / parseInt(number);
+
+                const query = 'INSERT INTO numbers (user_id, amount, number, itemaverage, created_at) VALUES ($1, $2, $3, $4, $5)';
+                await client.query(query, [user.id, amount, number, itemaverage, commonDate]);
+            }
+        }
+
+        client.release();
         res.redirect('/newnumbers');
     } catch (error) {
         console.error(error);
+        client?.release();
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 router.get('/editnumbers/:id', checkAuthenticated, async (req, res) => {
     const { id } = req.params;

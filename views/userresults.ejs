@@ -5,7 +5,9 @@
     
     <% // Group results by date %>
     <% let groupedResults = {}; %>
+    
     <% results.forEach(result => { %>
+        <% console.log(result) %>
         <% let dateKey = result.created_at.toDateString(); %>
         <% if (!groupedResults[dateKey]) { %>
             <% groupedResults[dateKey] = []; %>
