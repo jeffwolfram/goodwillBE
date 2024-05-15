@@ -2,13 +2,13 @@
 
 <body class="usertotals">
     <%- include('header') %>
-    
+
     <% // Group results by date %>
     <% let groupedResults = {}; %>
-    
+
     <% results.forEach(result => { %>
         <% console.log(result) %>
-        <% let dateKey = result.created_at.toDateString(); %>
+        <% let dateKey = new Date(result.created_at).toDateString(); %>
         <% if (!groupedResults[dateKey]) { %>
             <% groupedResults[dateKey] = []; %>
         <% } %>
@@ -29,20 +29,38 @@
                 </tr>
             </thead>
             <tbody>
+                <% let totalAmount = 0; %>
+                <% let totalNumber = 0; %>
+
                 <% groupedResults[date].forEach(result => { %>
+                    <% let amount = parseFloat(result.amount); %>
+                    <% let number = parseFloat(result.number); %>
+
                     <tr>
                         <td><%= result.name %></td>
-                        <td><%= result.amount %></td>
-                        <td><%= result.number %></td>
-                        <td><%= result.itemaverage %></td>
+                        <td><%= amount.toFixed(2) %></td>
+                        <td><%= number %></td>
+                        <td><%= (amount / number).toFixed(2) %></td>
                         <td>
                             <a href="/editnumbers/<%= result.id %>" class="edit-btn">Edit</a>
                         </td>
                     </tr>
+
+                    <% totalAmount += amount; %>
+                    <% totalNumber += number; %>
                 <% }); %>
+
+                <% let averageAmount = totalNumber ? totalAmount / totalNumber : 0; %>
+
+                <tr>
+                    <td><strong>Totals</strong></td>
+                    <td><strong><%= totalAmount.toFixed(2) %></strong></td>
+                    <td><strong><%= totalNumber %></strong></td>
+                    <td><strong><%= averageAmount.toFixed(2) %></strong></td>
+                    <td></td>
+                </tr>
             </tbody>
         </table>
     <% }); %>
-
 </body>
 </html>
