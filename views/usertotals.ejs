@@ -17,7 +17,7 @@
                 <tbody>
                     <% details.forEach(detail => { %>
                         <tr>
-                            <td><%= detail.date %></td>
+                            <td><%= new Date(detail.date).toDateString() %></td>
                             <td><%= detail.amount %></td>
                             <td><%= detail.number %></td>
                         </tr>
