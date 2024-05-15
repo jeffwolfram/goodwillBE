@@ -15,8 +15,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% let sumtotal = 0.00 %>
-                    <% let itemtotal = 0 %>
                     <% details.forEach(detail => { %>
                         <% sumtotal += detail.amount %>
                         <% itemtotal += detail.number %>
@@ -26,11 +24,6 @@
                             <td><%= detail.number %></td>
                         </tr>
                     <% }); %>
-                    <tr>
-                        <td>Total</td>
-                        <td><%= sumtotal %></td>
-                        <td><%= itemtotal %></td>
-                    </tr>
                 </tbody>
             </table>
             <% if (totals) { %>
