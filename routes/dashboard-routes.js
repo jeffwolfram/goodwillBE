@@ -18,10 +18,12 @@ async function getUserTotalsForCurrentMonth() {
         // Get current date and start of the month
         const currentDate = new Date();
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        const daysInMonth = currentDate.getDate();
         
         const result = await client.query(`
-            SELECT users.name, SUM(numbers.amount) AS total_amount, SUM(numbers.number) AS total_number
+            SELECT users.name, 
+                   SUM(numbers.amount) AS total_amount, 
+                   SUM(numbers.number) AS total_number, 
+                   COUNT(numbers.id) AS entry_count
             FROM numbers
             JOIN users ON numbers.user_id = users.id
             WHERE date_trunc('month', numbers.created_at) = date_trunc('month', current_date)
@@ -30,9 +32,9 @@ async function getUserTotalsForCurrentMonth() {
         `);
         client.release();
         
-        // Add average per day to each user's data
+        // Add average per entry to each user's data
         const userTotals = result.rows.map(user => {
-            user.average_per_day = (user.total_amount / daysInMonth).toFixed(2);
+            user.average_per_day = (user.total_amount / user.entry_count).toFixed(2);
             return user;
         });
         
@@ -41,6 +43,7 @@ async function getUserTotalsForCurrentMonth() {
         throw error;
     }
 }
+
 
 async function getDmanReport() {
     const result = await pool.query('SELECT * FROM dman ORDER BY id DESC LIMIT 1');
