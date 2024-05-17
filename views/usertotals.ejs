@@ -28,9 +28,9 @@
                 </tbody>
             </table>
             <% if (totals) { %>
-                <p>Total amount for the last 30 days: <%= totals.total_amount %></p>
+                <p>Total amount for the last 30 days: $<%= totals.total_amount %></p>
                 <p>Total number for the last 30 days: <%= totals.total_number %></p>
-                <p>Your item average cost for this month is <%= (totals.total_amount / totals.total_number).toFixed(2) %>    </p>
+                <p>Your daily average total for this month is: $<%= (totals.total_amount / totals.total_number).toFixed(2) %>    </p>
             <% } %>
         </div>
     </main>
