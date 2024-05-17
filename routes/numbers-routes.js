@@ -60,6 +60,35 @@ async function getUserResultsLast30Days() {
     }
 }
 
+async function getUserWithHighestAverageNumber() {
+    try {
+        const client = await pool.connect();
+        
+        const result = await client.query(`
+        SELECT subquery.user_id, subquery.name, AVG(subquery.total_amount_per_day) AS average_total_amount_per_day
+        FROM (
+            SELECT users.id AS user_id, 
+                   users.name, 
+                   SUM(numbers.amount) AS total_amount_per_day, 
+                   numbers.created_at::date
+            FROM numbers
+            JOIN users ON numbers.user_id = users.id
+            WHERE date_trunc('month', numbers.created_at) = date_trunc('month', current_date)
+            GROUP BY users.id, users.name, numbers.created_at::date
+        ) AS subquery
+        GROUP BY subquery.user_id, subquery.name
+        ORDER BY average_total_amount_per_day DESC
+        LIMIT 1;
+        `);
+        client.release();
+        
+        // Return the user with the highest average number per entry
+        return result.rows[0];
+    } catch (error) {
+        throw error;
+    }
+}
+
 router.get('/numbers', checkAuthenticated, (req, res) => {
     res.render('numbers.ejs', {
         pageTitle: "Daily numbers"
@@ -85,10 +114,14 @@ router.get('/userresults',checkAuthenticated, async (req, res) => {
     try {
         const users = await getAllUsers();
         const results = await getUserResultsLast30Days();
+        const highestAverageUser = await getUserWithHighestAverageNumber();
+
         res.render('userresults.ejs', {
             pageTitle: 'User Results (Last 30 Days)',
             users: users,
-            results: results
+            results: results,
+            highestAverageUser: highestAverageUser
+            
         });
     } catch (error) {
         console.error(error);

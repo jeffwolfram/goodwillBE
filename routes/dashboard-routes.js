@@ -11,6 +11,9 @@ async function getProcessingReport() {
     return result.rows[0];
 };
 
+
+
+
 async function getUserTotalsForCurrentMonth() {
     try {
         const client = await pool.connect();
@@ -93,6 +96,8 @@ router.get('/dashboard', checkAuthenticated, isAdmin, async(req, res) => {
         ecom: ecom,
         items_total: 0, 
         userTotals: userTotals
+        
+        
         
     })
    } catch (error) {
