@@ -1,3 +1,4 @@
+/* Existing styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -8,6 +9,7 @@ body {
     padding: 20px;
     text-align: center; 
 }
+
 form {
     background: #fff;
     padding: 20px;
@@ -38,9 +40,7 @@ input[type=email], input[type=password], input[type=name] {
     width:70%;
 }
 
-
 /*****************************header****************************/
-
 header {
     background-color: #333; 
     color: #fff; 
@@ -131,46 +131,56 @@ button:hover {
     width: 105px;
     border-radius: 2px;
 }
+
 .item-count {
     margin-left: 10px;
 }
+
 table td{
     border-radius: 2px;
     border-color: black;
 }
+
 .reports {
     text-align:center;
 }
+
 .tcont {
     margin-left:10px;
 }
+
 .heading {
     text-align: center;
 }
+
 .tables-container {
     display: flex;
     justify-content: space-around;
     margin-left:10px;
 }
+
 .table-column {
     flex: 1;
 }
+
 table {
     margin-left:10px;
 }
+
 .center {
     text-align: center;
 }
+
 .headername {
     margin-left:5px;
 }
+
 td {
     text-align: center;
 }
 
 .reports {
     padding-right: 55px;
-  
 }
 
 .logoutButton {
@@ -209,13 +219,13 @@ td {
     transform: translateY(1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
+
 button:active {
     transform: translateY(1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .checklist {
-    /* max-width: 300px; */
     margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
@@ -228,16 +238,12 @@ button:active {
 
 .checklist-item {
     margin-bottom: 10px;
+    display:flex;
+    align-items: center;
 }
 
 .checklist-item input[type="checkbox"] {
     margin-right: 10px;
-}
-
-.checklist-item {
-    margin-bottom: 10px;
-    display:flex;
-    align-items: center;
 }
 
 .checklist-item input[type="checkbox"],
@@ -255,36 +261,40 @@ textarea {
     border-radius: 4px; 
     box-sizing: border-box; 
 }
+
 .num-input {
     width:20px;
 }
+
 .divider {
     height: 1px;
     background-color: #000;
     margin: 10px 0; 
 }
+
 #frontpage {
     width:100%;
     background-color: white;
-    
 }
+
 #frontpage img {
     width:500px;
     display:block;
-     margin:auto;
+    margin:auto;
 }
-
-
 
 .buffer-left {
     margin-left: 10px;
 }
+
 .max-size {
     max-width: 380px;
 }
+
 .inlineblock {
     display:inline-block;
 }
+
 .less-bottom {
     margin-bottom: -10px ;
 }
@@ -294,45 +304,67 @@ textarea {
     display:inline-block;
     padding-left:10px;
 }
+
 .wishlist-container {
     width:45%;
     display:inline-block;
 }
+
 .motd-container, .wishlist-container {
     margin:0;
     vertical-align:top;
     box-sizing: border-box;
 }
 
-
-
-/* dashboard page  */
-.box {
-    /* border:1px solid black; */
-    padding:20px;
-    margin:10px;
-    text-align: left;
-    width:400px;
+/* dashboard page */
+.dashboard-box {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 20px;
+    flex: 1;
+    min-width: 300px;
+    max-width: 600px;
 }
-.main-box {
-    display:flex;
-    justify-content: space-around;
+
+.dashboard-main-box {
+    display: flex;
     flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px;
+}
+
+.dashboard h2 {
+    color: #333;
+}
+
+.dashboard table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.dashboard table, .dashboard th, .dashboard td {
+    border: 1px solid #ddd;
+}
+
+.dashboard th, .dashboard td {
+    padding: 12px;
+    text-align: left;
+}
+
+.dashboard th {
+    background-color: #f4f4f4;
 }
 
 @media (max-width: 600px) {
-    .main-box {
+    .dashboard-main-box {
         flex-direction: column;
     }
 }
-.box h3 {
-    text-align: center;
-}
 
-
-
-
-/* styles.css */
+/* usertotals */
 
 .usertotals header {
     background-color: #333;
@@ -344,24 +376,19 @@ textarea {
     list-style-type: none;
     margin: 0;
     padding: 0;
-    
 }
 
-/* usertotals */
-
-.usertotals  table {
+.usertotals table {
     width: 100%;
     max-width: 700px;
     border: solid black 1px;
-    margin-right:10px;
+    margin-right: 10px;
     margin-bottom: 20px;
-    
 }
 
 /* Style table headers */
 .usertotals th {
     border: solid black 1px;
-
     background-color: #333;
     color: #fff;
     padding: 10px;
@@ -392,6 +419,7 @@ textarea {
 .edit-btn:hover {
     background-color: #0056b3;
 }
+
 .newnum {
     background: #fff;
     padding: 20px;

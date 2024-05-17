@@ -1,74 +1,73 @@
 <%- include('layout') %>
-<body>
+<body class="dashboard">
     <%- include('header') %>
     <h1 class="center"><%= pageTitle %></h1>
+
     <% if (ecom) { %>
         <% let items_total = 0; %>
-    <% let ecomdate = ""; %>
+        <% let ecomdate = ""; %>
         <% ecom.forEach(function(row) { %>
             <% items_total += row.item_count; %>
             <% ecomdate = row.created_date.toDateString(); %>
         <% }); %>
-        <h3 class="center">
-            ECOM Date: <%= ecomdate %> - Total: <%= items_total %>
-
-        </h3>
+        <h3 class="center">ECOM Date: <%= ecomdate %> - Total: <%= items_total %></h3>
     <% } %>
-    <div class="main-box">
-        <div class="box">
-            <h1>User Totals for the Current Month</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>User</th>
-                <th>Total Amount</th>
-                <th>Total Number</th>
-                <th>Average per Day</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% userTotals.forEach(user => { %>
-                <tr>
-                    <td><%= user.name %></td>
-                    <td><%= parseFloat(user.total_amount).toFixed(2) %></td>
-                    <td><%= user.total_number %></td>
-                    <td><%= user.average_per_day %></td>
-                </tr>
-            <% }) %>
-        </tbody>
-    </table>
+
+    <div class="dashboard-main-box">
+        <div class="dashboard-box">
+            <h2>User Totals for the Current Month</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Total Amount</th>
+                        <th>Total Number</th>
+                        <th>Average per Day</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% userTotals.forEach(user => { %>
+                        <tr>
+                            <td><%= user.name %></td>
+                            <td><%= parseFloat(user.total_amount).toFixed(2) %></td>
+                            <td><%= user.total_number %></td>
+                            <td><%= user.average_per_day %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
         </div>
-        <div class="box">
-            <h3>Processing</h3>
+
+        <div class="dashboard-box">
+            <h2>Processing</h2>
             <% if (processing) { %>
-            <h4>DATE: <%= new Date(processing.created_date).toDateString() %></h4>
-            <h4>Name: <%= processing.username %></h4>
-            <p><strong>Melons cleared:</strong> <%= processing.melons_cleared%></p>
-            <p><strong>Gray tubs cleared:</strong> <%= processing.gray_cleared %></p>
-            <p><strong>Blue tubs cleared:</strong> <%= processing.blue_cleared%></p>
-            <h4 class="center">Fifteen minute drill</h4>
-            <hr>
-            <p><strong>Full melons replaced:</strong> <%= processing.full_melon %></p>
-            <p><strong>Full blue tubs replaced:</strong> <%= processing.blue_tubs %></p>
-            <p><strong>Trash can emptied:</strong> <%= processing.trash_can %></p>
-            <p><strong>Full cut cables emptied:</strong> <%= processing.cut_cables%></p>
-            <p><strong>Cleaned work area:</strong> <%= processing.cleaned%></p>
-            <p><strong>Notes: </strong><%= processing.notes %></p>
+                <h4>Date: <%= new Date(processing.created_date).toDateString() %></h4>
+                <h4>Name: <%= processing.username %></h4>
+                <p><strong>Melons cleared:</strong> <%= processing.melons_cleared %></p>
+                <p><strong>Gray tubs cleared:</strong> <%= processing.gray_cleared %></p>
+                <p><strong>Blue tubs cleared:</strong> <%= processing.blue_cleared %></p>
+                <h4 class="center">Fifteen minute drill</h4>
+                <hr>
+                <p><strong>Full melons replaced:</strong> <%= processing.full_melon %></p>
+                <p><strong>Full blue tubs replaced:</strong> <%= processing.blue_tubs %></p>
+                <p><strong>Trash can emptied:</strong> <%= processing.trash_can %></p>
+                <p><strong>Full cut cables emptied:</strong> <%= processing.cut_cables %></p>
+                <p><strong>Cleaned work area:</strong> <%= processing.cleaned %></p>
+                <p><strong>Notes:</strong> <%= processing.notes %></p>
             <% } %>
         </div>
 
-        <div class="box">
-            <h3>DMAN</h3>
+        <div class="dashboard-box">
+            <h2>DMAN</h2>
             <% if (dman) { %> 
-            <h4>Date: <%= new Date(dman.created_date).toDateString() %></h4>
-            <h4>Name: <%= dman.username %></h4>
-            <p><strong>Computers completed: </strong><%= dman.completed %></p>
-            <p><strong>Full pallets created:</strong> <%= dman.full_pallets_created %></p>
-            <p><strong>Area cleaned:</strong> <%= dman.cleaned %></p>
-            <p><strong>Notes:</strong> <%= dman.notes %></p>
+                <h4>Date: <%= new Date(dman.created_date).toDateString() %></h4>
+                <h4>Name: <%= dman.username %></h4>
+                <p><strong>Computers completed:</strong> <%= dman.completed %></p>
+                <p><strong>Full pallets created:</strong> <%= dman.full_pallets_created %></p>
+                <p><strong>Area cleaned:</strong> <%= dman.cleaned %></p>
+                <p><strong>Notes:</strong> <%= dman.notes %></p>
             <% } %>
         </div>
-        
-        
     </div>
 </body>
+</html>
