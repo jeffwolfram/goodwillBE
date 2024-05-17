@@ -11,6 +11,37 @@ async function getProcessingReport() {
     return result.rows[0];
 };
 
+async function getUserTotalsForCurrentMonth() {
+    try {
+        const client = await pool.connect();
+        
+        // Get current date and start of the month
+        const currentDate = new Date();
+        const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const daysInMonth = currentDate.getDate();
+        
+        const result = await client.query(`
+            SELECT users.name, SUM(numbers.amount) AS total_amount, SUM(numbers.number) AS total_number
+            FROM numbers
+            JOIN users ON numbers.user_id = users.id
+            WHERE date_trunc('month', numbers.created_at) = date_trunc('month', current_date)
+            GROUP BY users.name
+            ORDER BY users.name;
+        `);
+        client.release();
+        
+        // Add average per day to each user's data
+        const userTotals = result.rows.map(user => {
+            user.average_per_day = (user.total_amount / daysInMonth).toFixed(2);
+            return user;
+        });
+        
+        return userTotals;
+    } catch (error) {
+        throw error;
+    }
+}
+
 async function getDmanReport() {
     const result = await pool.query('SELECT * FROM dman ORDER BY id DESC LIMIT 1');
     return result.rows[0];
@@ -46,25 +77,19 @@ async function getTestingReport() {
 
 router.get('/dashboard', checkAuthenticated, isAdmin, async(req, res) => {
    try {
+     const userTotals = await getUserTotalsForCurrentMonth();
      const processing = await getProcessingReport();
      const dman = await getDmanReport();
-     const data = await getTestingReport();
      const ecom = await getAllEcom();
-     const testing = {};
-     data.forEach(item => {
-        if (!testing[item.user_name]) {
-            testing[item.user_name] = [];
-        }
-        testing[item.user_name].push(item);
-     });
-     console.log(testing);
+     
+    
     res.render('dashboard.ejs', {
         pageTitle: "Daily Recap",
         processing: processing,
         dman: dman,
-        testing: testing,
         ecom: ecom,
-        items_total: 0
+        items_total: 0, 
+        userTotals: userTotals
         
     })
    } catch (error) {

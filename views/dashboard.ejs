@@ -16,6 +16,29 @@
     <% } %>
     <div class="main-box">
         <div class="box">
+            <h1>User Totals for the Current Month</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Total Amount</th>
+                <th>Total Number</th>
+                <th>Average per Day</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% userTotals.forEach(user => { %>
+                <tr>
+                    <td><%= user.name %></td>
+                    <td><%= parseFloat(user.total_amount).toFixed(2) %></td>
+                    <td><%= user.total_number %></td>
+                    <td><%= user.average_per_day %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+        </div>
+        <div class="box">
             <h3>Processing</h3>
             <% if (processing) { %>
             <h4>DATE: <%= new Date(processing.created_date).toDateString() %></h4>
@@ -45,5 +68,7 @@
             <p><strong>Notes:</strong> <%= dman.notes %></p>
             <% } %>
         </div>
+        
+        
     </div>
 </body>
