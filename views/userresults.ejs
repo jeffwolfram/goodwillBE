@@ -70,7 +70,8 @@
         </table>
         
     <% }); %>
+    <% let totalTotal = totalAmountForMonth / totalDays %>
     <p>Total produced: $<%= totalAmountForMonth.toFixed(2)%></p>
-    <p>Average per day: $<%= totalAmountForMonth / totalDays.toFixed(2)  %></p>
+    <p>Average per day: $<%= totalTotal.toFixed(2)   %></p>
 </body>
 </html>
