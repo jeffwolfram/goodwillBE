@@ -2,10 +2,11 @@
 
 <body class="usertotals">
     <%- include('header') %>
-
+    <% let totalDays = 0; %>
     <% // Group results by date %>
     <% let groupedResults = {}; %>
-
+    
+    
     <% results.forEach(result => { %>
         <% console.log(result) %>
         <% let dateKey = new Date(result.created_at).toDateString(); %>
@@ -14,9 +15,11 @@
         <% } %>
         <% groupedResults[dateKey].push(result); %>
     <% }); %>
+    <% let totalAmountForMonth = 0; %>
 
     <% // Render a table for each date group %>
     <% Object.keys(groupedResults).forEach(date => { %>
+        <% totalDays += 1 %>
         <h2><%= date %></h2>
         <table>
             <thead>
@@ -31,10 +34,12 @@
             <tbody>
                 <% let totalAmount = 0; %>
                 <% let totalNumber = 0; %>
+            
 
                 <% groupedResults[date].forEach(result => { %>
                     <% let amount = parseFloat(result.amount); %>
                     <% let number = parseFloat(result.number); %>
+                    
 
                     <tr>
                         <td><%= result.name %></td>
@@ -48,6 +53,8 @@
 
                     <% totalAmount += amount; %>
                     <% totalNumber += number; %>
+                    <% totalAmountForMonth += amount; %>
+                    
                 <% }); %>
 
                 <% let averageAmount = totalNumber ? totalAmount / totalNumber : 0; %>
@@ -61,6 +68,9 @@
                 </tr>
             </tbody>
         </table>
+        
     <% }); %>
+    <p>Total produced: $<%= totalAmountForMonth.toFixed(2)%></p>
+    <p>Average per day: $<%= totalAmountForMonth / totalDays.toFixed(2)  %></p>
 </body>
 </html>
