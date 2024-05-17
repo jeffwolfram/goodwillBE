@@ -5,36 +5,43 @@
     <% let sumtotal = 0; %>
     <% let itemtotal = 0; %>
     <main>
-        <div class="container">
-            <h1><%= pageTitle %></h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Number</th>
-                    </tr>
-                </thead>
-                <% let dayTotal = 0; %>
-                <tbody>
-                    <% details.forEach(detail => { %>
-                        <% sumtotal += detail.amount %>
-                        <% itemtotal += detail.number %>
-                        <% dayTotal += 1 %>
+        <h1><%= pageTitle %></h1>
+        <div class="dashboard-main-box">
+            
+            <div class="dashboard-box">
+                <table>
+                    <thead>
                         <tr>
-                            <td><%= new Date(detail.date).toDateString() %></td>
-                            <td><%= detail.amount %></td>
-                            <td><%= detail.number %></td>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Number</th>
                         </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-            <% if (totals) { %>
+                    </thead>
+                    <% let dayTotal = 0; %>
+                    <tbody>
+                        <% details.forEach(detail => { %>
+                            <% sumtotal += detail.amount %>
+                            <% itemtotal += detail.number %>
+                            <% dayTotal += 1 %>
+                            <tr>
+                                <td><%= new Date(detail.date).toDateString() %></td>
+                                <td><%= detail.amount %></td>
+                                <td><%= detail.number %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+            
+           <div class="dashboard-box">
+               <% if (totals) { %>
                 <p>Total amount for the last 30 days: $<%= totals.total_amount %></p>
                 <p>Total number for the last 30 days: <%= totals.total_number %></p>
                 <p>Your average price per item: $<%= (totals.total_amount / totals.total_number).toFixed(2) %>    </p>
                 <p>You daily average was: $<%= (totals.total_amount / dayTotal).toFixed(2) %></p>
             <% } %>
+           </div>
+         
         </div>
     </main>
 
