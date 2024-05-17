@@ -12,7 +12,7 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const initializePassport = require('./passport-config');
-const pool = require("./prod-db.js"); 
+const pool = require("./database2"); 
 const e = require('express');
 const {isAdmin, isLead, isManager} = require('./roleMiddleware');
 initializePassport(passport);
