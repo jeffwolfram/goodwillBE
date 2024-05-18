@@ -137,6 +137,13 @@ async function getUserWithHighestAverageNumber() {
     }
 }
 
+function formatCurrency(amount) {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD'
+    }).format(amount);
+}
+
 router.get('/numbers', checkAuthenticated, (req, res) => {
     res.render('numbers.ejs', {
         pageTitle: "Daily numbers"
@@ -166,6 +173,7 @@ router.get('/userresults',checkAuthenticated, async (req, res) => {
         const highestTotalAmount = await getUserWithHighestTotalAmountForMonth();
         const highestItemCount = await getUserWithHightestItemCountForMonth();
 
+    
         res.render('userresults.ejs', {
             pageTitle: 'User Results (Last 30 Days)',
             users: users,
@@ -266,4 +274,6 @@ router.post('/editnumbers/:id', checkAuthenticated, async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+
 module.exports = router;

@@ -30,6 +30,7 @@ const motdRoutes = require('./routes/motd-routes.js');
 const ecomRoutes = require('./routes/ecom-routes.js');
 const mellonshipRoutes = require('./routes/mellonship-routes.js');
 const numbersRoutes = require('./routes/numbers-routes.js');
+const categoryRoutes = require('./routes/category-routes.js');
 
 
 const app = express();
@@ -138,6 +139,7 @@ app.use(motdRoutes);
 app.use(ecomRoutes);
 app.use(mellonshipRoutes);
 app.use(numbersRoutes);
+app.use(categoryRoutes)
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {

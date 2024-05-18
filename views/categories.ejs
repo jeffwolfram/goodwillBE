@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= pageTitle %></title>
+</head>
+<body>
+    <h1>Categories</h1>
+    <form action="/categories" method="post">
+        <input type="text" name="name" id="categoryName" placeholder="Category Name" required>
+        <button type="submit">Add Category</button>
+    </form>
+    <ul>
+        <% categories.forEach(category => { %>
+            <li>
+                <a href="/categories/<%= category.id %>/items"><%= category.name %></a>
+                <a href="/categories/edit/<%= category.id %>">Edit</a>
+                <form action="/categories/delete/<%= category.id %>" method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        <% }) %>
+    </ul>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('categoryName').focus();
+        });
+    </script>
+</body>
+</html>
+

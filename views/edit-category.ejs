@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Category</title>
+</head>
+<body>
+    <h1>Edit Category</h1>
+    <form action="/categories/edit/<%= category.id %>" method="post">
+        <input type="text" name="name" id="name" value="<%= category.name %>" required>
+        <button type="submit">Save Changes</button>
+    </form>
+    <a href="/categories">Cancel</a>
+</body>
+</html>

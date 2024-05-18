@@ -1,0 +1,19 @@
+<%- include('layout') %>
+
+<body class="">
+    <%- include('header') %>
+    <h1 class="page-title"><%= pageTitle %></h1>
+    <div class="categories-container">
+        <% categories.forEach(category => { %>
+            <div class="category">
+                <h2 class="category-title"><%= category.name %></h2>
+                <ul class="item-list">
+                    <% category.items.forEach(item => { %>
+                        <li class="item"><%= item.name %> - $<%= item.price %></li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% }) %>
+    </div>
+</body>
+</html>

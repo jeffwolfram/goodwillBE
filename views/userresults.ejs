@@ -82,7 +82,7 @@
 
     <h4>Highest total per day average</h4>
     <% if (highestAverageUser) { %>
-        <p>User: <%= highestAverageUser.name %> - <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed(2) %></p>
+        <p>User: <%= highestAverageUser.name %> - <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed() %></p>
         
     <% } else { %>
         <p>No data available for the current month.</p>
