@@ -76,10 +76,10 @@
     <p>Total produced: $<%= totalAmountForMonth.toFixed(2)%></p>
     <p>Average per day: $<%= (totalAmountForMonth / totalDays).toFixed(2)   %></p>
     <p>Average per item: $</p>
-    <h2>User with the Highest Total per Day</h2>
+    <h4>User with the Highest Total per Day</h4>
     <% if (highestAverageUser) { %>
-        <p><strong>User:</strong> <%= highestAverageUser.name %></p>
-        <p><strong>Highest Total per Day:</strong> <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed(2) %></p>
+        <p>User: <%= highestAverageUser.name %></p>
+        <p>Highest Total per Day: <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed(2) %></p>
     <% } else { %>
         <p>No data available for the current month.</p>
     <% } %>
