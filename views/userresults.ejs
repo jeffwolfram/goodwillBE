@@ -8,7 +8,6 @@
     <div class="dashboard-main-box">
     <div class="dashboard-box">
     <% results.forEach(result => { %>
-        <% console.log(result) %>
         <% let dateKey = new Date(result.created_at).toDateString(); %>
         <% if (!groupedResults[dateKey]) { %>
             <% groupedResults[dateKey] = []; %>
@@ -76,10 +75,15 @@
     <p>Total produced: $<%= totalAmountForMonth.toFixed(2)%></p>
     <p>Average per day: $<%= (totalAmountForMonth / totalDays).toFixed(2)   %></p>
     <p>Average per item: $</p>
-    <h4>User with the Highest Total per Day</h4>
+    <h4>Highest total day for the month</h4>
+    <p><%= highestTotalAmount.name %> - <%= highestTotalAmount.highest_single_amount %></p>
+    <h4>Highest single item count for the month</h4>
+    <p><%= highestItemCount.name %> - <%= highestItemCount.highest_single_number %></p>
+
+    <h4>Highest total per day average</h4>
     <% if (highestAverageUser) { %>
-        <p>User: <%= highestAverageUser.name %></p>
-        <p>Highest Total per Day: <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed(2) %></p>
+        <p>User: <%= highestAverageUser.name %> - <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed(2) %></p>
+        
     <% } else { %>
         <p>No data available for the current month.</p>
     <% } %>

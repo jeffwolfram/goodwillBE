@@ -18,6 +18,54 @@ async function getAllUsers() {
     }
 }
 
+async function getUserWithHighestTotalAmountForMonth() {
+    try {
+        const client = await pool.connect();
+        
+        const result = await client.query(`
+                SELECT users.id AS user_id, 
+                users.name, 
+                MAX(numbers.amount) AS highest_single_amount
+        FROM numbers
+        JOIN users ON numbers.user_id = users.id
+        WHERE date_trunc('month', numbers.created_at) = date_trunc('month', current_date)
+        GROUP BY users.id, users.name
+        ORDER BY highest_single_amount DESC
+        LIMIT 1;
+        `);
+        client.release();
+        
+        return result.rows[0]; // Return the user with the highest total amount for the month
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getUserWithHightestItemCountForMonth() {
+    try {
+        const client = await pool.connect();
+
+        const result = await client.query(`
+        SELECT users.id AS user_id,
+        users.name, 
+        MAX(numbers.number) AS highest_single_number
+        FROM numbers
+        JOIN users ON numbers.user_id = users.id
+        WHERE date_trunc('month', numbers.created_at) = date_trunc('month', current_date)
+        GROUP BY users.id, users.name
+        ORDER BY highest_single_number DESC
+        LIMIT 1;
+        `);
+        client.release();
+
+        return result.rows[0];
+        
+    } catch (error) {
+        throw error;
+        
+    }
+}
+
 // Function to fetch user totals for the last 30 days
 async function getUserDetailsAndTotalsLast30Days(userId) {
     try {
@@ -115,12 +163,16 @@ router.get('/userresults',checkAuthenticated, async (req, res) => {
         const users = await getAllUsers();
         const results = await getUserResultsLast30Days();
         const highestAverageUser = await getUserWithHighestAverageNumber();
+        const highestTotalAmount = await getUserWithHighestTotalAmountForMonth();
+        const highestItemCount = await getUserWithHightestItemCountForMonth();
 
         res.render('userresults.ejs', {
             pageTitle: 'User Results (Last 30 Days)',
             users: users,
             results: results,
-            highestAverageUser: highestAverageUser
+            highestAverageUser: highestAverageUser,
+            highestTotalAmount: highestTotalAmount,
+            highestItemCount: highestItemCount
             
         });
     } catch (error) {

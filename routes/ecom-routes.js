@@ -13,7 +13,7 @@ async function getAllEcom() {
 router.get("/ecom", async(req, res) => {
     try {
         const ecom = await getAllEcom();
-        console.log(ecom)
+        
         res.render('ecom.ejs', {
         pageTitle: 'Goodwill Ecom',
         data: ecom,
