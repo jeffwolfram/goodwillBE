@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../database2');
+const { checkAuthenticated } = require('../roleMiddleware.js')
+const { checkNotAuthenticated} = require('../roleMiddleware.js')
+const {isAdmin, isLead, isManager} = require('../roleMiddleware')
 
-router.get('/categories', async (req, res) => {
+router.get('/categories', checkAuthenticated, async (req, res) => {
     try {
         const result = await pool.query(`SELECT * FROM categories ORDER BY name ASC`);
         res.render('categories.ejs', { categories: result.rows, pageTitle: 'PriceList' })
@@ -12,7 +15,7 @@ router.get('/categories', async (req, res) => {
     }
 })
 
-router.post('/categories', async (req, res) => {
+router.post('/categories', checkAuthenticated, async (req, res) => {
 try {
     const { name } = req.body;
     await pool.query(`INSERT INTO categories (name) VALUES ($1)`, [name]);
@@ -26,7 +29,7 @@ try {
 
 
 // Delete a category
-router.post('/categories/delete/:id', async (req, res) => {
+router.post('/categories/delete/:id', checkAuthenticated, isAdmin, async (req, res) => {
     try {
         const { id } = req.params;
         await pool.query('DELETE FROM categories WHERE id = $1', [id]);
@@ -38,7 +41,7 @@ router.post('/categories/delete/:id', async (req, res) => {
 });
 
 // Get all items in a category
-router.get('/categories/:id/items', async (req, res) => {
+router.get('/categories/:id/items', checkAuthenticated, async (req, res) => {
     try {
         const categoryId = req.params.id;
 
@@ -58,7 +61,7 @@ router.get('/categories/:id/items', async (req, res) => {
     }
 });
 
-router.get('/categories/edit/:id', async (req, res) => {
+router.get('/categories/edit/:id', checkAuthenticated, isAdmin, async (req, res) => {
     try {
         const categoryId = req.params.id;
         const result = await pool.query('SELECT * FROM categories WHERE id = $1', [categoryId]);
@@ -72,7 +75,7 @@ router.get('/categories/edit/:id', async (req, res) => {
 
 
 // Add a new item to a category
-router.post('/categories/:id/items', async (req, res) => {
+router.post('/categories/:id/items', checkAuthenticated, isAdmin, async (req, res) => {
     try {
         const categoryId = req.params.id;
         const { name, price } = req.body;
@@ -85,7 +88,7 @@ router.post('/categories/:id/items', async (req, res) => {
 });
 
 // Edit an item
-router.post('/categories/:categoryId/items/edit/:itemId', async (req, res) => {
+router.post('/categories/:categoryId/items/edit/:itemId', checkAuthenticated, isAdmin, async (req, res) => {
     try {
         const { categoryId, itemId } = req.params;
         const { name, price } = req.body;
@@ -97,7 +100,7 @@ router.post('/categories/:categoryId/items/edit/:itemId', async (req, res) => {
     }
 });
 
-router.post('/categories/edit/:id', async (req, res) => {
+router.post('/categories/edit/:id', checkAuthenticated, isAdmin, async (req, res) => {
     try {
         const categoryId = req.params.id;
         const { name } = req.body;
@@ -110,7 +113,7 @@ router.post('/categories/edit/:id', async (req, res) => {
 });
 
 // Delete an item
-router.post('/categories/:categoryId/items/delete/:itemId', async (req, res) => {
+router.post('/categories/:categoryId/items/delete/:itemId', checkAuthenticated, isAdmin, async (req, res) => {
     try {
         const { categoryId, itemId } = req.params;
         await pool.query('DELETE FROM priceditems WHERE id = $1', [itemId]);
@@ -121,7 +124,7 @@ router.post('/categories/:categoryId/items/delete/:itemId', async (req, res) => 
     }
 });
 // all categories with all items
-router.get('/categories-with-items', async (req, res) => {
+router.get('/categories-with-items', checkAuthenticated, async (req, res) => {
     try {
         // Fetch all categories
         const categoriesResult = await pool.query('SELECT * FROM categories');

@@ -6,11 +6,13 @@
 </head>
 <body>
     <h1><%= categoryName %></h1>
+    <% if (locals.user && locals.user === 'admin') { %>
     <form action="/categories/<%= categoryId %>/items" method="post">
         <input type="text" name="name" id="name" placeholder="Item Name" required>
         <input type="text" step="0.01" name="price" placeholder="Price" required>
         <button type="submit">Add Item</button>
     </form>
+    <% } %>
     <ul>
         <% items.forEach(item => { %>
             <li><%= item.name %> - $<%= item.price %></li>
