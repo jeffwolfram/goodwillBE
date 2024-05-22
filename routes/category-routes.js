@@ -4,7 +4,7 @@ const pool = require('../database2');
 
 router.get('/categories', async (req, res) => {
     try {
-        const result = await pool.query(`SELECT * FROM categories`);
+        const result = await pool.query(`SELECT * FROM categories ORDER BY name ASC`);
         res.render('categories.ejs', { categories: result.rows, pageTitle: 'PriceList' })
     } catch (error) {
         console.error(error);
