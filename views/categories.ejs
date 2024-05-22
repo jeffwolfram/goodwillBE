@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+<%- include('layout') %>
 <head>
-    <meta charset="UTF-8">
-    <title><%= pageTitle %></title>
+    <!-- Add your CSS styles here -->
 </head>
 <body>
+    <%- include('header') %>
     <h1>Categories</h1>
     <form action="/categories" method="post">
         <input type="text" name="name" id="categoryName" placeholder="Category Name" required>
@@ -15,9 +14,7 @@
             <li>
                 <a href="/categories/<%= category.id %>/items"><%= category.name %></a>
                 <a href="/categories/edit/<%= category.id %>">Edit</a>
-                <form action="/categories/delete/<%= category.id %>" method="post" style="display:inline;">
-                    <button type="submit">Delete</button>
-                </form>
+                <a href="/categories/delete/<%= category.id %>" onclick="return confirm('Are you sure you want to delete <%= category.name %> category?');">Delete</a>
             </li>
         <% }) %>
     </ul>
@@ -29,4 +26,5 @@
     </script>
 </body>
 </html>
+
 

@@ -8,7 +8,14 @@
             <li><a href="/">Home</a></li>
             <% if (locals.user && locals.user === 'admin') { %>
                 <li><a href="/newnumbers">New Numbers</a></li>
-                
+                <div class="dropdown">
+                    <input type="button" class="dropbtn" onclick="toggleDropdown()" value="Price List" />
+                    <div id="myDropdown" class="dropdown-content">
+                        <a href="/categories-with-items">List All</a>
+                        <a href="/categories">Categories</a>
+                        <a href="#">Link 3</a>
+                    </div>
+                </div>
                 <li><a href="/dashboard">Dashboard</a></li>
                 <li><a href="/ecom">ecom</a></li>
                 <li><a href="/userresults">User Numbers</a></li>
@@ -26,3 +33,4 @@
         </ul>
     </nav>
 </header>
+<script src="server.js"></script>

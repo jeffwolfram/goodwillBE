@@ -14,8 +14,8 @@
     <% } %>
 
     <div class="dashboard-main-box">
-        <div class="dashboard-box">
-            <h2>User Totals for the Current Month</h2>
+        <div class="dashboard-boxtwo">
+            <h2 class="center">Pricing Totals for the Current Month</h2>
             <table>
                 <thead>
                     <tr>
@@ -39,7 +39,7 @@
         </div>
 
         <div class="dashboard-box">
-            <h2>Processing</h2>
+            <h2 class="center">Processing</h2>
             <% if (processing) { %>
                 <h4>Date: <%= new Date(processing.created_date).toDateString() %></h4>
                 <h4>Name: <%= processing.username %></h4>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="dashboard-box">
-            <h2>DMAN</h2>
+            <h2 class="center">DMAN</h2>
             <% if (dman) { %> 
                 <h4>Date: <%= new Date(dman.created_date).toDateString() %></h4>
                 <h4>Name: <%= dman.username %></h4>
