@@ -127,7 +127,7 @@ router.post('/categories/:categoryId/items/delete/:itemId', checkAuthenticated, 
 router.get('/categories-with-items', checkAuthenticated, async (req, res) => {
     try {
         // Fetch all categories
-        const categoriesResult = await pool.query('SELECT * FROM categories');
+        const categoriesResult = await pool.query('SELECT * FROM categories ORDER BY name ASC');
         const categories = categoriesResult.rows;
 
         // Fetch items for each category

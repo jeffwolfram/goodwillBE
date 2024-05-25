@@ -10,7 +10,7 @@ const { checkNotAuthenticated} = require('../roleMiddleware.js')
 async function getAllUsers() {
     try {
         const client = await pool.connect();
-        const result = await client.query('SELECT * FROM users');
+        const result = await client.query('SELECT * FROM users ORDER BY name ASC ');
         client.release(); // Release the client back to the pool
         return result.rows;
     } catch (error) {
