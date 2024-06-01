@@ -178,9 +178,9 @@ router.get('/userresults',checkAuthenticated, async (req, res) => {
             pageTitle: 'User Results (Last 30 Days)',
             users: users,
             results: results,
-            highestAverageUser: highestAverageUser,
-            highestTotalAmount: highestTotalAmount,
-            highestItemCount: highestItemCount
+            highestAverageUser: highestAverageUser || { name: 'N/A', highest_single_amount: 0  },
+            highestTotalAmount: highestTotalAmount || {name: 'N/A', highest_single_number: 0 },
+            highestItemCount: highestItemCount || {name: 'N/A', highest_item_count: 0}
             
         });
     } catch (error) {
