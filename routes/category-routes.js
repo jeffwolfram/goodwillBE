@@ -197,7 +197,7 @@ router.get('/new-main-categories', checkAuthenticated, async (req, res) => {
         const categories = categoriesResult.rows;
 
         // Render the view with main categories and categories
-        res.render('NewMainCategories.ejs', { 
+        res.render('newMainCategories.ejs', { 
             mainCategories, 
             categories, 
             pageTitle: 'Main Categories' });
