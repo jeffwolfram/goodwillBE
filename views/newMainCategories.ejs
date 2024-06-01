@@ -1,0 +1,17 @@
+<%- include('layout') %>
+<body>
+    <%- include('header') %>
+
+<% if (locals.user && locals.user === 'admin') { %>
+    <form action="/main-categories" method="post">
+        <input type="text" name="name" id="mainCategoryName" placeholder="Main Category Name" required>
+        <h2>Select Categories</h2>
+        <% categories.forEach(category => { %>
+            <div>
+                <input type="checkbox" id="category_<%= category.id %>" name="categoryIds" value="<%= category.id %>">
+                <label for="category_<%= category.id %>"><%= category.name %></label>
+            </div>
+        <% }); %>
+        <button type="submit">Add Main Category</button>
+    </form>
+    <% } %>

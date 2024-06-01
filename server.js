@@ -1,41 +1,96 @@
-
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config();
 }
 
 const path = require('path');
 const port = process.env.PORT || 5000;
-const moment = require('moment-timezone');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const initializePassport = require('./passport-config');
-const pool = require("./database2"); 
-const e = require('express');
-const {isAdmin, isLead, isManager} = require('./roleMiddleware');
+const pool = require("./database2");
+const { isAdmin, isLead, isManager } = require('./roleMiddleware');
 initializePassport(passport);
 
+const app = express();
+const { checkAuthenticated, checkNotAuthenticated } = require('./roleMiddleware');
 
-//routes 
+// Middleware to serve static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Set up EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.urlencoded({ extended: true }));
+app.use(flash());
+app.use(session({
+    secret: process.env.ACCESS_TOKEN_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Middleware to add authentication status to response locals
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = req.isAuthenticated();
+    if (req.isAuthenticated()) {
+        res.locals.user = req.user.role;
+        res.locals.user_name = req.user.name;
+        res.locals.user_email = req.user.email;
+    }
+    next();
+});
+app.use((req, res, next) => {
+    console.log('Request URL:', req.url);
+    next();
+});
+// Routes
 const testingRoutes = require('./routes/testingroutes');
 const reportRoutes = require('./routes/report-routes');
-const noteRoutes = require('./routes/note-routes.js');
-const processingRoutes = require('./routes/processing-routes.js');
-const dashboardRoutes = require('./routes/dashboard-routes.js');
-const dmanRoutes = require('./routes/dman-routes.js');
-const wishlistRoutes = require('./routes/wishlist-routes.js');
-const motdRoutes = require('./routes/motd-routes.js');
-const ecomRoutes = require('./routes/ecom-routes.js');
-const mellonshipRoutes = require('./routes/mellonship-routes.js');
-const numbersRoutes = require('./routes/numbers-routes.js');
-const categoryRoutes = require('./routes/category-routes.js');
+const noteRoutes = require('./routes/note-routes');
+const processingRoutes = require('./routes/processing-routes');
+const dashboardRoutes = require('./routes/dashboard-routes');
+const dmanRoutes = require('./routes/dman-routes');
+const wishlistRoutes = require('./routes/wishlist-routes');
+const motdRoutes = require('./routes/motd-routes');
+const ecomRoutes = require('./routes/ecom-routes');
+const mellonshipRoutes = require('./routes/mellonship-routes');
+const numbersRoutes = require('./routes/numbers-routes');
+const categoryRoutes = require('./routes/category-routes');
 
+// Use routes
+app.use(reportRoutes);
+app.use(testingRoutes);
+app.use(noteRoutes);
+app.use(processingRoutes);
+app.use(dashboardRoutes);
+app.use(dmanRoutes);
+app.use(wishlistRoutes);
+app.use(motdRoutes);
+app.use(ecomRoutes);
+app.use(mellonshipRoutes);
+app.use(numbersRoutes);
+app.use(categoryRoutes);
 
-const app = express();
-const { checkAuthenticated } = require('./roleMiddleware.js');
-const { checkNotAuthenticated} = require('./roleMiddleware.js');
+app.get('/', checkAuthenticated, async (req, res) => {
+    try {
+        const motd = await getLastMotd();
+        const items = await getAllItems();
+        res.render('index.ejs', { 
+            name: req.user.name,
+            pageTitle: 'Welcome',
+            items: items,
+            motd: motd
+        });
+    } catch (error) {
+        console.error(error);
+    }
+});
+
 const items = [
     {id: 1, name: "Receivers"},
     {id: 2, name: "TV"},
@@ -56,35 +111,8 @@ const items = [
    
 ];
 
-app.set('view-engine', 'ejs');
-app.use(express.static('public'));
-app.set('views', path.join(__dirname, 'views'))
-app.use(express.urlencoded({ extended: true }));
-app.use(flash());
-app.use(session({
-    secret: process.env.ACCESS_TOKEN_SECRET,
-    resave: false,
-    saveUninitialized: false
-}));
 
 
-
-app.use(passport.initialize());
-app.use(passport.session());
-app.use((req, res, next) => {
-    res.locals.isAuthenticated = req.isAuthenticated(); 
-    next();
-});
-
-// I added this to verify roles on ejs pages
-app.use((req, res, next) => {
-    if (req.isAuthenticated()) {
-        res.locals.user = req.user.role;
-        res.locals.user_name = req.user.name;
-        res.locals.user_email = req.user.email
-    } 
-    next()
-})
 
 async function getAllUsers() {
     const result = await pool.query('SELECT * FROM users');
@@ -128,18 +156,7 @@ app.get('/login',  (req, res) => {
 });
 
 
-app.use(reportRoutes);
-app.use(testingRoutes);
-app.use(noteRoutes);
-app.use(processingRoutes);
-app.use(dashboardRoutes);
-app.use(dmanRoutes);
-app.use(wishlistRoutes);
-app.use(motdRoutes);
-app.use(ecomRoutes);
-app.use(mellonshipRoutes);
-app.use(numbersRoutes);
-app.use(categoryRoutes)
+
 
 app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {

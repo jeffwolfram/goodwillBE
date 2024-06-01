@@ -1,0 +1,12 @@
+<%- include('layout'); %>
+<body>
+    <%- include('header'); %>
+    <h1>Items under Selected Main Category</h1>
+    <ul>
+        <% items.forEach(item => { %>
+            <li><%= item.name %></li>
+        <% }) %>
+    </ul>
+    <a href="/main-categories">Back to Main Categories</a>
+</body>
+</html>

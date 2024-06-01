@@ -144,5 +144,138 @@ router.get('/categories-with-items', checkAuthenticated, async (req, res) => {
     }
 });
 
+// Get all main categories and categories for the checkboxes
+router.get('/main-categories', checkAuthenticated, async (req, res) => {
+    try {
+        // Fetch all main categories
+        const mainCategoriesResult = await pool.query('SELECT * FROM main_categories ORDER BY name ASC');
+        const mainCategories = mainCategoriesResult.rows;
+
+        // Fetch all categories for the checkboxes
+        const categoriesResult = await pool.query('SELECT * FROM categories ORDER BY name ASC');
+        const categories = categoriesResult.rows;
+
+        // Render the view with main categories and categories
+        res.render('mainCategories.ejs', { mainCategories, categories, pageTitle: 'Main Categories' });
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred.');
+    }
+});
+
+// Create a new main category
+router.post('/main-categories', checkAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { name, categoryIds } = req.body;
+        const mainCategoryResult = await pool.query('INSERT INTO main_categories (name) VALUES ($1) RETURNING id', [name]);
+        const mainCategoryId = mainCategoryResult.rows[0].id;
+
+        if (Array.isArray(categoryIds)) {
+            const insertPromises = categoryIds.map(categoryId => {
+                return pool.query('INSERT INTO main_category_category (main_category_id, category_id) VALUES ($1, $2)', [mainCategoryId, categoryId]);
+            });
+            await Promise.all(insertPromises);
+        }
+
+        res.redirect('/main-categories');
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred.');
+    }
+});
+
+
+
+router.get('/new-main-categories', checkAuthenticated, async (req, res) => {
+    try {
+        // Fetch all main categories
+        const mainCategoriesResult = await pool.query('SELECT * FROM main_categories ORDER BY name ASC');
+        const mainCategories = mainCategoriesResult.rows;
+
+        // Fetch all categories for the checkboxes
+        const categoriesResult = await pool.query('SELECT * FROM categories ORDER BY name ASC');
+        const categories = categoriesResult.rows;
+
+        // Render the view with main categories and categories
+        res.render('NewMainCategories.ejs', { 
+            mainCategories, 
+            categories, 
+            pageTitle: 'Main Categories' });
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred.');
+    }
+});
+
+router.get('/main-categories/:id/items', checkAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const mainCategoryId = req.params.id;
+        
+        // Fetching items associated with the main category
+        const itemsResult = await pool.query(`
+            SELECT i.*
+            FROM items i
+            JOIN main_category_category mcc ON i.category_id = mcc.category_id
+            WHERE mcc.main_category_id = $1
+        `, [mainCategoryId]);
+
+        const items = itemsResult.rows;
+
+        res.render('category-items', { items });
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred while fetching items.');
+    }
+});
+
+
+
+
+// Route to display categories and items for a selected main category
+router.get('/main-categories/:id', checkAuthenticated, async (req, res) => {
+    try {
+        const mainCategoryId = req.params.id;
+
+        // Fetch the selected main category
+        const mainCategoryResult = await pool.query('SELECT * FROM main_categories WHERE id = $1', [mainCategoryId]);
+        const mainCategory = mainCategoryResult.rows[0];
+
+        // Fetch categories associated with the main category
+        const categoriesResult = await pool.query(`
+            SELECT c.*
+            FROM categories c
+            JOIN main_category_category mcc ON c.id = mcc.category_id
+            WHERE mcc.main_category_id = $1
+            ORDER BY c.name ASC
+        `, [mainCategoryId]);
+        const categories = categoriesResult.rows;
+
+        // Fetch all items and their categories
+        const itemsResult = await pool.query(`
+            SELECT p.*, c.name AS category_name
+            FROM priceditems p
+            JOIN categories c ON p.category_id = c.id
+            WHERE c.id IN (SELECT category_id FROM main_category_category WHERE main_category_id = $1)
+            ORDER BY c.name ASC, p.name ASC
+        `, [mainCategoryId]);
+        const items = itemsResult.rows;
+
+        // Group items by category
+        const categoriesWithItems = categories.map(category => ({
+            ...category,
+            items: items.filter(item => item.category_id === category.id)
+        }));
+
+        // Render the view with categories and items
+        res.render('mainCategoryDetails.ejs', { mainCategory, categoriesWithItems, pageTitle: mainCategory.name });
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred.');
+    }
+});
+
+
+
+
 
 module.exports = router;
