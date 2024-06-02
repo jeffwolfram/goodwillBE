@@ -42,9 +42,9 @@
 
                     <tr>
                         <td><%= result.name %></td>
-                        <td><%= amount.toFixed(2) %></td>
+                        <td>$<%= amount.toFixed(2) %></td>
                         <td><%= number %></td>
-                        <td><%= (amount / number).toFixed(2) %></td>
+                        <td>$<%= (amount / number).toFixed(2) %></td>
                         <td>
                             <a href="/editnumbers/<%= result.id %>" class="edit-btn">Edit</a>
                         </td>
@@ -60,9 +60,9 @@
 
                 <tr>
                     <td><strong>Totals</strong></td>
-                    <td><strong><%= totalAmount.toFixed(2) %></strong></td>
+                    <td><strong>$<%= totalAmount.toFixed(2) %></strong></td>
                     <td><strong><%= totalNumber %></strong></td>
-                    <td><strong><%= averageAmount.toFixed(2) %></strong></td>
+                    <td><strong>$<%= averageAmount.toFixed(2) %></strong></td>
                     <td></td>
                 </tr>
             </tbody>
