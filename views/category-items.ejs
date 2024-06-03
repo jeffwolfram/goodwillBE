@@ -5,6 +5,7 @@
     <ul>
         <% items.forEach(item => { %>
             <li><%= item.name %></li>
+            <li><a href="/edit-numbers/<%=item.id%>" class="edit-btn">Edit</a></li>
         <% }) %>
     </ul>
     <a href="/main-categories">Back to Main Categories</a>

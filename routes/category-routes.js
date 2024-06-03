@@ -274,7 +274,44 @@ router.get('/main-categories/:id', checkAuthenticated, async (req, res) => {
     }
 });
 
+// Display the edit form
+router.get('/edit-numbers/:id', checkAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query('SELECT * FROM priceditems WHERE id = $1', [id]);
+        const item = result.rows[0];
+        res.render('editItem.ejs', { item, pageTitle: 'Edit Item' });
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred.');
+    }
+});
 
+// Handle the form submission
+router.post('/edit-numbers/:id', checkAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, price } = req.body;
+        await pool.query('UPDATE priceditems SET name = $1, price = $2 WHERE id = $3', [name, price, id]);
+        res.redirect('/categories');
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred.');
+    }
+});
+
+
+router.post('/edit-numbers/:id', checkAuthenticated, isAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, price } = req.body;
+        await pool.query('UPDATE priceditems SET name = $1, price = $2 WHERE id = $3', [name, price, id]);
+        res.redirect('/categories');
+    } catch (error) {
+        console.error(error);
+        res.send('An error occurred.');
+    }
+});
 
 
 

@@ -15,7 +15,8 @@
     <% } %>
     <ul>
         <% items.forEach(item => { %>
-            <li><%= item.name %> - $<%= item.price %></li>
+            <li><%= item.name %> - $<%= item.price %> - <a href="/edit-numbers/<%=item.id%>" class="edit-btn">Edit</a></li>
+            
         <% }) %>
     </ul>
     <a href="/categories">back</a>
