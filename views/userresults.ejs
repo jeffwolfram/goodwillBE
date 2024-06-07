@@ -70,8 +70,28 @@
         
     <% }); %>
 </div>
-    <div class="dashboard-box">
-          
+<div class="dashboard-box">
+    <h2 class="center">Pricing Totals for the Current Month</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Total Amount</th>
+                <th>Total Number</th>
+                <th>Average per Day</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% userTotals.forEach(user => { %>
+                <tr>
+                    <td><%= user.name %></td>
+                    <td><%= parseFloat(user.total_amount).toFixed(2) %></td>
+                    <td><%= user.total_number %></td>
+                    <td><%= user.average_per_day %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
     <p>Total produced: $<%= totalAmountForMonth.toFixed(2)%></p>
     <p>Average per day: $<%= (totalAmountForMonth / totalDays).toFixed(2)   %></p>
     <p>Average per item: $</p>
@@ -87,7 +107,8 @@
     <% } else { %>
         <p>No data available for the current month.</p>
     <% } %>
-    </div>
+</div>
+    
 </div>
 </body>
 </html>

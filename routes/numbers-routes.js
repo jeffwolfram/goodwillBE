@@ -90,6 +90,40 @@ async function getUserDetailsAndTotalsLast30Days(userId) {
     }
 }
 
+async function getUserTotalsForCurrentMonth() {
+    try {
+        const client = await pool.connect();
+        
+        // Get current date and start of the month
+        const currentDate = new Date();
+        const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        
+        const result = await client.query(`
+            SELECT users.name, 
+                   SUM(numbers.amount) AS total_amount, 
+                   SUM(numbers.number) AS total_number, 
+                   COUNT(numbers.id) AS entry_count
+            FROM numbers
+            JOIN users ON numbers.user_id = users.id
+            WHERE date_trunc('month', numbers.created_at) = date_trunc('month', current_date)
+            GROUP BY users.name
+            ORDER BY users.name;
+        `);
+        client.release();
+        
+        // Add average per entry to each user's data
+        const userTotals = result.rows.map(user => {
+            user.average_per_day = (user.total_amount / user.entry_count).toFixed(2);
+            return user;
+        });
+        
+        return userTotals;
+    } catch (error) {
+        throw error;
+    }
+}
+
+
 
 async function getUserResultsLast30Days() {
     try {
@@ -172,6 +206,7 @@ router.get('/userresults',checkAuthenticated, async (req, res) => {
         const highestAverageUser = await getUserWithHighestAverageNumber();
         const highestTotalAmount = await getUserWithHighestTotalAmountForMonth();
         const highestItemCount = await getUserWithHightestItemCountForMonth();
+        const userTotals = await getUserTotalsForCurrentMonth();
 
     
         res.render('userresults.ejs', {
@@ -180,7 +215,8 @@ router.get('/userresults',checkAuthenticated, async (req, res) => {
             results: results,
             highestAverageUser: highestAverageUser || { name: 'N/A', highest_single_amount: 0  },
             highestTotalAmount: highestTotalAmount || {name: 'N/A', highest_single_number: 0 },
-            highestItemCount: highestItemCount || {name: 'N/A', highest_item_count: 0}
+            highestItemCount: highestItemCount || {name: 'N/A', highest_item_count: 0},
+            userTotals: userTotals
             
         });
     } catch (error) {
