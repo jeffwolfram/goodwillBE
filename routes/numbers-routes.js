@@ -129,11 +129,21 @@ async function getUserResultsLast30Days() {
     try {
         const client = await pool.connect();
         const result = await client.query(`
-            SELECT users.name, numbers.amount, numbers.id, numbers.number, numbers.itemaverage, numbers.created_at
-            FROM numbers
-            JOIN users ON numbers.user_id = users.id
-            WHERE numbers.created_at >= current_date - interval '30 days'
-            ORDER BY numbers.created_at DESC
+        SELECT 
+        users.name, 
+        numbers.amount, 
+        numbers.id, 
+        numbers.number, 
+        numbers.itemaverage, 
+        numbers.created_at
+    FROM 
+        numbers
+    JOIN 
+        users ON numbers.user_id = users.id
+    WHERE 
+        numbers.created_at >= date_trunc('month', current_date)
+    ORDER BY 
+        numbers.created_at DESC;
         `);
         client.release(); // Release the client back to the pool
         return result.rows;
