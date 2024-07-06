@@ -124,7 +124,21 @@ async function getUserTotalsForCurrentMonth() {
 }
 
 
-
+async function getUserResultsLastMonth() {
+    const query = `
+          SELECT 
+              SUM(numbers.amount) AS total_amount
+          FROM 
+              numbers
+          JOIN 
+              users ON numbers.user_id = users.id
+          WHERE 
+              numbers.created_at >= date_trunc('month', current_date) - interval '1 month'
+              AND numbers.created_at < date_trunc('month', current_date);
+      `;
+      const result = await pool.query(query);
+      return result.rows[0].total_amount || 0;
+  }
 async function getUserResultsLast30Days() {
     try {
         const client = await pool.connect();
@@ -209,31 +223,33 @@ router.get('/newnumbers', checkAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/userresults',checkAuthenticated, async (req, res) => {
+router.get('/userresults', checkAuthenticated, async (req, res) => {
     try {
         const users = await getAllUsers();
         const results = await getUserResultsLast30Days();
+        const lastMonth = await getUserResultsLastMonth();  // This now calls the correct function
         const highestAverageUser = await getUserWithHighestAverageNumber();
         const highestTotalAmount = await getUserWithHighestTotalAmountForMonth();
         const highestItemCount = await getUserWithHightestItemCountForMonth();
         const userTotals = await getUserTotalsForCurrentMonth();
-
+        const totalAmounts = await getUserResultsLastMonth();  // This now calls the correct function
     
         res.render('userresults.ejs', {
             pageTitle: 'User Results (Last 30 Days)',
             users: users,
             results: results,
-            highestAverageUser: highestAverageUser || { name: 'N/A', highest_single_amount: 0  },
-            highestTotalAmount: highestTotalAmount || {name: 'N/A', highest_single_number: 0 },
-            highestItemCount: highestItemCount || {name: 'N/A', highest_item_count: 0},
+            totalAmounts: totalAmounts,  // Updated to pass the total amount
+            highestAverageUser: highestAverageUser || { name: 'N/A', highest_single_amount: 0 },
+            highestTotalAmount: highestTotalAmount || { name: 'N/A', highest_single_number: 0 },
+            highestItemCount: highestItemCount || { name: 'N/A', highest_item_count: 0 },
             userTotals: userTotals
-            
         });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 
 router.get('/usertotals', checkAuthenticated, async (req, res) => {

@@ -34,11 +34,9 @@
                 <% let totalAmount = 0; %>
                 <% let totalNumber = 0; %>
             
-
                 <% groupedResults[date].forEach(result => { %>
                     <% let amount = parseFloat(result.amount); %>
                     <% let number = parseFloat(result.number); %>
-                    
 
                     <tr>
                         <td><%= result.name %></td>
@@ -92,8 +90,9 @@
             <% }) %>
         </tbody>
     </table>
-    <p>Total produced: $<%= totalAmountForMonth.toFixed(2)%></p>
-    <p>Average per day: $<%= (totalAmountForMonth / totalDays).toFixed(2)   %></p>
+    <p>Total produced this month: $<%= totalAmountForMonth.toFixed(2) %></p>
+    <p>Total produced last month: $<%= parseFloat(totalAmounts).toFixed(2) %></p>  <!-- Updated to display totalAmounts -->
+    <p>Average per day: $<%= (totalAmountForMonth / totalDays).toFixed(2) %></p>
     <p>Average per item: $</p>
     <h4>Highest total day for the month</h4>
     <p><%= highestTotalAmount.name %> - <%= highestTotalAmount.highest_single_amount %></p>
@@ -112,3 +111,4 @@
 </div>
 </body>
 </html>
+
