@@ -100,8 +100,12 @@
             <td><%= parseFloat(totalAmounts).toFixed(2) %></td>
         </tr>
         <tr>
-            <td>Average per day</td>
+            <td>This month Average per day</td>
             <td>$<%= (totalAmountForMonth / totalDays).toFixed(2) %></td>
+        </tr>
+        <tr>
+            <td>Last month Average per day</td>
+            <td>$<%= (totalAmounts / daysInPreviousMonth).toFixed(2) %></td>
         </tr>
         <tr>
             <td>Highest total for the month</td>
@@ -113,9 +117,6 @@
         </tr><tr>
             <td>Highest total per day average</td>
             <td>User: <%= highestAverageUser.name %> - <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed(2) %></td>
-        </tr><tr>
-            <td></td>
-            <td></td>
         </tr>
     </table>
     

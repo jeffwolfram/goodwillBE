@@ -6,12 +6,22 @@ const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
 
 
+function getDaysInPreviousMonth() {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    const previousMonth = (currentMonth - 1 + 12) % 12;
+    const previousMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+
+    return new Date(previousMonthYear, previousMonth + 1, 0).getDate();
+} 
 
 async function getAllUsers() {
     try {
         const client = await pool.connect();
         const result = await client.query('SELECT * FROM users ORDER BY name ASC ');
-        client.release(); // Release the client back to the pool
+        client.release(); 
         return result.rows;
     } catch (error) {
         throw error;
@@ -35,7 +45,7 @@ async function getUserWithHighestTotalAmountForMonth() {
         `);
         client.release();
         
-        return result.rows[0]; // Return the user with the highest total amount for the month
+        return result.rows[0]; 
     } catch (error) {
         throw error;
     }
@@ -94,7 +104,7 @@ async function getUserTotalsForCurrentMonth() {
     try {
         const client = await pool.connect();
         
-        // Get current date and start of the month
+        
         const currentDate = new Date();
         const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         
@@ -111,7 +121,7 @@ async function getUserTotalsForCurrentMonth() {
         `);
         client.release();
         
-        // Add average per entry to each user's data
+        
         const userTotals = result.rows.map(user => {
             user.average_per_day = (user.total_amount / user.entry_count).toFixed(2);
             return user;
@@ -187,8 +197,6 @@ async function getUserWithHighestAverageNumber() {
         LIMIT 1;
         `);
         client.release();
-        
-        // Return the user with the highest average number per entry
         return result.rows[0];
     } catch (error) {
         throw error;
@@ -210,7 +218,7 @@ router.get('/numbers', checkAuthenticated, (req, res) => {
 
 router.get('/newnumbers', checkAuthenticated, async (req, res) => {
     try {
-        const users = await getAllUsers(); // Fetch users from the database
+        const users = await getAllUsers(); 
         const currentDate = new Date().toISOString().split('T')[0];
         res.render('new-numbers.ejs', { 
             pageTitle: 'New Numbers',
@@ -227,21 +235,23 @@ router.get('/userresults', checkAuthenticated, async (req, res) => {
     try {
         const users = await getAllUsers();
         const results = await getUserResultsLast30Days();
-        const lastMonth = await getUserResultsLastMonth();  // This now calls the correct function
+        const lastMonth = await getUserResultsLastMonth();  
         const highestAverageUser = await getUserWithHighestAverageNumber();
         const highestTotalAmount = await getUserWithHighestTotalAmountForMonth();
         const highestItemCount = await getUserWithHightestItemCountForMonth();
         const userTotals = await getUserTotalsForCurrentMonth();
-        const totalAmounts = await getUserResultsLastMonth();  // This now calls the correct function
+        const totalAmounts = await getUserResultsLastMonth();  
+        const daysInPreviousMonth = getDaysInPreviousMonth();
     
         res.render('userresults.ejs', {
             pageTitle: 'User Results (Last 30 Days)',
             users: users,
             results: results,
-            totalAmounts: totalAmounts,  // Updated to pass the total amount
+            totalAmounts: totalAmounts,  
             highestAverageUser: highestAverageUser || { name: 'N/A', highest_single_amount: 0 },
             highestTotalAmount: highestTotalAmount || { name: 'N/A', highest_single_number: 0 },
             highestItemCount: highestItemCount || { name: 'N/A', highest_item_count: 0 },
+            daysInPreviousMonth: daysInPreviousMonth,
             userTotals: userTotals
         });
     } catch (error) {
@@ -270,14 +280,14 @@ router.get('/usertotals', checkAuthenticated, async (req, res) => {
 router.post('/newnumbers', checkAuthenticated, async (req, res) => {
     try {
         const client = await pool.connect();
-        const commonDate = req.body.commonDate; // Get the common date for all entries
+        const commonDate = req.body.commonDate; 
 
-        // Loop through each user
+        
         for (const user of await getAllUsers()) {
             const amount = req.body[`amount_${user.id}`];
             const number = req.body[`number_${user.id}`];
 
-            // Check if the amount and number were provided
+            
             if (amount && number) {
                 const itemaverage = parseFloat(amount) / parseInt(number);
 
@@ -321,7 +331,7 @@ router.post('/editnumbers/:id', checkAuthenticated, async (req, res) => {
     const { id } = req.params;
     const { amount, number, date } = req.body;
 
-    // Calculate itemaverage
+    
     const itemaverage = parseFloat(amount) / parseInt(number);
 
     try {
@@ -330,7 +340,7 @@ router.post('/editnumbers/:id', checkAuthenticated, async (req, res) => {
         await client.query(query, [amount, number, itemaverage, date, id]);
         client.release();
 
-        res.redirect('/userresults'); // Redirect to a results page, or wherever appropriate
+        res.redirect('/userresults'); 
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
