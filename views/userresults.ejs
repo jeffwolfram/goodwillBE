@@ -90,22 +90,39 @@
             <% }) %>
         </tbody>
     </table>
-    <p>Total produced this month: $<%= totalAmountForMonth.toFixed(2) %></p>
-    <p>Total produced last month: $<%= parseFloat(totalAmounts).toFixed(2) %></p>  <!-- Updated to display totalAmounts -->
-    <p>Average per day: $<%= (totalAmountForMonth / totalDays).toFixed(2) %></p>
-    <p>Average per item: $</p>
-    <h4>Highest total day for the month</h4>
-    <p><%= highestTotalAmount.name %> - <%= highestTotalAmount.highest_single_amount %></p>
-    <h4>Highest single item count for the month</h4>
-    <p><%= highestItemCount.name %> - <%= highestItemCount.highest_single_number %></p>
-
-    <h4>Highest total per day average</h4>
-    <% if (highestAverageUser) { %>
-        <p>User: <%= highestAverageUser.name %> - <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed(2) %></p>
-        
-    <% } else { %>
-        <p>No data available for the current month.</p>
-    <% } %>
+    <table>
+        <tr>
+            <td>Total produced this month</td>
+            <td><%= totalAmountForMonth.toFixed(2) %></td>
+        </tr>
+        <tr>
+            <td>Total produced last month</td>
+            <td><%= parseFloat(totalAmounts).toFixed(2) %></td>
+        </tr>
+        <tr>
+            <td>Average per day</td>
+            <td>$<%= (totalAmountForMonth / totalDays).toFixed(2) %></td>
+        </tr>
+        <tr>
+            <td>Average per day</td>
+            <td>$<%= (totalAmountForMonth / totalDays).toFixed(2) %></td>
+        </tr>
+        <tr>
+            <td>Highest total for the month</td>
+            <td><%= highestTotalAmount.name %> - <%= highestTotalAmount.highest_single_amount %></td>
+        </tr>
+        <tr>
+            <td>highest count for the month</td>
+            <td><%= highestItemCount.name %> - <%= highestItemCount.highest_single_number %></td>
+        </tr><tr>
+            <td>Highest total per day average</td>
+            <td>User: <%= highestAverageUser.name %> - <%= parseFloat(highestAverageUser.average_total_amount_per_day).toFixed(2) %></td>
+        </tr><tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    
 </div>
     
 </div>
