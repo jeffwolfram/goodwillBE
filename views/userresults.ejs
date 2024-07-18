@@ -93,11 +93,11 @@
     <table>
         <tr>
             <td>Total produced this month</td>
-            <td><%= totalAmountForMonth.toFixed(2) %></td>
+            <td>$<%= totalAmountForMonth.toFixed(2) %></td>
         </tr>
         <tr>
             <td>Total produced last month</td>
-            <td><%= parseFloat(totalAmounts).toFixed(2) %></td>
+            <td>$<%= parseFloat(totalAmounts).toFixed(2) %></td>
         </tr>
         <tr>
             <td>This month Average per day</td>
@@ -106,6 +106,7 @@
         <tr>
             <td>Last month Average per day</td>
             <td>$<%= (totalAmounts / daysInPreviousMonth).toFixed(2) %></td>
+            
         </tr>
         <tr>
             <td>Highest total for the month</td>
