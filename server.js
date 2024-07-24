@@ -11,7 +11,7 @@ const flash = require('express-flash');
 const session = require('express-session');
 const initializePassport = require('./passport-config');
 const pool = require("./database2");
-const { isAdmin, isLead, isManager } = require('./roleMiddleware');
+const { isAdmin, isLead, isManager, isSuperUser, isAdminOrSuperUser } = require('./roleMiddleware');
 initializePassport(passport);
 
 const app = express();
@@ -158,14 +158,14 @@ app.get('/login',  (req, res) => {
 
 
 
-app.get('/newuser', isAdmin, checkAuthenticated, (req, res) => {
+app.get('/newuser', isAdminOrSuperUser, checkAuthenticated, (req, res) => {
     res.render('newuser.ejs', {
         pageTitle: 'Add User'
     });
 });
 
 // add users
-app.post('/newuser', isAdmin, checkAuthenticated, async (req, res) => {
+app.post('/newuser', isAdminOrSuperUser, checkAuthenticated, async (req, res) => {
     try {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         await pool.query(
@@ -203,7 +203,7 @@ app.get('/profile', async (req, res) => {
     })
 })
 
-app.get('/users',checkAuthenticated, isAdmin, async (req, res) => {
+app.get('/users',checkAuthenticated, isAdminOrSuperUser, async (req, res) => {
     try {
         const users = await getAllUsers();
         res.render('users.ejs', { 
@@ -234,7 +234,7 @@ app.post('/delete-users', async (req, res) => {
 });
 
 // Edit users
-app.get('/edit-user/:id', async (req, res) => {
+app.get('/edit-user/:id',checkAuthenticated, isAdminOrSuperUser, async (req, res) => {
     try {
         const id = req.params.id;
         const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
@@ -250,7 +250,7 @@ app.get('/edit-user/:id', async (req, res) => {
     }
 });
 // Edit users 
-app.post('/edit-user/:id', async (req, res) => {
+app.post('/edit-user/:id', checkAuthenticated, isAdminOrSuperUser, async (req, res) => {
     try {
         const id = req.params.id;
         const { name, role, email, password } = req.body;

@@ -9,8 +9,9 @@
                         <% users.forEach(user => { %>
                             <li>
                                 <input type="checkbox" name="userId[]" value="<%= user.id %>">
-                                <%= user.name %> - <%= user.role  %> - <%= user.email %>
+                                <%= user.name %> - <%= user.role  %> - <%= user.email %> Role: <%= user.role %>
                                 <a href="/edit-user/<%= user.id %>" class="edit-button">Edit</a>
+
 
                             </li>
                         <% }) %>

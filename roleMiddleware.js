@@ -12,6 +12,22 @@ function isManager (req, res, next) {
     res.status(403).send("You do not have access to this page.")
 }
 
+function isSuperUser (req, res, next) {
+    if (req.isAuthenticated() && req.user.role === 'superUser') {
+            next()
+    }
+    res.status(403).send("You do not have access to this page! Must have Super User access")
+}
+
+function isAdminOrSuperUser(req, res, next) {
+    if (req.isAuthenticated() && (req.user.role === 'superUser' || req.user.role === 'admin')) {
+        return next();
+    }
+    res.status(403).send("You do not have access to this page!");
+}
+
+
+
 function isLead (req, res, next) {
     if (req.isAuthenticated() && req.user.role === "lead") {
         next()
@@ -60,6 +76,8 @@ module.exports = {
     isLead, 
     isManager, 
     isUser,
+    isSuperUser,
+    isAdminOrSuperUser,
     checkAuthenticated,
     checkNotAuthenticated,
     items
