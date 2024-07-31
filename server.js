@@ -61,6 +61,7 @@ const ecomRoutes = require('./routes/ecom-routes');
 const mellonshipRoutes = require('./routes/mellonship-routes');
 const numbersRoutes = require('./routes/numbers-routes');
 const categoryRoutes = require('./routes/category-routes');
+const logRoutes = require('./routes/log-routes');
 
 // Use routes
 app.use(reportRoutes);
@@ -75,6 +76,7 @@ app.use(ecomRoutes);
 app.use(mellonshipRoutes);
 app.use(numbersRoutes);
 app.use(categoryRoutes);
+app.use(logRoutes);
 
 app.get('/', checkAuthenticated, async (req, res) => {
     try {

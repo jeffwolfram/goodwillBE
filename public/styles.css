@@ -587,3 +587,33 @@ textarea {
     /* background-color: #3e8e41; */
   }
   
+/*******************************************Logs table ****************************/
+.logs-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+    text-align: left;
+}
+
+.logs-table th, .logs-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.logs-table th {
+    background: linear-gradient(45deg, #6e48aa, #9d50bb);
+}
+
+.logs-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.logs-table-header {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.logs-table-cell {
+    border: 1px solid #ddd;
+}

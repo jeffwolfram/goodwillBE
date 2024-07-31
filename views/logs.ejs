@@ -1,0 +1,26 @@
+<%- include('layout'); %>
+<%- include('header'); %>
+
+<body>
+    <h1>Logs</h1>
+    <table class="logs-table">
+        <thead>
+            <tr>
+                <th class="logs-table-header">Before Change</th>
+                <th class="logs-table-header">Change</th>
+                <th class="logs-table-header">Datetime</th>
+                <th class="logs-table-header">Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% logs.forEach(log => { %>
+                <tr>
+                    <td class="logs-table-cell"><%= log.before_change %></td>
+                    <td class="logs-table-cell"><%= log.log %></td>
+                    <td class="logs-table-cell"><%= log.datetime %></td>
+                    <td class="logs-table-cell"><%= log.username %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>

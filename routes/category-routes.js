@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../database2');
 const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
-const {isAdmin, isLead, isManager} = require('../roleMiddleware')
+const {isAdmin, isLead, isManager, isAdminOrSuperUser } = require('../roleMiddleware')
 
 router.get('/categories', checkAuthenticated, async (req, res) => {
     try {
@@ -275,7 +275,7 @@ router.get('/main-categories/:id', checkAuthenticated, async (req, res) => {
 });
 
 // Display the edit form
-router.get('/edit-numbers/:id', checkAuthenticated, isAdmin, async (req, res) => {
+router.get('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUser , async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query('SELECT * FROM priceditems WHERE id = $1', [id]);
@@ -287,18 +287,31 @@ router.get('/edit-numbers/:id', checkAuthenticated, isAdmin, async (req, res) =>
     }
 });
 
-// Handle the form submission
-router.post('/edit-numbers/:id', checkAuthenticated, isAdmin, async (req, res) => {
+router.post('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUser , async (req, res) => {
     try {
         const { id } = req.params;
         const { name, price } = req.body;
+        const username = req.user.name;     
+         
+
+        const result = await pool.query('SELECT price , name FROM priceditems WHERE id = $1', [id]);
+        const oldlog = result.rows[0].name + " " + result.rows[0].price;
+
         await pool.query('UPDATE priceditems SET name = $1, price = $2 WHERE id = $3', [name, price, id]);
+        
+        const logMessage = `Updated name: ${name}, price: ${price}`;
+       
+        await pool.query('INSERT INTO logs (before_change, log, userName) VALUES ($1, $2, $3)', [oldlog, logMessage, username]);
+
+        
         res.redirect('/categories');
+
     } catch (error) {
         console.error(error);
         res.send('An error occurred.');
     }
 });
+
 
 
 router.post('/edit-numbers/:id', checkAuthenticated, isAdmin, async (req, res) => {
