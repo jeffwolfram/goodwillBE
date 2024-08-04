@@ -22,14 +22,14 @@
             <select id="role" name="role">
                 <option value="superUser" <% if(user.role === 'superUser') { %>selected<% } %>>Super User</option>
                 <option value="admin" <% if(user.role === 'admin') { %>selected<% } %>>Admin</option>
-                <option value="admin" <% if(user.role === 'manager') { %>selected<% } %>>Manager</option>
+                <option value="manager" <% if(user.role === 'manager') { %>selected<% } %>>Manager</option>
                 <option value="lead" <% if(user.role === 'lead') { %>selected<% } %>>Lead</option>
                 <option value="employee" <% if(user.role === 'employee') { %>selected<% } %>>Employee</option>
             </select>
         </div>
         <div>
              <input type="email" name="email" value="<%= user.email %>" required>
-             <input type="password" name="password" required>
+             <input type="password" name="password" >
         </div>
        
         

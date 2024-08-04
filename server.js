@@ -252,18 +252,26 @@ app.get('/edit-user/:id',checkAuthenticated, isAdminOrSuperUser, async (req, res
     }
 });
 // Edit users 
-app.post('/edit-user/:id', checkAuthenticated, isSuperUser, async (req, res) => {
+app.post('/edit-user/:id', checkAuthenticated, isAdminOrSuperUser, async (req, res) => {
     try {
         const id = req.params.id;
         const { name, role, email, password } = req.body;
-        
-        const saltRounds = 10
-        const hashedPassword = await bcrypt.hash(password, saltRounds)
 
-        await pool.query(
-            'UPDATE users SET name = $1, role = $2, email = $3, hashed_password = $4 WHERE id = $5',
-            [name, role, email, hashedPassword, id]
-        );
+        let query = 'UPDATE users SET name = $1, role = $2, email = $3';
+        const values = [name, role, email];
+
+        // Only update the password if a new password is provided
+        if (password) {
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+            query += ', hashed_password = $4 WHERE id = $5';
+            values.push(hashedPassword, id);
+        } else {
+            query += ' WHERE id = $4';
+            values.push(id);
+        }
+
+        await pool.query(query, values);
 
         res.redirect('/users');
     } catch (e) {
@@ -271,6 +279,7 @@ app.post('/edit-user/:id', checkAuthenticated, isSuperUser, async (req, res) => 
         res.send('An error occurred');
     }
 });
+
 
 app.get('/cps', (req, res) => {
     
