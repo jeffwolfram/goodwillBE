@@ -236,7 +236,7 @@ app.post('/delete-users', async (req, res) => {
 });
 
 // Edit users
-app.get('/edit-user/:id',checkAuthenticated, isSuperUser, async (req, res) => {
+app.get('/edit-user/:id',checkAuthenticated, isAdminOrSuperUser, async (req, res) => {
     try {
         const id = req.params.id;
         const result = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
