@@ -3,7 +3,7 @@ const router = express.Router();
 const pool = require('../database2');
 const { checkAuthenticated } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
-const {isAdmin, isLead, isManager, isAdminOrSuperUser } = require('../roleMiddleware')
+const {isAdmin, isLead, isManager, isAdminOrSuperUser, isAdminOrSuperUserOrLead } = require('../roleMiddleware')
 
 router.get('/categories', checkAuthenticated, async (req, res) => {
     try {
@@ -29,7 +29,7 @@ try {
 
 
 // Delete a category
-router.post('/categories/delete/:id', checkAuthenticated, isAdmin, async (req, res) => {
+router.post('/categories/delete/:id', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const { id } = req.params;
         await pool.query('DELETE FROM categories WHERE id = $1', [id]);
@@ -61,7 +61,7 @@ router.get('/categories/:id/items', checkAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/categories/edit/:id', checkAuthenticated, isAdmin, async (req, res) => {
+router.get('/categories/edit/:id', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const categoryId = req.params.id;
         const result = await pool.query('SELECT * FROM categories WHERE id = $1', [categoryId]);
@@ -75,7 +75,7 @@ router.get('/categories/edit/:id', checkAuthenticated, isAdmin, async (req, res)
 
 
 // Add a new item to a category
-router.post('/categories/:id/items', checkAuthenticated, isAdmin, async (req, res) => {
+router.post('/categories/:id/items', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const categoryId = req.params.id;
         const { name, price } = req.body;
@@ -88,7 +88,7 @@ router.post('/categories/:id/items', checkAuthenticated, isAdmin, async (req, re
 });
 
 // Edit an item
-router.post('/categories/:categoryId/items/edit/:itemId', checkAuthenticated, isAdmin, async (req, res) => {
+router.post('/categories/:categoryId/items/edit/:itemId', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const { categoryId, itemId } = req.params;
         const { name, price } = req.body;
@@ -100,7 +100,7 @@ router.post('/categories/:categoryId/items/edit/:itemId', checkAuthenticated, is
     }
 });
 
-router.post('/categories/edit/:id', checkAuthenticated, isAdmin, async (req, res) => {
+router.post('/categories/edit/:id', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const categoryId = req.params.id;
         const { name } = req.body;
@@ -113,7 +113,7 @@ router.post('/categories/edit/:id', checkAuthenticated, isAdmin, async (req, res
 });
 
 // Delete an item
-router.post('/categories/:categoryId/items/delete/:itemId', checkAuthenticated, isAdmin, async (req, res) => {
+router.post('/categories/:categoryId/items/delete/:itemId', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const { categoryId, itemId } = req.params;
         await pool.query('DELETE FROM priceditems WHERE id = $1', [itemId]);
@@ -164,7 +164,7 @@ router.get('/main-categories', checkAuthenticated, async (req, res) => {
 });
 
 // Create a new main category
-router.post('/main-categories', checkAuthenticated, isAdmin, async (req, res) => {
+router.post('/main-categories', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const { name, categoryIds } = req.body;
         const mainCategoryResult = await pool.query('INSERT INTO main_categories (name) VALUES ($1) RETURNING id', [name]);
@@ -207,7 +207,7 @@ router.get('/new-main-categories', checkAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/main-categories/:id/items', checkAuthenticated, isAdmin, async (req, res) => {
+router.get('/main-categories/:id/items', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const mainCategoryId = req.params.id;
         
@@ -275,7 +275,7 @@ router.get('/main-categories/:id', checkAuthenticated, async (req, res) => {
 });
 
 // Display the edit form
-router.get('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUser , async (req, res) => {
+router.get('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUserOrLead , async (req, res) => {
     try {
         const { id } = req.params;
         const result = await pool.query('SELECT * FROM priceditems WHERE id = $1', [id]);
@@ -287,7 +287,7 @@ router.get('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUser , async (
     }
 });
 
-router.post('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUser , async (req, res) => {
+router.post('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUserOrLead , async (req, res) => {
     try {
         const { id } = req.params;
         const { name, price } = req.body;
@@ -314,7 +314,7 @@ router.post('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUser , async 
 
 
 
-router.post('/edit-numbers/:id', checkAuthenticated, isAdmin, async (req, res) => {
+router.post('/edit-numbers/:id', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const { id } = req.params;
         const { name, price } = req.body;
