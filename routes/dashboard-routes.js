@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const moment = require('moment-timezone')
 const pool = require('../database2.js'); 
-const { checkAuthenticated } = require('../roleMiddleware.js')
+const { checkAuthenticated, isAdminOrSuperUser } = require('../roleMiddleware.js')
 const { checkNotAuthenticated} = require('../roleMiddleware.js')
 const {isAdmin, isLead, isManager} = require('../roleMiddleware')
 
@@ -81,7 +81,7 @@ async function getTestingReport() {
 }
 
 
-router.get('/dashboard', checkAuthenticated, isAdmin, async(req, res) => {
+router.get('/dashboard', checkAuthenticated, isAdminOrSuperUser, async(req, res) => {
    try {
      const userTotals = await getUserTotalsForCurrentMonth();
      const processing = await getProcessingReport();
