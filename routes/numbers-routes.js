@@ -133,6 +133,59 @@ async function getUserTotalsForCurrentMonth() {
     }
 }
 
+// code for totals by month
+router.get('/totals-by-month', checkAuthenticated, async (req, res) => {
+    try {
+        const selectedMonth = req.query.month; // Format: MM
+        const selectedYear = req.query.year; // Format: YYYY
+
+        if (!selectedMonth || !selectedYear) {
+            return res.render('usertotals-by-month.ejs', {
+                pageTitle: 'Select a Month and Year',
+                dailyTotals: null // No data yet, just showing the form
+            });
+        }
+
+        // SQL query to get totals for each user per day for the selected month and year
+        const result = await pool.query(`
+            SELECT 
+                users.name AS user_name,
+                numbers.created_at::date AS day,
+                SUM(numbers.amount) AS total_amount,
+                SUM(numbers.number) AS total_number
+            FROM numbers
+            JOIN users ON numbers.user_id = users.id
+            WHERE EXTRACT(YEAR FROM numbers.created_at) = $1 
+              AND EXTRACT(MONTH FROM numbers.created_at) = $2
+            GROUP BY users.name, numbers.created_at::date
+            ORDER BY numbers.created_at::date, users.name;
+        `, [selectedYear, selectedMonth]);
+
+        // Structure the data by day and user
+        const dailyTotals = {};
+        result.rows.forEach(row => {
+            const day = row.day.toDateString();
+            if (!dailyTotals[day]) {
+                dailyTotals[day] = [];
+            }
+            dailyTotals[day].push({
+                name: row.user_name,
+                total_amount: row.total_amount,
+                total_number: row.total_number
+            });
+        });
+
+        // Render the view with the selected month's data
+        res.render('usertotals-by-month.ejs', {
+            pageTitle: `User Totals for ${selectedMonth}-${selectedYear}`,
+            dailyTotals: dailyTotals
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+
 
 async function getUserResultsLastMonth() {
     const query = `
