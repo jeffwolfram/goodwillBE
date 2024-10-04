@@ -9,25 +9,25 @@
         <form action="/totals-by-month" method="GET">
             <label for="month">Select Month: </label>
             <select id="month" name="month" required>
-                <option value="01">January</option>
-                <option value="02">February</option>
-                <option value="03">March</option>
-                <option value="04">April</option>
-                <option value="05">May</option>
-                <option value="06">June</option>
-                <option value="07">July</option>
-                <option value="08">August</option>
-                <option value="09">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
+                <option value="01" <%= selectedMonth === '01' ? 'selected' : '' %>>January</option>
+                <option value="02" <%= selectedMonth === '02' ? 'selected' : '' %>>February</option>
+                <option value="03" <%= selectedMonth === '03' ? 'selected' : '' %>>March</option>
+                <option value="04" <%= selectedMonth === '04' ? 'selected' : '' %>>April</option>
+                <option value="05" <%= selectedMonth === '05' ? 'selected' : '' %>>May</option>
+                <option value="06" <%= selectedMonth === '06' ? 'selected' : '' %>>June</option>
+                <option value="07" <%= selectedMonth === '07' ? 'selected' : '' %>>July</option>
+                <option value="08" <%= selectedMonth === '08' ? 'selected' : '' %>>August</option>
+                <option value="09" <%= selectedMonth === '09' ? 'selected' : '' %>>September</option>
+                <option value="10" <%= selectedMonth === '10' ? 'selected' : '' %>>October</option>
+                <option value="11" <%= selectedMonth === '11' ? 'selected' : '' %>>November</option>
+                <option value="12" <%= selectedMonth === '12' ? 'selected' : '' %>>December</option>
             </select>
 
             <label for="year">Select Year: </label>
             <select id="year" name="year" required>
                 <% const currentYear = new Date().getFullYear(); %>
                 <% for (let year = currentYear; year >= currentYear - 10; year--) { %>
-                    <option value="<%= year %>"><%= year %></option>
+                    <option value="<%= year %>" <%= selectedYear == year ? 'selected' : '' %>><%= year %></option>
                 <% } %>
             </select>
 

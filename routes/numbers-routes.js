@@ -136,13 +136,16 @@ async function getUserTotalsForCurrentMonth() {
 // code for totals by month
 router.get('/totals-by-month', checkAuthenticated, async (req, res) => {
     try {
-        const selectedMonth = req.query.month; // Format: MM
-        const selectedYear = req.query.year; // Format: YYYY
+        const selectedMonth = req.query.month || new Date().toISOString().slice(5, 7); // Default to current month
+        const selectedYear = req.query.year || new Date().getFullYear(); // Default to current year
 
-        if (!selectedMonth || !selectedYear) {
+        // If no month and year are provided, show the form with the current month/year
+        if (!req.query.month || !req.query.year) {
             return res.render('usertotals-by-month.ejs', {
                 pageTitle: 'Select a Month and Year',
-                dailyTotals: null // No data yet, just showing the form
+                dailyTotals: null, // No data yet, just showing the form
+                selectedMonth: selectedMonth,
+                selectedYear: selectedYear
             });
         }
 
@@ -178,13 +181,16 @@ router.get('/totals-by-month', checkAuthenticated, async (req, res) => {
         // Render the view with the selected month's data
         res.render('usertotals-by-month.ejs', {
             pageTitle: `User Totals for ${selectedMonth}-${selectedYear}`,
-            dailyTotals: dailyTotals
+            dailyTotals: dailyTotals,
+            selectedMonth: selectedMonth,
+            selectedYear: selectedYear
         });
     } catch (error) {
         console.error(error);
         res.status(500).send('Internal Server Error');
     }
 });
+
 
 
 async function getUserResultsLastMonth() {
