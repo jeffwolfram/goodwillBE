@@ -617,3 +617,81 @@ textarea {
 .logs-table-cell {
     border: 1px solid #ddd;
 }
+
+  /* Styles for the URT items table */
+  .urt-items-table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+}
+
+.urt-items-table th, .urt-items-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.urt-items-table th {
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+}
+
+.urt-items-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.urt-items-table tr:hover {
+    background-color: #e0f7fa;
+}
+
+.urt-table-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #333;
+}
+
+.add-item-link {
+    display: block;
+    text-align: center;
+    margin: 15px 0;
+    color: blue;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.add-item-link:hover {
+    text-decoration: underline;
+}
+.form-container {
+    width: 80%;
+    margin: 20px auto;
+    font-family: Arial, sans-serif;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between elements */
+}
+
+.input-row select,
+.input-row input[type="number"] {
+    padding: 5px;
+}
+
+.input-row label {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+.formurt {
+    width: 380px;
+}

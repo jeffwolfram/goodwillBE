@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill of Lading</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            border: 1px solid #000;
+            padding: 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .info-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .info-section div {
+            width: 45%;
+            padding: 10px;
+            border: 1px solid #000;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .table th, .table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .total-weight, .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .footer {
+            font-size: 12px;
+        }
+
+        .checkbox-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            align-items: center;
+        }
+
+        .checkbox-section label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .checkbox-section input {
+            margin-right: 5px;
+        }
+
+        .signature-section {
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .signature-section div {
+            border-top: 1px solid #000;
+            width: 40%;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Bill of Lading</div>
+        
+        <div class="info-section">
+            <div>
+                <strong>To (Consignee):</strong><br>
+                Universal Recycling Technologies<br>
+                10151 SE Jennifer St.<br>
+                Clackamas, OR 97015
+            </div>
+            <div>
+                <strong>From (Shipper):</strong><br>
+                Goodwill Industries of Lane & South Coast Counties<br>
+                1010 Green Acres Rd.<br>
+                Eugene, OR 97408
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th># of Packages</th>
+                    <th>Description of Articles</th>
+                    <th>Weight (subject to correction)</th>
+                    <th>Class or Rate</th>
+                    <th>Check Column</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td>Adjusted Weight (do not change)</td>
+                    <td>12,486</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Total Weight (for driver)</td>
+                    <td>14,375</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Container #:</td>
+                    <td>437</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>PO #:</td>
+                    <td>237,613</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Seal #:</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Pallets:</td>
+                    <td>23</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Melons:</td>
+                    <td>18</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Boxes:</td>
+                    <td>0</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="total-weight">
+            Total Weight: 12,486
+        </div>
+
+        <div class="footer">
+            *If the shipment moves between two ports by a carrier by water, the law requires that the bill of lading shall state whether it is "carrier's or shipper's weight."<br>
+            NOTE - Where the rate is dependent on value, shippers are required to state specifically in writing the agreed or declared value of the property.<br>
+            The agreed or declared value of the property is hereby specifically stated by the shipper to be not exceeding $________ per ______.
+        </div>
+
+        <div class="checkbox-section">
+            <label>
+                COD charge to be paid by:
+            </label>
+            <label><input type="checkbox"> Shipper (Prepaid)</label>
+            <label><input type="checkbox" checked> Consignee (Collect)</label>
+        </div>
+
+        <div class="signature-section">
+            <p>
+                Subject to Section 7 of conditions, if this shipment is to be delivered to the consignee without recourse on the consignor, the following statement applies: <br>
+                The carrier shall not make delivery of this shipment without payment of freight and all other lawful charges.
+            </p>
+            <div>Signature of Consignor</div>
+        </div>
+        
+        <div class="signature-section">
+            <p>Shipper: Goodwill Industries of Lane & South Coast Counties</p>
+            <p>Carrier: ________________________</p>
+            <p>Per: _____________________________</p>
+            <p>Date: ____________________________</p>
+        </div>
+    </div>
+</body>
+</html>

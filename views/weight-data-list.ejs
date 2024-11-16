@@ -1,0 +1,72 @@
+<%- include('layout') %>
+<body>
+    <%- include('header') %>
+    <style>
+        .table-container {
+            width: 80%;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th, .table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #1018b1;
+            color: white;
+        }
+
+        .table tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .button {
+            margin: 10px 0;
+            display: inline-block;
+            padding: 10px 15px;
+            color: #1018b1;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="table-container">
+        <h1>URT</h1>
+        <a href="/weight-data/new" class="button">Create New Object</a>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Submission Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% weightDataObjects.forEach(object => { %>
+                    <tr>
+                        <td><%= object.id %></td>
+                        <td><%= new Date(object.submission_date).toLocaleDateString('en-US') %></td>
+                        <td>
+                            <a href="/weight-data/<%= object.id %>" class="button">View/Edit</a>
+                            <a href="/weight-data/<%= object.id %>/summary" class="button">Summary</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

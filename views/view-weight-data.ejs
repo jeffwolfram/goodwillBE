@@ -1,0 +1,112 @@
+<%- include('layout') %>
+<body>
+    <%- include('header') %>
+    <style>
+        .table-container {
+            width: 80%;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+
+        .details-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .details-column {
+            width: 48%;
+        }
+
+        .details-column p {
+            margin: 5px 0;
+        }
+
+        .table {
+            font-size: 12px;
+            line-height: 1.5em;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .table th, .table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #1018b1;
+            color: white;
+        }
+
+        .table tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .button, .edit-button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #1018b1;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="table-container">
+        <h1>URT Shipment Details</h1>
+        
+        <!-- Details Container with Two Columns -->
+        <div class="details-container">
+            <div class="details-column">
+                <p><strong>Shipping Date:</strong> <%= new Date(dataObject.submission_date).toLocaleDateString('en-US') %></p>
+                <p><strong>PO Number:</strong> <%= dataObject.ponumber %></p>
+            </div>
+            <div class="details-column">
+                <p><strong>Seal Number:</strong> <%= dataObject.sealnumber %></p>
+                <p><strong>Container Number:</strong> <%= dataObject.container_number %></p>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Shippted Weight</th>
+                    <th>URT Weight</th>
+                    <th>Price per lb</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let totalSum = 0; %>
+                <% items.forEach(i => { %>
+                    <% const totalPrice = i.weight * i.price; %>
+                    <% totalSum += totalPrice; %>
+                    <tr>
+                        <td><%= i.item %></td>
+                        <td><%= i.weight %></td>
+                        <td><%= i.mellon %></td>
+                        <td>$<%= i.price ? i.price.toFixed(2) : '0.00' %></td>
+                        <td>$<%= i.price && i.weight ? (i.weight * i.price).toFixed(2) : '0.00' %></td>
+                    </tr>
+                <% }) %>
+                <tr>
+                    <td colspan="3" style="text-align: right; font-weight: bold;">Total Sum :</td>
+                    <td style="font-weight: bold;">$<%= totalSum.toFixed(2) %></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/weight-data/<%= dataObject.id %>/edit" class="edit-button">Edit</a>
+        <a href="/weight-data" class="button">Back to List</a>
+        <a href="/weight-data/<%= dataObject.id %>/summary" class="button">View Summary</a>
+    </div>
+</body>
+</html>

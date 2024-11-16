@@ -2,72 +2,66 @@
 
 <body class="usertotals">
     <%- include('header') %>
+
     <main>
-        <h1><%= pageTitle %></h1>
+        <h1 class="center"><%= pageTitle %></h1>
 
-        <!-- Add a form to select a specific month and year -->
-        <form action="/totals-by-month" method="GET">
-            <label for="month">Select Month: </label>
-            <select id="month" name="month" required>
-                <option value="01" <%= selectedMonth === '01' ? 'selected' : '' %>>January</option>
-                <option value="02" <%= selectedMonth === '02' ? 'selected' : '' %>>February</option>
-                <option value="03" <%= selectedMonth === '03' ? 'selected' : '' %>>March</option>
-                <option value="04" <%= selectedMonth === '04' ? 'selected' : '' %>>April</option>
-                <option value="05" <%= selectedMonth === '05' ? 'selected' : '' %>>May</option>
-                <option value="06" <%= selectedMonth === '06' ? 'selected' : '' %>>June</option>
-                <option value="07" <%= selectedMonth === '07' ? 'selected' : '' %>>July</option>
-                <option value="08" <%= selectedMonth === '08' ? 'selected' : '' %>>August</option>
-                <option value="09" <%= selectedMonth === '09' ? 'selected' : '' %>>September</option>
-                <option value="10" <%= selectedMonth === '10' ? 'selected' : '' %>>October</option>
-                <option value="11" <%= selectedMonth === '11' ? 'selected' : '' %>>November</option>
-                <option value="12" <%= selectedMonth === '12' ? 'selected' : '' %>>December</option>
-            </select>
+        <!-- User Monthly Summary -->
+        <section class="monthly-summary">
+            <form action="/totals-by-month" method="GET">
+                <label for="month">Select Month: </label>
+                <select id="month" name="month" required>
+                    <option value="01" <%= selectedMonth === '01' ? 'selected' : '' %>>January</option>
+                    <option value="02" <%= selectedMonth === '02' ? 'selected' : '' %>>February</option>
+                    <option value="03" <%= selectedMonth === '03' ? 'selected' : '' %>>March</option>
+                    <option value="04" <%= selectedMonth === '04' ? 'selected' : '' %>>April</option>
+                    <option value="05" <%= selectedMonth === '05' ? 'selected' : '' %>>May</option>
+                    <option value="06" <%= selectedMonth === '06' ? 'selected' : '' %>>June</option>
+                    <option value="07" <%= selectedMonth === '07' ? 'selected' : '' %>>July</option>
+                    <option value="08" <%= selectedMonth === '08' ? 'selected' : '' %>>August</option>
+                    <option value="09" <%= selectedMonth === '09' ? 'selected' : '' %>>September</option>
+                    <option value="10" <%= selectedMonth === '10' ? 'selected' : '' %>>October</option>
+                    <option value="11" <%= selectedMonth === '11' ? 'selected' : '' %>>November</option>
+                    <option value="12" <%= selectedMonth === '12' ? 'selected' : '' %>>December</option>
+                </select>
 
-            <label for="year">Select Year: </label>
-            <select id="year" name="year" required>
-                <% const currentYear = new Date().getFullYear(); %>
-                <% for (let year = currentYear; year >= currentYear - 10; year--) { %>
-                    <option value="<%= year %>" <%= selectedYear == year ? 'selected' : '' %>><%= year %></option>
-                <% } %>
-            </select>
+                <label for="year">Select Year: </label>
+                <select id="year" name="year" required>
+                    <% const currentYear = new Date().getFullYear(); %>
+                    <% for (let year = currentYear; year >= currentYear - 10; year--) { %>
+                        <option value="<%= year %>" <%= selectedYear == year ? 'selected' : '' %>><%= year %></option>
+                    <% } %>
+                </select>
 
-            <button type="submit">Submit</button>
-        </form>
+                <button type="submit">Submit</button>
+            </form>
 
-        <% if (dailyTotals) { %>
-            <div class="dashboard-main-box">
-                <!-- Loop through each day and print the totals for each user -->
-                <% for (const [day, users] of Object.entries(dailyTotals)) { %>
-                    <div class="dashboard-box">
-                        <h2><%= day %></h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Total Amount</th>
-                                    <th>Total Number</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% users.forEach(user => { %>
-                                    <tr>
-                                        <td><%= user.name %></td>
-                                        <td><%= user.total_amount %></td>
-                                        <td><%= user.total_number %></td>
-                                    </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
-                    </div>
-                <% } %>
-            </div>
-        <% } else { %>
-            <p>No data available for the selected month and year.</p>
-        <% } %>
-
+            <h2>Monthly Totals</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Total Amount</th>
+                        <th>Total Number</th>
+                        <th>Daily Average (Amount)</th>
+                        <th>Highest Single Amount</th>
+                        <th>Highest Single Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% userTotals.forEach(user => { %>
+                        <tr>
+                            <td><%= user.name %></td>
+                            <td><%= user.total_amount %></td>
+                            <td><%= user.total_number %></td>
+                            <td><%= user.daily_average %></td>
+                            <td><%= user.highest_single_amount %></td>
+                            <td><%= user.highest_single_number %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </section>
     </main>
-
-    <footer>
-        <!-- Footer content goes here -->
-    </footer>
 </body>
+

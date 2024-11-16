@@ -1,0 +1,53 @@
+<%- include('layout') %>
+<body>
+    <%- include('header') %>
+    <title>Enter Item Weights</title>
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-row select, .input-row input[type="number"] {
+            margin-right: 10px;
+        }
+
+        .submit-button {
+            display: block;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Enter Item Weights</h1>
+    <form action="/submit-weights" method="POST">
+        <% for (let i = 1; i <= 24; i++) { %>
+            <div class="form-group">
+                <div class="input-row">
+                    <label class="form-label">Item <%= i %></label>
+                    <select name="item_<%= i %>" >
+                        <option value="">Select Item</option>
+                        <% items.forEach(item => { %>
+                            <option value="<%= item.id %>"><%= item.item %></option>
+                        <% }) %>
+                    </select>
+                    <input type="number" name="weight_<%= i %>" placeholder="Weight"  min="0">
+                    <input type="checkbox" name="no_mellon" value="true">
+                </div>
+            </div>
+        <% } %>
+        <button type="submit" class="submit-button">Submit</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Weight Data</title>
+    <style>
+        .form-container {
+            width: 80%;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .input-row select, .input-row input[type="number"] {
+            margin-right: 10px;
+        }
+
+        .submit-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #1018b1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Edit Weight Data</h1>
+        <form action="/weight-data/<%= dataObject.id %>/update" method="POST">
+            <div class="form-group">
+                <label for="submission_date" class="form-label">Submission Date:</label>
+                <input type="date" id="submission_date" name="submission_date" 
+                       value="<%= dataObject.submission_date ? dataObject.submission_date.toISOString().split('T')[0] : '' %>">
+            </div>
+            <div class="form-group">
+                <label for="ponumber" class="form-label">PO Number:</label>
+                <input type="number" id="ponumber" name="ponumber" value="<%= dataObject.ponumber %>">
+            </div>
+            
+            <div class="form-group">
+                <label for="container_number" class="form-label">Container Number:</label>
+                <input type="number" id="container_number" name="container_number" value="<%= dataObject.container_number %>">
+            </div>
+            
+            <div class="form-group">
+                <label for="sealnumber" class="form-label">Seal Number:</label>
+                <input type="number" id="sealnumber" name="sealnumber" value="<%= dataObject.sealnumber %>">
+            </div>
+
+            <% items.forEach((currentItem, i) => { %>
+                <div class="form-group">
+                    <label for="existing_item_<%= i + 1 %>">Item <%= i + 1 %>:</label>
+                    <select name="existing_item_<%= i + 1 %>">
+                        <option value="<%= currentItem.id %>"><%= currentItem.item %></option>
+                    </select>
+                    <input type="number" name="existing_weight_<%= i + 1 %>" value="<%= currentItem.weight %>" placeholder="Weight" min="0">
+            
+                    <!-- Checkbox for no_mellon -->
+                    <label>
+                        <input type="checkbox" name="existing_no_mellon_<%= i + 1 %>" value="true" <%= currentItem.no_mellon ? 'checked' : '' %>> No Mellon
+                    </label>
+                </div>
+            <% }) %>
+            
+            <h2>Add New Items</h2>
+
+            <% for (let i = 1; i <= newFieldsNeeded; i++) { %>
+                <div class="form-group">
+                    <label class="form-label">New Item <%= i %>:</label>
+                    <div class="input-row">
+                        <select name="new_item_<%= i %>">
+                            <option value="">Select Item</option>
+                            <% allItems.forEach((availableItem) => { %>
+                                <option value="<%= availableItem.id %>"><%= availableItem.item %></option>
+                            <% }) %>
+                        </select>
+                        <input type="number" name="new_weight_<%= i %>" placeholder="Weight" min="0">
+
+                        <!-- Checkbox for no_mellon -->
+                        <label>
+                            <input type="checkbox" name="new_no_mellon_<%= i %>" value="true"> No Mellon
+                        </label>
+                    </div>
+                </div>
+            <% } %>
+
+            <button type="submit" class="submit-button">Save Changes</button>
+        </form>
+    </div>
+</body>
+</html>

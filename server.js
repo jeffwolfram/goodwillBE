@@ -3,7 +3,8 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const path = require('path');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001
+;
 const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
     next();
 });
 // Routes
+const urtRoutes = require('./routes/urtitems-routes')
 const testingRoutes = require('./routes/testingroutes');
 const reportRoutes = require('./routes/report-routes');
 const noteRoutes = require('./routes/note-routes');
@@ -62,8 +64,10 @@ const mellonshipRoutes = require('./routes/mellonship-routes');
 const numbersRoutes = require('./routes/numbers-routes');
 const categoryRoutes = require('./routes/category-routes');
 const logRoutes = require('./routes/log-routes');
+const attendanceRoutes = require('./routes/attendance-routes')
 
 // Use routes
+app.use(urtRoutes);
 app.use(reportRoutes);
 app.use(testingRoutes);
 app.use(noteRoutes);
@@ -77,6 +81,7 @@ app.use(mellonshipRoutes);
 app.use(numbersRoutes);
 app.use(categoryRoutes);
 app.use(logRoutes);
+app.use(attendanceRoutes);
 
 app.get('/', checkAuthenticated, async (req, res) => {
     try {

@@ -1,0 +1,51 @@
+
+<%- include('layout') %>
+<script>
+    function deleteItem(itemId) {
+        if (confirm('Are you sure you want to delete this item?')) {
+            fetch(`/urtitems/delete/${itemId}`, { method: 'POST' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload(); // Reloads page after deletion
+                    } else {
+                        alert('Failed to delete item.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    }
+</script>
+<body>
+    <h1 class="urt-table-title">Items List</h1>
+    <table class="urt-items-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Item</th>
+                <th>Price</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% items.forEach(item => { %>
+                <tr>
+                    <td><%= item.id %></td>
+                    <td><%= item.item %></td>
+                    <td>$<%= item.price.toFixed(2) %></td>
+                    <td>
+                        <%= new Date(item.datetime).toLocaleDateString('en-US', {
+                            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric'
+                        }) %>
+                    </td>
+                    <td>
+                        <a href="/urtitems/edit/<%= item.id %>" class="action-link">Edit</a>
+                        <a href="javascript:void(0);" class="action-link delete-link" onclick="deleteItem(<%= item.id %>)">Delete</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    <a href="/create-urtitem" class="add-item-link">Add New Item</a>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<%- include('layout') %>
+<body>
+    <%- include('header') %>
+    <style>
+        .table-container {
+            width: 80%;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+
+        .details-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .details-column {
+            width: 48%;
+        }
+
+        .details-column p {
+            margin: 5px 0;
+        }
+
+        .table {
+            font-size: 12px;
+            line-height: 1.5em;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+
+        .table th, .table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #1018b1;
+            color: white;
+        }
+
+        .table tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .button, .back-button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #1018b1;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+    <div class="table-container">
+        <h1>URT Shipment Summary</h1>
+        
+        <!-- Display Shipment Details at the Top -->
+        <div class="details-container">
+            <div class="details-column">
+                <p><strong>Shipping Date:</strong> <%= new Date(dataObject.submission_date).toLocaleDateString('en-US') %></p>
+                <p><strong>PO Number:</strong> <%= dataObject.ponumber %></p>
+            </div>
+            <div class="details-column">
+                <p><strong>Seal Number:</strong> <%= dataObject.sealnumber %></p>
+                <p><strong>Container Number:</strong> <%= dataObject.container_number %></p>
+            </div>
+        </div>
+
+        <!-- Summed Data Table -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Total Weight (lbs)</th>
+                    <th>Price per lb ($)</th>
+                    <th>Total Price ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let grandTotal = 0; %>
+                <% summarizedItems.forEach(item => { %>
+                    <% const totalPrice = item.totalWeight * item.pricePerLb; %>
+                    <% grandTotal += totalPrice; %>
+                    <tr>
+                        <td><%= item.itemName %></td>
+                        <td><%= item.quantity %></td>
+                        <td><%= item.totalWeight %> lbs</td>
+                        <td>$<%= item.pricePerLb ? item.pricePerLb.toFixed(2) : '0.00' %></td>
+                        <td>$<%= totalPrice.toFixed(2) %></td>
+                    </tr>
+                <% }) %>
+                <tr>
+                    <td colspan="4" style="text-align: right; font-weight: bold;">Grand Total:</td>
+                    <td style="font-weight: bold;">$<%= grandTotal.toFixed(2) %></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <a href="/weight-data" class="back-button">Back to List</a>
+    </div>
+</body>
+</html>

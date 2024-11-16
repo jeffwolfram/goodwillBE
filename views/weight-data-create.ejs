@@ -1,0 +1,53 @@
+<%- include('layout') %>
+<body>
+    <%- include('header') %>
+<body>
+    <div class="form-container">
+        <h1>Create New Weight Data Object</h1>
+        <form class="formurt" action="/submit-weights" method="POST">
+            <div class="form-group">
+                <label for="submission_date" class="form-label">Submission Date:</label>
+                <input type="date" id="submission_date" name="submission_date" required>
+            </div>
+            <div class="form-group">
+                <label for="ponumber" class="form-label">PO Number:</label>
+                <input type="number" id="ponumber" name="ponumber">
+            </div>
+            
+            <div class="form-group">
+                <label for="container_number" class="form-label">Container Number:</label>
+                <input type="number" id="container_number" name="container_number">
+            </div>
+            
+            <div class="form-group">
+                <label for="sealnumber" class="form-label">Seal Number:</label>
+                <input type="number" id="sealnumber" name="sealnumber">
+            </div>
+
+            <% for (let i = 1; i <= 24; i++) { %>
+                <div class="form-group">
+                    <label class="form-label">Item <%= i %>:</label>
+                    <div class="input-row">
+                        <select name="item_<%= i %>">
+                            <option value="">Select Item</option>
+                            <% items.forEach(item => { %>
+                                <option value="<%= item.id %>"><%= item.item %></option>
+                            <% }) %>
+                        </select>
+                        <input type="number" name="weight_<%= i %>" placeholder="Weight" min="0">
+                        <label>
+                            <input type="checkbox" name="no_mellon_<%= i %>" value="true"> No Mellon
+                        </label>
+                             
+                        
+                        
+                    </div>
+                </div>
+            <% } %>
+            
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
+

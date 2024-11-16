@@ -133,24 +133,67 @@ async function getUserTotalsForCurrentMonth() {
     }
 }
 
+
 // code for totals by month
+
 router.get('/totals-by-month', checkAuthenticated, async (req, res) => {
+
     try {
         const selectedMonth = req.query.month || new Date().toISOString().slice(5, 7); // Default to current month
         const selectedYear = req.query.year || new Date().getFullYear(); // Default to current year
 
-        // If no month and year are provided, show the form with the current month/year
-        if (!req.query.month || !req.query.year) {
-            return res.render('usertotals-by-month.ejs', {
-                pageTitle: 'Select a Month and Year',
-                dailyTotals: null, // No data yet, just showing the form
-                selectedMonth: selectedMonth,
-                selectedYear: selectedYear
-            });
-        }
+        // Query to get totals for each user for the selected month
+        const userTotalsQuery = `
+
+            SELECT 
+                users.name AS user_name,
+                SUM(numbers.amount) AS total_amount,
+                SUM(numbers.number) AS total_number,
+                COUNT(numbers.id) AS total_entries,
+                MAX(numbers.amount) AS highest_single_amount,
+                MAX(numbers.number) AS highest_single_number
+            FROM numbers
+            JOIN users ON numbers.user_id = users.id
+            WHERE EXTRACT(YEAR FROM numbers.created_at) = $1 
+              AND EXTRACT(MONTH FROM numbers.created_at) = $2
+            GROUP BY users.name
+            ORDER BY users.name;
+        `;
+
+        const userTotalsResult = await pool.query(userTotalsQuery, [selectedYear, selectedMonth]);
+        // Calculate additional data like daily average and the user with the highest average total
+        let highestAverageUser = null;
+        let highestAverageNumberUser = null;
+        let highestTotalAvg = 0;
+        let highestNumberAvg = 0;
+
+        const userTotals = userTotalsResult.rows.map(user => {
+
+            const dailyAverage = (user.total_amount / user.total_entries).toFixed(2);
+            // Find user with highest average total
+            if (dailyAverage > highestTotalAvg) {
+                highestTotalAvg = dailyAverage;
+                highestAverageUser = user;
+            }
+            // Find user with highest average number
+            const averageNumber = (user.total_number / user.total_entries).toFixed(2);
+            if (averageNumber > highestNumberAvg) {
+                highestNumberAvg = averageNumber;
+                highestAverageNumberUser = user;
+            }
+
+            return {
+                name: user.user_name,
+                total_amount: user.total_amount,
+                total_number: user.total_number,
+                highest_single_amount: user.highest_single_amount,
+                highest_single_number: user.highest_single_number,
+                daily_average: dailyAverage,
+            };
+        });
 
         // SQL query to get totals for each user per day for the selected month and year
-        const result = await pool.query(`
+        const dailyTotalsQuery = `
             SELECT 
                 users.name AS user_name,
                 numbers.created_at::date AS day,
@@ -162,11 +205,12 @@ router.get('/totals-by-month', checkAuthenticated, async (req, res) => {
               AND EXTRACT(MONTH FROM numbers.created_at) = $2
             GROUP BY users.name, numbers.created_at::date
             ORDER BY numbers.created_at::date, users.name;
-        `, [selectedYear, selectedMonth]);
-
+        `;
+        
+        const dailyTotalsResult = await pool.query(dailyTotalsQuery, [selectedYear, selectedMonth]);
         // Structure the data by day and user
         const dailyTotals = {};
-        result.rows.forEach(row => {
+        dailyTotalsResult.rows.forEach(row => {
             const day = row.day.toDateString();
             if (!dailyTotals[day]) {
                 dailyTotals[day] = [];
@@ -178,12 +222,19 @@ router.get('/totals-by-month', checkAuthenticated, async (req, res) => {
             });
         });
 
-        // Render the view with the selected month's data
+
+
+
+        // Render the view with the data
+
         res.render('usertotals-by-month.ejs', {
             pageTitle: `User Totals for ${selectedMonth}-${selectedYear}`,
+            userTotals: userTotals,
             dailyTotals: dailyTotals,
             selectedMonth: selectedMonth,
-            selectedYear: selectedYear
+            selectedYear: selectedYear,
+            highestAverageUser: highestAverageUser,
+            highestAverageNumberUser: highestAverageNumberUser
         });
     } catch (error) {
         console.error(error);
