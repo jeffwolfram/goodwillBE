@@ -76,7 +76,12 @@
             
                     <!-- Checkbox for no_mellon -->
                     <label>
-                        <input type="checkbox" name="existing_no_mellon_<%= i + 1 %>" value="true" <%= currentItem.no_mellon ? 'checked' : '' %>> No Mellon
+                        <input 
+                            type="checkbox" 
+                            name="existing_no_mellon_<%= i + 1 %>" 
+                            value="true" 
+                            <%= currentItem.mellon ? 'checked' : '' %> 
+                        > Mellon
                     </label>
                 </div>
             <% }) %>
@@ -97,7 +102,7 @@
 
                         <!-- Checkbox for no_mellon -->
                         <label>
-                            <input type="checkbox" name="new_no_mellon_<%= i %>" value="true"> No Mellon
+                            <input type="checkbox" name="new_mellon_<%= i %>" value="true"> No Mellon
                         </label>
                     </div>
                 </div>

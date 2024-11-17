@@ -82,19 +82,28 @@
                     <th>URT Weight</th>
                     <th>Price per lb</th>
                     <th>Total Price</th>
+                    <th>Mellon</th>
                 </tr>
             </thead>
             <tbody>
                 <% let totalSum = 0; %>
-                <% items.forEach(i => { %>
-                    <% const totalPrice = i.weight * i.price; %>
-                    <% totalSum += totalPrice; %>
+                <% items.forEach(i => { 
+                    // Adjust the weight based on mellon
+                    const adjustedWeight = i.mellon === true ? i.weight - 40 : i.weight - 90; 
+                    const totalPrice = adjustedWeight * i.price; // Use adjustedWeight for total price
+                    totalSum += totalPrice; // Update totalSum
+                %>
                     <tr>
                         <td><%= i.item %></td>
                         <td><%= i.weight %></td>
-                        <td><%= i.mellon %></td>
+                        <td><%= adjustedWeight %></td>
                         <td>$<%= i.price ? i.price.toFixed(2) : '0.00' %></td>
-                        <td>$<%= i.price && i.weight ? (i.weight * i.price).toFixed(2) : '0.00' %></td>
+                        <td>$<%= totalPrice.toFixed(2) %></td>
+                        <% if (i.mellon === true) { %>
+                            <td>No</td>
+                        <% } else { %>
+                            <td>Yes</td>
+                        <% } %>
                     </tr>
                 <% }) %>
                 <tr>

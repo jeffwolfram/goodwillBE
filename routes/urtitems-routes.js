@@ -209,7 +209,7 @@ router.get('/weight-data/:id', async (req, res) => {
 
         // Fetch associated items and weights
         const itemsResult = await pool.query(
-            `SELECT urt_item_weights.id, urtitems.item, urt_item_weights.weight, urtitems.price
+            `SELECT urt_item_weights.id, urtitems.item, urt_item_weights.weight,urt_item_weights.mellon,  urtitems.price
              FROM urt_item_weights
              JOIN urtitems ON urt_item_weights.item_id = urtitems.id
              WHERE urt_item_weights.weight_data_object_id = $1`,
@@ -242,7 +242,7 @@ router.get('/weight-data/:id/edit', async (req, res) => {
 
         // Fetch associated items and weights for this weight data object
         const itemsResult = await pool.query(
-            `SELECT urt_item_weights.id, urtitems.item, urt_item_weights.weight
+            `SELECT urt_item_weights.id, urtitems.item, urt_item_weights.weight, urt_item_weights.mellon
              FROM urt_item_weights
              JOIN urtitems ON urt_item_weights.item_id = urtitems.id
              WHERE urt_item_weights.weight_data_object_id = $1`,
@@ -301,14 +301,15 @@ router.post('/weight-data/:id/update', async (req, res) => {
         for (let i = 1; req.body[`existing_item_${i}`] && req.body[`existing_weight_${i}`]; i++) {
             const itemId = req.body[`existing_item_${i}`];
             const weight = parseInt(req.body[`existing_weight_${i}`], 10); 
+            const mellon = req.body[`existing_no_mellon_${i}`] === 'true';
            
         
 
             if (itemId && weight) {
 
                 const result = await client.query(
-                    'UPDATE urt_item_weights SET weight = $1 WHERE id = $2 AND weight_data_object_id = $3',
-                    [weight, itemId, id]
+                    'UPDATE urt_item_weights SET weight = $1, mellon = $2 WHERE id = $3 AND weight_data_object_id = $4',
+                    [weight, mellon, itemId, id]
                 );
 
               
@@ -317,15 +318,16 @@ router.post('/weight-data/:id/update', async (req, res) => {
 
         // Insert new items in urt_item_weights
         for (let i = 1; req.body[`new_item_${i}`] && req.body[`new_weight_${i}`]; i++) {
-            
             const newItemId = req.body[`new_item_${i}`];
             const newWeight = parseInt(req.body[`new_weight_${i}`], 10);
-
+            const mellon = req.body[`new_mellon_${i}`] === 'true'; // Parse as boolean
+        
             if (newItemId && newWeight) {
+                console.log(`Inserting new item ${newItemId} with weight ${newWeight}, mellon=${mellon}`);
                 
                 await client.query(
-                    'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight) VALUES ($1, $2, $3)',
-                    [id, newItemId, newWeight]
+                    'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight, mellon) VALUES ($1, $2, $3, $4)',
+                    [id, newItemId, newWeight, mellon] // Include mellon in the values array
                 );
             }
         }
