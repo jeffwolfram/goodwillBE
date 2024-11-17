@@ -94,6 +94,20 @@
     </style>
 </head>
 <body>
+    <% 
+    let totalShippedWeight = 0;
+    let totalUrtWeight = 0;
+    let mellonFalseCount = 0;
+    let totalItems = 0;
+%>
+<% items.forEach(i => { 
+    totalShippedWeight += i.weight;
+    totalUrtWeight += i.mellon === true ? i.weight - 40 : i.weight - 90;
+    if (i.mellon === false) {
+        mellonFalseCount++;
+    }
+    totalItems++
+}); %>
     <div class="container">
         <div class="title">Bill of Lading</div>
         
@@ -126,14 +140,14 @@
                 <tr>
                     <td></td>
                     <td>Adjusted Weight (do not change)</td>
-                    <td>12,486</td>
+                    <td><%= totalUrtWeight %></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>Total Weight (for driver)</td>
-                    <td>14,375</td>
+                    <td><%= totalShippedWeight  %></td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -146,39 +160,33 @@
                 </tr>
                 <tr>
                     <td></td>
-                    <td>PO #:</td>
-                    <td>237,613</td>
+                    <td>PO #: </td>
+                    <td><%= dataObject.ponumber %></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td></td>
-                    <td>Seal #:</td>
-                    <td></td>
+                    <td>Seal #: </td>
+                    <td><%= dataObject.sealnumber %></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>Pallets:</td>
-                    <td>23</td>
+                    <td><%= totalItems %></td>
                     <td></td>
                     <td></td>
                 </tr>
                 <tr>
                     <td></td>
                     <td>Melons:</td>
-                    <td>18</td>
+                    <td><%= mellonFalseCount %></td>
                     <td></td>
                     <td></td>
                 </tr>
-                <tr>
-                    <td></td>
-                    <td>Boxes:</td>
-                    <td>0</td>
-                    <td></td>
-                    <td></td>
-                </tr>
+            
             </tbody>
         </table>
 
@@ -212,7 +220,7 @@
             <p>Shipper: Goodwill Industries of Lane & South Coast Counties</p>
             <p>Carrier: ________________________</p>
             <p>Per: _____________________________</p>
-            <p>Date: ____________________________</p>
+            <p>Date: <%= new Date(dataObject.submission_date).toLocaleDateString('en-US') %></p>
         </div>
     </div>
 </body>

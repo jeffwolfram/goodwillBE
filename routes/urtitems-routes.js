@@ -401,7 +401,55 @@ router.get('/weight-data/:id/summary', async (req, res) => {
 
 
 
+router.get('/weight-data/:id/bill-of-lading', async (req, res) => {
+    const { id } = req.params;
 
+    try {
+        // Fetch the weight data object
+        const dataObjectResult = await pool.query(
+            'SELECT * FROM weight_data_objects WHERE id = $1',
+            [id]
+        );
+
+        if (dataObjectResult.rows.length === 0) {
+            return res.status(404).send('Weight Data Object not found');
+        }
+
+        const dataObject = dataObjectResult.rows[0];
+
+        // Fetch associated items and weights
+        const itemsResult = await pool.query(
+            `SELECT urt_item_weights.id, urtitems.item, urt_item_weights.weight, urtitems.price, urt_item_weights.mellon
+             FROM urt_item_weights
+             JOIN urtitems ON urt_item_weights.item_id = urtitems.id
+             WHERE urt_item_weights.weight_data_object_id = $1`,
+            [id]
+        );
+
+        const items = itemsResult.rows;
+
+        // Calculate totals
+        let totalShippedWeight = 0;
+        let totalURTWeight = 0;
+        items.forEach(item => {
+            totalShippedWeight += item.weight;
+            totalURTWeight += item.mellon ? item.weight - 40 : item.weight - 90; // Adjusted weight based on mellon
+        });
+
+        
+
+        // Pass data to the EJS page
+        res.render('bill-of-lading', {
+            dataObject,
+            totalShippedWeight,
+            totalURTWeight,
+            items
+        });
+    } catch (err) {
+        console.error('Error retrieving bill of lading:', err);
+        res.status(500).send('Server Error');
+    }
+});
 
 
 

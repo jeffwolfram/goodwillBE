@@ -86,12 +86,18 @@
                 </tr>
             </thead>
             <tbody>
-                <% let totalSum = 0; %>
+                <%  let totalSum = 0; 
+                    let totalShippedWeight = 0;
+                    let totalUrtWeight = 0
+                %>
                 <% items.forEach(i => { 
-                    // Adjust the weight based on mellon
+                    
                     const adjustedWeight = i.mellon === true ? i.weight - 40 : i.weight - 90; 
                     const totalPrice = adjustedWeight * i.price; // Use adjustedWeight for total price
                     totalSum += totalPrice; // Update totalSum
+                    totalShippedWeight += i.weight;
+                    totalUrtWeight += adjustedWeight
+                    
                 %>
                     <tr>
                         <td><%= i.item %></td>
@@ -106,16 +112,25 @@
                         <% } %>
                     </tr>
                 <% }) %>
-                <tr>
-                    <td colspan="3" style="text-align: right; font-weight: bold;">Total Sum :</td>
-                    <td style="font-weight: bold;">$<%= totalSum.toFixed(2) %></td>
+                <!-- Total Row -->
+                <tr class="total-row">
+                    <td>Totals:</td>
+                    <td><strong><%= totalShippedWeight %></strong></td>
+                    <td><strong><%= totalUrtWeight %></strong></td>
+                    <td></td>
+                    <td><strong>$<%= totalSum.toFixed(2) %></strong></td>
+                    <td></td>
                 </tr>
+             
             </tbody>
         </table>
 
-        <a href="/weight-data/<%= dataObject.id %>/edit" class="edit-button">Edit</a>
-        <a href="/weight-data" class="button">Back to List</a>
-        <a href="/weight-data/<%= dataObject.id %>/summary" class="button">View Summary</a>
+      
+            <br>
+            <br>
+            <a href="/weight-data/<%= dataObject.id %>/bill-of-lading" class="button">Bill of Lading</a>
+            <a href="/weight-data/<%= dataObject.id %>/edit" class="button">Edit</a>
+
     </div>
 </body>
 </html>
