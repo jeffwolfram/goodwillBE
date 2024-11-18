@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Order Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .header-section, .billing-section, .footer-section {
+            margin-bottom: 20px;
+        }
+
+        .header-section table, 
+        .billing-section table, 
+        .footer-section table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .header-section td {
+            border: none;
+        }
+
+        .billing-section th {
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        .billing-section td {
+            text-align: center;
+        }
+
+        .notes-section {
+            margin-top: 20px;
+        }
+
+        .notes-section textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Goodwill Industries of Lane & South Coast Counties</h1>
+        <h2 style="text-align: center;">Sales Order Form</h2>
+        
+        <!-- Header Section -->
+        <div class="header-section">
+            <table>
+                <tr>
+                    <td><strong>Date:</strong> <%= new Date(dataObject.submission_date).toLocaleDateString('en-US') %></td>
+                    <td><strong>PO#:</strong> <%= dataObject.ponumber %></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Billing Section -->
+        <div class="billing-section">
+            <table>
+                <tr>
+                    <th colspan="2">Billing Information</th>
+                </tr>
+                <tr>
+                    <td><strong>Name:</strong> Universal Recycling Technologies</td>
+                    <td><strong>Phone#:</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Address:</strong> 10151 SE Jennifer St.</td>
+                    <td><strong>Fax#:</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>City/State:</strong> Clackamas, Or. 97015</td>
+                    <td><strong>Contact:</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Description Section -->
+        <div class="description-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>E-Waste/Commodity Salvage</td>
+                        <td>*</td>
+                        <td>-</td>
+                        <td>$<%= totalPrice.toFixed(2) %></td>
+                    </tr>
+                    <% for (let i = 0; i < 7; i++) { %> <!-- Empty rows for spacing -->
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    <% } %>
+                    <tr>
+                        <td colspan="3" style="text-align: right; font-weight: bold;">Total</td>
+                        <td style="font-weight: bold;">$<%= totalPrice.toFixed(2) %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Seal Section -->
+        <div class="footer-section">
+            <table>
+                <tr>
+                    <td><strong>Seal#:</strong> <%= dataObject.sealnumber || "N/A" %></td>
+                    <td style="text-align: right; font-weight: bold;">Total: $<%= totalPrice.toFixed(2) %></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="notes-section">
+            <label><strong>Notes:</strong></label>
+            <textarea readonly></textarea>
+        </div>
+
+        <!-- Payment Method Section -->
+        <div class="payment-section">
+            <table>
+                <tr>
+                    <td><strong>Payment Method:</strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

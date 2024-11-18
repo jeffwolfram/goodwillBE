@@ -451,6 +451,50 @@ router.get('/weight-data/:id/bill-of-lading', async (req, res) => {
     }
 });
 
+router.get('/weight-data/:id/sales-order', async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Fetch the weight data object
+        const dataObjectResult = await pool.query(
+            'SELECT * FROM weight_data_objects WHERE id = $1',
+            [id]
+        );
+
+        if (dataObjectResult.rows.length === 0) {
+            return res.status(404).send('Weight Data Object not found');
+        }
+
+        const dataObject = dataObjectResult.rows[0];
+
+        // Fetch item weights and prices, calculate total price
+        const itemsResult = await pool.query(
+            `SELECT uw.weight, ui.price 
+             FROM urt_item_weights uw
+             JOIN urtitems ui ON uw.item_id = ui.id
+             WHERE uw.weight_data_object_id = $1`,
+            [id]
+        );
+
+        // Calculate total price
+        let totalPrice = 0;
+        itemsResult.rows.forEach(item => {
+            const adjustedWeight = item.weight; // If weight adjustments are needed, modify here
+            const itemPrice = adjustedWeight * (item.price || 0); // Handle potential null price
+            totalPrice += itemPrice;
+        });
+
+        // Render the sales-order page
+        res.render('sales-order-form', {
+            dataObject,
+            totalPrice,
+        });
+    } catch (err) {
+        console.error('Error fetching sales order data:', err);
+        res.status(500).send('Server Error');
+    }
+});
+
+
 
 
 module.exports = router;
