@@ -94,16 +94,35 @@ router.post('/submit-weights', async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        const { submission_date } = req.body;
-        const result = await client.query('INSERT INTO weight_data_objects (submission_date) VALUES ($1) RETURNING id', [submission_date]);
+
+        console.log(req.body); // Debugging: Verify input data
+
+        // Extract fields from the form
+        let { submission_date, ponumber, container_number, sealnumber } = req.body;
+
+        // Convert empty strings to null for nullable fields
+        ponumber = ponumber === "" ? null : parseInt(ponumber);
+        container_number = container_number === "" ? null : parseInt(container_number);
+        sealnumber = sealnumber === "" ? null : parseInt(sealnumber);
+
+        // Insert into `weight_data_objects`
+        const result = await client.query(
+            'INSERT INTO weight_data_objects (submission_date, ponumber, container_number, sealnumber) VALUES ($1, $2, $3, $4) RETURNING id',
+            [submission_date, ponumber, container_number, sealnumber]
+        );
         const weightDataObjectId = result.rows[0].id;
 
-        const insertEntryQuery = 'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight) VALUES ($1, $2, $3)';
+        // Insert into `urt_item_weights`
+        const insertEntryQuery = 'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight, mellon) VALUES ($1, $2, $3, $4)';
         for (let i = 1; i <= 24; i++) {
             const itemId = req.body[`item_${i}`];
             const weight = req.body[`weight_${i}`];
+            const mellon = req.body[`mellon_${i}`] === 'true'; // Parse checkbox value to boolean
+
+            // Only process valid rows
             if (itemId && weight) {
-                await client.query(insertEntryQuery, [weightDataObjectId, itemId, weight]);
+                console.log(`Item ${i}: itemId=${itemId}, weight=${weight}, mellon=${mellon}`); // Debugging
+                await client.query(insertEntryQuery, [weightDataObjectId, itemId, weight, mellon]);
             }
         }
 
@@ -147,47 +166,55 @@ router.get('/weight-data/new', async (req, res) => {
     }
 });
 
-// Route to handle form submission and save a new weight data object and entries
-router.post('/weight-data/new', async (req, res) => {
-    const client = await pool.connect();
-    try {
-        await client.query('BEGIN');
+// router.post('/weight-data/new', async (req, res) => {
+//     const client = await pool.connect();
+//     try {
+//         await client.query('BEGIN');
 
-        // Extract submission_date, ponumber, container_number, and sealnumber from req.body
-        let { submission_date, ponumber, container_number, sealnumber } = req.body;
+//         console.log(req.body); // Debugging: Verify input data
 
-        // Convert empty strings to null for integer fields
-        ponumber = ponumber === "" ? null : parseInt(ponumber);
-        container_number = container_number === "" ? null : parseInt(container_number);
-        sealnumber = sealnumber === "" ? null : parseInt(sealnumber);
+//         // Extract fields from the form
+//         let { submission_date, ponumber, container_number, sealnumber } = req.body;
 
-        // Insert a new weight data object with the specified fields
-        const result = await client.query(
-            'INSERT INTO weight_data_objects (submission_date, ponumber, container_number, sealnumber) VALUES ($1, $2, $3, $4) RETURNING id',
-            [submission_date, ponumber, container_number, sealnumber]
-        );
-        const weightDataObjectId = result.rows[0].id;
+//         // Convert empty strings to null for nullable fields
+//         ponumber = ponumber === "" ? null : parseInt(ponumber);
+//         container_number = container_number === "" ? null : parseInt(container_number);
+//         sealnumber = sealnumber === "" ? null : parseInt(sealnumber);
 
-        // Insert weights and items for the new weight data object
-        const insertEntryQuery = 'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight) VALUES ($1, $2, $3)';
-        for (let i = 1; i <= 24; i++) {
-            const itemId = req.body[`item_${i}`];
-            const weight = req.body[`weight_${i}`];
-            if (itemId && weight) {
-                await client.query(insertEntryQuery, [weightDataObjectId, itemId, weight]);
-            }
-        }
+//         // Insert into `weight_data_objects`
+//         const result = await client.query(
+//             'INSERT INTO weight_data_objects (submission_date, ponumber, container_number, sealnumber) VALUES ($1, $2, $3, $4) RETURNING id',
+//             [submission_date, ponumber, container_number, sealnumber]
+//         );
+//         const weightDataObjectId = result.rows[0].id;
 
-        await client.query('COMMIT');
-        res.redirect('/weight-data');
-    } catch (err) {
-        await client.query('ROLLBACK');
-        console.error('Error saving weight data:', err);
-        res.status(500).send('Server Error');
-    } finally {
-        client.release();
-    }
-});
+//         // Insert into `urt_item_weights`
+//         const insertEntryQuery = 'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight, mellon) VALUES ($1, $2, $3, $4)';
+//         for (let i = 1; i <= 24; i++) {
+//             const itemId = req.body[`item_${i}`];
+//             const weight = req.body[`weight_${i}`];
+//             const mellon = req.body[`mellon_${i}`] === 'true'; // Parse checkbox value to boolean
+
+//             // Only process valid rows
+//             if (itemId && weight) {
+//                 console.log(`Item ${i}: itemId=${itemId}, weight=${weight}, mellon=${mellon}`); // Debugging
+//                 await client.query(insertEntryQuery, [weightDataObjectId, itemId, weight, mellon]);
+//             }
+//         }
+
+//         await client.query('COMMIT');
+//         res.redirect('/weight-data');
+//     } catch (err) {
+//         await client.query('ROLLBACK');
+//         console.error('Error saving weight data:', err);
+//         res.status(500).send('Server Error');
+//     } finally {
+//         client.release();
+//     }
+// });
+
+
+
 
 
 // Route to display a specific weight data object with its items and weights
