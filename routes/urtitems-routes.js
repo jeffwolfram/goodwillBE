@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../database2.js'); 
-const { checkAuthenticated, checkNotAuthenticated } = require('../roleMiddleware.js');
+const { checkAuthenticated } = require('../roleMiddleware.js')
+const { checkNotAuthenticated} = require('../roleMiddleware.js')
+const {isAdmin, isLead, isManager, isAdminOrSuperUser, isAdminOrSuperUserOrLead } = require('../roleMiddleware')
 
 // Route to display all items
 router.get('/urtitems',checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
