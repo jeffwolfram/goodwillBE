@@ -4,7 +4,7 @@ const pool = require('../database2.js');
 const { checkAuthenticated, checkNotAuthenticated } = require('../roleMiddleware.js');
 
 // Route to display all items
-router.get('/urtitems', async (req, res) => {
+router.get('/urtitems',checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM urtitems ORDER BY updated_at DESC');
         res.render('urt-items', {
@@ -18,12 +18,12 @@ router.get('/urtitems', async (req, res) => {
 });
 
 // Route to display the form for creating a new item
-router.get('/create-urtitem', (req, res) => {
+router.get('/create-urtitem',checkAuthenticated, isAdminOrSuperUserOrLead, (req, res) => {
     res.render('create-urtitem');
 });
 
 // Route to handle creating a new item
-router.post('/urtitems', async (req, res) => {
+router.post('/urtitems', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { item, price } = req.body;
     try {
         await pool.query('INSERT INTO urtitems (item, price) VALUES ($1, $2)', [item, price]);
@@ -35,7 +35,7 @@ router.post('/urtitems', async (req, res) => {
 });
 
 // Route to delete an item by id
-router.post('/urtitems/delete/:id', async (req, res) => {
+router.post('/urtitems/delete/:id', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
     try {
         await pool.query('DELETE FROM urtitems WHERE id = $1', [id]);
@@ -47,7 +47,7 @@ router.post('/urtitems/delete/:id', async (req, res) => {
 });
 
 // Route to display the edit form for a specific item
-router.get('/urtitems/edit/:id', async (req, res) => {
+router.get('/urtitems/edit/:id', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
     try {
         const result = await pool.query('SELECT * FROM urtitems WHERE id = $1', [id]);
@@ -63,7 +63,7 @@ router.get('/urtitems/edit/:id', async (req, res) => {
 });
 
 // Route to update an item
-router.post('/urtitems/update/:id', async (req, res) => {
+router.post('/urtitems/update/:id', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
     const { item, price } = req.body;
     try {
@@ -76,7 +76,7 @@ router.post('/urtitems/update/:id', async (req, res) => {
 });
 
 // Route to display the form for entering weights
-router.get('/enter-weights', async (req, res) => {
+router.get('/enter-weights', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM urtitems ORDER BY item');
         res.render('weight-entry', { 
@@ -90,38 +90,28 @@ router.get('/enter-weights', async (req, res) => {
 });
 
 // Route to handle form submission and save weight data object and entries
-router.post('/submit-weights', async (req, res) => {
+router.post('/submit-weights',checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-
-        console.log(req.body); // Debugging: Verify input data
-
-        // Extract fields from the form
         let { submission_date, ponumber, container_number, sealnumber } = req.body;
-
-        // Convert empty strings to null for nullable fields
         ponumber = ponumber === "" ? null : parseInt(ponumber);
         container_number = container_number === "" ? null : parseInt(container_number);
         sealnumber = sealnumber === "" ? null : parseInt(sealnumber);
 
-        // Insert into `weight_data_objects`
         const result = await client.query(
             'INSERT INTO weight_data_objects (submission_date, ponumber, container_number, sealnumber) VALUES ($1, $2, $3, $4) RETURNING id',
             [submission_date, ponumber, container_number, sealnumber]
         );
         const weightDataObjectId = result.rows[0].id;
-
-        // Insert into `urt_item_weights`
         const insertEntryQuery = 'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight, mellon) VALUES ($1, $2, $3, $4)';
         for (let i = 1; i <= 24; i++) {
             const itemId = req.body[`item_${i}`];
             const weight = req.body[`weight_${i}`];
-            const mellon = req.body[`mellon_${i}`] === 'true'; // Parse checkbox value to boolean
+            const mellon = req.body[`mellon_${i}`] === 'true'; 
 
             // Only process valid rows
             if (itemId && weight) {
-                console.log(`Item ${i}: itemId=${itemId}, weight=${weight}, mellon=${mellon}`); // Debugging
                 await client.query(insertEntryQuery, [weightDataObjectId, itemId, weight, mellon]);
             }
         }
@@ -138,7 +128,7 @@ router.post('/submit-weights', async (req, res) => {
 });
 
 // Route to display all weight data objects
-router.get('/weight-data', async (req, res) => {
+router.get('/weight-data',checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM weight_data_objects ORDER BY submission_date DESC');
         res.render('weight-data-list', { 
@@ -151,9 +141,9 @@ router.get('/weight-data', async (req, res) => {
     }
 });
 
+
 // Route to render form to create a new weight data object
-// Route to render form to create a new weight data object
-router.get('/weight-data/new', async (req, res) => {
+router.get('/weight-data/new',checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM urtitems ORDER BY item');
         res.render('weight-data-create', { 
@@ -166,75 +156,23 @@ router.get('/weight-data/new', async (req, res) => {
     }
 });
 
-// router.post('/weight-data/new', async (req, res) => {
-//     const client = await pool.connect();
-//     try {
-//         await client.query('BEGIN');
-
-//         console.log(req.body); // Debugging: Verify input data
-
-//         // Extract fields from the form
-//         let { submission_date, ponumber, container_number, sealnumber } = req.body;
-
-//         // Convert empty strings to null for nullable fields
-//         ponumber = ponumber === "" ? null : parseInt(ponumber);
-//         container_number = container_number === "" ? null : parseInt(container_number);
-//         sealnumber = sealnumber === "" ? null : parseInt(sealnumber);
-
-//         // Insert into `weight_data_objects`
-//         const result = await client.query(
-//             'INSERT INTO weight_data_objects (submission_date, ponumber, container_number, sealnumber) VALUES ($1, $2, $3, $4) RETURNING id',
-//             [submission_date, ponumber, container_number, sealnumber]
-//         );
-//         const weightDataObjectId = result.rows[0].id;
-
-//         // Insert into `urt_item_weights`
-//         const insertEntryQuery = 'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight, mellon) VALUES ($1, $2, $3, $4)';
-//         for (let i = 1; i <= 24; i++) {
-//             const itemId = req.body[`item_${i}`];
-//             const weight = req.body[`weight_${i}`];
-//             const mellon = req.body[`mellon_${i}`] === 'true'; // Parse checkbox value to boolean
-
-//             // Only process valid rows
-//             if (itemId && weight) {
-//                 console.log(`Item ${i}: itemId=${itemId}, weight=${weight}, mellon=${mellon}`); // Debugging
-//                 await client.query(insertEntryQuery, [weightDataObjectId, itemId, weight, mellon]);
-//             }
-//         }
-
-//         await client.query('COMMIT');
-//         res.redirect('/weight-data');
-//     } catch (err) {
-//         await client.query('ROLLBACK');
-//         console.error('Error saving weight data:', err);
-//         res.status(500).send('Server Error');
-//     } finally {
-//         client.release();
-//     }
-// });
-
 
 
 
 
 // Route to display a specific weight data object with its items and weights
-router.get('/weight-data/:id', async (req, res) => {
+router.get('/weight-data/:id', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
     try {
-        // Fetch the weight data object
         const dataObjectResult = await pool.query(
             'SELECT * FROM weight_data_objects WHERE id = $1',
             [id]
         );
-
-        // If no object is found, return a 404 error
         if (dataObjectResult.rows.length === 0) {
             return res.status(404).send('Weight Data Object not found');
         }
 
         const dataObject = dataObjectResult.rows[0];
-
-        // Fetch associated items and weights
         const itemsResult = await pool.query(
             `SELECT urt_item_weights.id, urtitems.item, urt_item_weights.weight,urt_item_weights.mellon,  urtitems.price
              FROM urt_item_weights
@@ -242,8 +180,6 @@ router.get('/weight-data/:id', async (req, res) => {
              WHERE urt_item_weights.weight_data_object_id = $1`,
             [id]
         );
-
-        // Render the view and pass the data object and associated items/weights
         res.render('view-weight-data', {
             dataObject,
             items: itemsResult.rows,
@@ -257,17 +193,14 @@ router.get('/weight-data/:id', async (req, res) => {
 
 
 // Route to display the edit form for a specific weight data object
-router.get('/weight-data/:id/edit', async (req, res) => {
+router.get('/weight-data/:id/edit', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
     try {
-        // Fetch the weight data object
         const dataObjectResult = await pool.query('SELECT * FROM weight_data_objects WHERE id = $1', [id]);
         if (dataObjectResult.rows.length === 0) {
             return res.status(404).send('Weight Data Object not found');
         }
         let dataObject = dataObjectResult.rows[0];
-
-        // Fetch associated items and weights for this weight data object
         const itemsResult = await pool.query(
             `SELECT urt_item_weights.id, urtitems.item, urt_item_weights.weight, urt_item_weights.mellon
              FROM urt_item_weights
@@ -300,12 +233,12 @@ router.get('/weight-data/:id/edit', async (req, res) => {
 
 
 // Route to handle the update submission for a weight data object
-router.post('/weight-data/:id/update', async (req, res) => {
+router.post('/weight-data/:id/update', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
     let { submission_date, ponumber, container_number, sealnumber } = req.body;
    
 
-    // Convert empty strings to null for integer fields
+  
     ponumber = ponumber === "" ? null : parseInt(ponumber);
     container_number = container_number === "" ? null : parseInt(container_number);
     sealnumber = sealnumber === "" ? null : parseInt(sealnumber);
@@ -313,8 +246,6 @@ router.post('/weight-data/:id/update', async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-
-        // Update the main fields of the weight data object
         await client.query(
             'UPDATE weight_data_objects SET submission_date = $1, ponumber = $2, container_number = $3, sealnumber = $4 WHERE id = $5',
             [submission_date, ponumber, container_number, sealnumber, id]
@@ -347,14 +278,14 @@ router.post('/weight-data/:id/update', async (req, res) => {
         for (let i = 1; req.body[`new_item_${i}`] && req.body[`new_weight_${i}`]; i++) {
             const newItemId = req.body[`new_item_${i}`];
             const newWeight = parseInt(req.body[`new_weight_${i}`], 10);
-            const mellon = req.body[`new_mellon_${i}`] === 'true'; // Parse as boolean
+            const mellon = req.body[`new_mellon_${i}`] === 'true'; 
         
             if (newItemId && newWeight) {
                 console.log(`Inserting new item ${newItemId} with weight ${newWeight}, mellon=${mellon}`);
                 
                 await client.query(
                     'INSERT INTO urt_item_weights (weight_data_object_id, item_id, weight, mellon) VALUES ($1, $2, $3, $4)',
-                    [id, newItemId, newWeight, mellon] // Include mellon in the values array
+                    [id, newItemId, newWeight, mellon] 
                 );
             }
         }
@@ -375,10 +306,9 @@ router.post('/weight-data/:id/update', async (req, res) => {
 
 
 
-router.get('/weight-data/:id/summary', async (req, res) => {
+router.get('/weight-data/:id/summary', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
     try {
-        // Fetch the main details (shipping date, PO number, etc.) from weight_data_objects
         const dataObjectResult = await pool.query(
             `SELECT submission_date, ponumber, sealnumber, container_number 
              FROM weight_data_objects 
@@ -390,8 +320,6 @@ router.get('/weight-data/:id/summary', async (req, res) => {
             return res.status(404).send('Data not found');
         }
         const dataObject = dataObjectResult.rows[0];
-
-        // Fetch associated items, weights, and prices from the database
         const itemsResult = await pool.query(
             `SELECT urtitems.item AS itemname, urt_item_weights.weight, urtitems.price
              FROM urt_item_weights
@@ -400,25 +328,19 @@ router.get('/weight-data/:id/summary', async (req, res) => {
             [id]
         );
 
-        // Initialize a summary object to store each unique item type
+        
         const summary = {};
-
-        // Loop through each item to group and aggregate data
         itemsResult.rows.forEach(item => {
             const { itemname, weight, price } = item;
             if (!summary[itemname]) {
-                // Initialize a new entry for each unique item type
                 summary[itemname] = { itemName: itemname, quantity: 0, totalWeight: 0, pricePerLb: price };
             }
-            // Increment the quantity and add to the total weight for each item type
             summary[itemname].quantity += 1;
             summary[itemname].totalWeight += weight;
         });
 
-        // Convert summary object to an array for easier rendering in EJS
+        
         const summarizedItems = Object.values(summary);
-
-        // Render the summary page with the grouped data and additional details
         res.render('summary', { summarizedItems, dataObject, pageTitle: "URT Shipment Summary" });
     } catch (err) {
         console.error('Error generating summary:', err);
@@ -428,7 +350,7 @@ router.get('/weight-data/:id/summary', async (req, res) => {
 
 
 
-router.get('/weight-data/:id/bill-of-lading', async (req, res) => {
+router.get('/weight-data/:id/bill-of-lading', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -465,7 +387,7 @@ router.get('/weight-data/:id/bill-of-lading', async (req, res) => {
 
         
 
-        // Pass data to the EJS page
+       
         res.render('bill-of-lading', {
             dataObject,
             totalShippedWeight,
@@ -478,7 +400,7 @@ router.get('/weight-data/:id/bill-of-lading', async (req, res) => {
     }
 });
 
-router.get('/weight-data/:id/sales-order', async (req, res) => {
+router.get('/weight-data/:id/sales-order', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
     const { id } = req.params;
     try {
         // Fetch the weight data object
@@ -505,8 +427,8 @@ router.get('/weight-data/:id/sales-order', async (req, res) => {
         // Calculate total price
         let totalPrice = 0;
         itemsResult.rows.forEach(item => {
-            const adjustedWeight = item.weight; // If weight adjustments are needed, modify here
-            const itemPrice = adjustedWeight * (item.price || 0); // Handle potential null price
+            const adjustedWeight = item.weight; 
+            const itemPrice = adjustedWeight * (item.price || 0); 
             totalPrice += itemPrice;
         });
 
