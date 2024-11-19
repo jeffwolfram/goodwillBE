@@ -19,57 +19,69 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
+        h1, h2 {
             text-align: center;
+            margin: 5px 0; /* Reduce spacing */
         }
 
         .header-section, .billing-section, .footer-section {
-            margin-bottom: 20px;
+            margin-bottom: 10px; /* Reduce section spacing */
         }
 
-        .header-section table, 
-        .billing-section table, 
-        .footer-section table {
+        table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 12px; /* Slightly smaller font */
         }
 
-        table th, table td {
-            padding: 10px;
+        th, td {
+            padding: 8px; /* Reduce padding */
             border: 1px solid #ddd;
             text-align: left;
         }
 
-        .header-section td {
-            border: none;
-        }
-
-        .billing-section th {
-            background-color: #f2f2f2;
-            text-align: center;
-        }
-
-        .billing-section td {
-            text-align: center;
-        }
-
-        .notes-section {
-            margin-top: 20px;
+        .description-section table {
+            margin-top: 10px;
         }
 
         .notes-section textarea {
             width: 100%;
-            height: 100px;
-            padding: 10px;
+            height: 60px; /* Adjust height */
+            padding: 6px;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        @media print {
+            body {
+                font-size: 10px; /* Smaller font size for printing */
+                padding: 0; /* Remove extra margins */
+            }
+
+            .container {
+                padding: 10px; /* Reduce container padding */
+                width: 95%; /* Maximize space usage */
+            }
+
+            h1, h2 {
+                font-size: 14px; /* Adjust heading sizes */
+            }
+
+            th, td {
+                padding: 6px; /* Compact table cells */
+            }
+
+            .notes-section textarea {
+                height: 50px; /* Further reduce height for notes */
+            }
         }
     </style>
 </head>
 <body>
+    <button class="no-print" onclick="window.print()">Print</button>
     <div class="container">
         <h1>Goodwill Industries of Lane & South Coast Counties</h1>
-        <h2 style="text-align: center;">Sales Order Form</h2>
+        <h2>Sales Order Form</h2>
         
         <!-- Header Section -->
         <div class="header-section">
@@ -120,7 +132,7 @@
                         <td>-</td>
                         <td>$<%= totalPrice.toFixed(2) %></td>
                     </tr>
-                    <% for (let i = 0; i < 7; i++) { %> <!-- Empty rows for spacing -->
+                    <% for (let i = 0; i < 3; i++) { %> <!-- Fewer empty rows -->
                     <tr>
                         <td>&nbsp;</td>
                         <td>&nbsp;</td>

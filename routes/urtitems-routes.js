@@ -429,6 +429,7 @@ router.get('/weight-data/:id/bill-of-lading', checkAuthenticated, isAdminOrSuper
             dataObject,
             totalShippedWeight,
             totalURTWeight,
+            pageTitle: "bill of lading",
             items
         });
     } catch (err) {

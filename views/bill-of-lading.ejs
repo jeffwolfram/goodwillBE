@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bill of Lading</title>
+  
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
-
+    
         .container {
-            width: 80%;
+            width: 100%; /* Ensure full-width container */
             margin: 0 auto;
             border: 1px solid #000;
             padding: 20px;
+            box-sizing: border-box; /* Include padding in total width */
         }
-
+    
         .title {
             text-align: center;
             font-size: 20px;
@@ -23,77 +27,123 @@
             text-transform: uppercase;
             margin-bottom: 20px;
         }
-
+    
         .info-section {
             display: flex;
             justify-content: space-between;
             margin-bottom: 15px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens or prints */
         }
-
+    
         .info-section div {
-            width: 45%;
+            flex: 1; /* Ensure equal space for both sections */
+            min-width: 45%; /* Minimum width for readability */
+            margin-right: 10px;
             padding: 10px;
             border: 1px solid #000;
+            box-sizing: border-box;
         }
-
+    
         .table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-
+    
         .table th, .table td {
             border: 1px solid #000;
             padding: 8px;
             text-align: center;
+            word-wrap: break-word; /* Ensure text wraps in table cells */
         }
-
+    
         .table th {
             background-color: #f2f2f2;
             font-weight: bold;
         }
-
+    
         .total-weight, .footer {
             margin-top: 20px;
             font-size: 14px;
             font-weight: bold;
         }
-
+    
         .footer {
             font-size: 12px;
         }
-
+    
         .checkbox-section {
             display: flex;
             justify-content: space-between;
             margin-top: 10px;
             align-items: center;
+            flex-wrap: wrap;
         }
-
+    
         .checkbox-section label {
             display: flex;
             align-items: center;
             font-size: 14px;
         }
-
+    
         .checkbox-section input {
             margin-right: 5px;
         }
-
+    
         .signature-section {
             margin-top: 15px;
             font-size: 12px;
         }
-
+    
         .signature-section div {
             border-top: 1px solid #000;
             width: 40%;
             margin-top: 10px;
             text-align: center;
         }
+    
+        @media print {
+            body {
+                font-size: 10px; /* Reduce font size for printing */
+                margin: 0;
+                padding: 0;
+            }
+    
+            .container {
+                width: 100%;
+                padding: 10px; /* Reduce padding */
+                box-sizing: border-box;
+            }
+    
+            .title {
+                font-size: 16px; /* Adjust title font size */
+            }
+    
+            .info-section div {
+                min-width: 40%; /* Ensure sections are not too wide */
+                padding: 5px; /* Reduce padding for print */
+            }
+    
+            .table th, .table td {
+                padding: 4px; /* Reduce cell padding */
+                font-size: 9px; /* Reduce font size for cells */
+            }
+    
+            .footer, .checkbox-section label, .signature-section {
+                font-size: 9px; /* Scale down additional text */
+            }
+    
+            .no-print {
+                display: none; /* Hide buttons in print */
+            }
+        }
     </style>
+    
+
+
 </head>
 <body>
+    <button class="no-print" onclick="window.print()">Print</button>
     <% 
     let totalShippedWeight = 0;
     let totalUrtWeight = 0;
@@ -223,5 +273,7 @@
             <p>Date: <%= new Date(dataObject.submission_date).toLocaleDateString('en-US') %></p>
         </div>
     </div>
+    
+
 </body>
 </html>
