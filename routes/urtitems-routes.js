@@ -304,6 +304,41 @@ router.post('/weight-data/:id/update', checkAuthenticated, isAdminOrSuperUserOrL
 });
 
 
+router.post('/weight-data/:id/delete', checkAuthenticated, isAdminOrSuperUserOrLead, async (req, res) => {
+    const { id } = req.params;
+
+    const client = await pool.connect();
+    try {
+        // Start a transaction
+        await client.query('BEGIN');
+
+        // Delete associated data from urt_item_weights
+        const deleteWeightsResult = await client.query(
+            'DELETE FROM urt_item_weights WHERE weight_data_object_id = $1',
+            [id]
+        );
+        console.log(`Deleted ${deleteWeightsResult.rowCount} rows from urt_item_weights`);
+
+        // Delete the weight_data_objects entry
+        const deleteDataObjectResult = await client.query(
+            'DELETE FROM weight_data_objects WHERE id = $1',
+            [id]
+        );
+        console.log(`Deleted ${deleteDataObjectResult.rowCount} rows from weight_data_objects`);
+
+        // Commit the transaction
+        await client.query('COMMIT');
+        console.log(`Successfully deleted weight data object with ID: ${id}`);
+        res.redirect('/weight-data'); // Redirect to the weight data list or another appropriate page
+    } catch (err) {
+        // Rollback the transaction in case of an error
+        await client.query('ROLLBACK');
+        console.error('Error deleting weight data:', err);
+        res.status(500).send('Server Error');
+    } finally {
+        client.release();
+    }
+});
 
 
 
